@@ -352,7 +352,7 @@ class Admin {
 		global $post;
 
 		if ( ! DHL::is_plugin_enabled() && ( $post && 'shop_order' === $post->post_type && get_post_meta( $post->ID, '_pr_shipment_dhl_label_tracking' ) ) ) {
-			add_meta_box( 'woocommerce-gzd-shipment-dhl-legacy-label', _x( 'DHL Label', 'dhl', 'dhl-for-shiptastic' ), array( __CLASS__, 'legacy_meta_box' ), 'shop_order', 'side', 'high' );
+			add_meta_box( 'woocommerce-stc-shipment-dhl-legacy-label', _x( 'DHL Label', 'dhl', 'dhl-for-shiptastic' ), array( __CLASS__, 'legacy_meta_box' ), 'shop_order', 'side', 'high' );
 		}
 	}
 

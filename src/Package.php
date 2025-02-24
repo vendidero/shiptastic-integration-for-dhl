@@ -190,8 +190,8 @@ class Package {
 
 		// List of tables without prefixes.
 		$tables = array(
-			'gzd_dhl_im_products'         => 'woocommerce_stc_dhl_im_products',
-			'gzd_dhl_im_product_services' => 'woocommerce_stc_dhl_im_product_services',
+			'stc_dhl_im_products'         => 'woocommerce_stc_dhl_im_products',
+			'stc_dhl_im_product_services' => 'woocommerce_stc_dhl_im_product_services',
 		);
 
 		foreach ( $tables as $name => $table ) {
@@ -266,9 +266,6 @@ class Package {
 	}
 
 	public static function init_hooks() {
-		// Filter templates
-		add_filter( 'woocommerce_gzd_default_plugin_template', array( __CLASS__, 'filter_templates' ), 10, 3 );
-
 		// Register additional label types
 		add_filter( 'woocommerce_shiptastic_shipment_label_types', array( __CLASS__, 'register_label_types' ), 10 );
 	}
@@ -277,14 +274,6 @@ class Package {
 		$types[] = 'inlay_return';
 
 		return $types;
-	}
-
-	public static function filter_templates( $path, $template_name ) {
-		if ( file_exists( self::get_path() . '/templates/' . $template_name ) ) {
-			$path = self::get_path() . '/templates/' . $template_name;
-		}
-
-		return $path;
 	}
 
 	public static function get_default_bank_account_data( $data_key = '' ) {
@@ -401,7 +390,7 @@ class Package {
 	 * @return string
 	 */
 	public static function get_i18n_path() {
-		return apply_filters( 'woocommerce_stc_dhl_get_i18n_path', self::get_path( 'i18n/languages' ) );
+		return apply_filters( 'woocommerce_shiptastic_dhl_get_i18n_path', self::get_path( 'i18n/languages' ) );
 	}
 
 	/**
@@ -410,7 +399,7 @@ class Package {
 	 * @return string
 	 */
 	public static function get_i18n_textdomain() {
-		return apply_filters( 'woocommerce_stc_dhl_get_i18n_textdomain', 'dhl-for-shiptastic' );
+		return apply_filters( 'woocommerce_shiptastic_dhl_get_i18n_textdomain', 'dhl-for-shiptastic' );
 	}
 
 	public static function get_template_path() {

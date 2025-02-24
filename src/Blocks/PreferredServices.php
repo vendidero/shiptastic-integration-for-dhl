@@ -108,7 +108,7 @@ final class PreferredServices {
 	}
 
 	/**
-	 * Use woocommerce-gzd-dhl as namespace to not conflict with the
+	 * Use woocommerce-stc-dhl as namespace to not conflict with the
 	 * dhl-for-shiptastic textdomain which might get replaced within js files
 	 * while bundling the package.
 	 *
@@ -118,7 +118,7 @@ final class PreferredServices {
 		woocommerce_store_api_register_endpoint_data(
 			array(
 				'endpoint'        => CartSchema::IDENTIFIER,
-				'namespace'       => 'woocommerce-gzd-dhl',
+				'namespace'       => 'woocommerce-stc-dhl',
 				'data_callback'   => function () {
 					return $this->get_cart_data();
 				},
@@ -131,7 +131,7 @@ final class PreferredServices {
 		woocommerce_store_api_register_endpoint_data(
 			array(
 				'endpoint'        => CheckoutSchema::IDENTIFIER,
-				'namespace'       => 'woocommerce-gzd-dhl',
+				'namespace'       => 'woocommerce-stc-dhl',
 				'schema_callback' => function () {
 					return $this->get_checkout_schema();
 				},
@@ -140,7 +140,7 @@ final class PreferredServices {
 
 		woocommerce_store_api_register_update_callback(
 			array(
-				'namespace' => 'woocommerce-gzd-dhl-checkout-fees',
+				'namespace' => 'woocommerce-stc-dhl-checkout-fees',
 				'callback'  => function ( $data ) {
 					$dhl = wp_parse_args(
 						wc_clean( wp_unslash( $data ) ),
@@ -343,7 +343,7 @@ final class PreferredServices {
 	}
 
 	private function has_checkout_data( $param, $request ) {
-		$request_data = isset( $request['extensions']['woocommerce-gzd-dhl'] ) ? (array) $request['extensions']['woocommerce-gzd-dhl'] : array();
+		$request_data = isset( $request['extensions']['woocommerce-stc-dhl'] ) ? (array) $request['extensions']['woocommerce-stc-dhl'] : array();
 
 		return isset( $request_data[ $param ] ) && null !== $request_data[ $param ];
 	}
@@ -354,7 +354,7 @@ final class PreferredServices {
 	 * @return array
 	 */
 	private function get_checkout_data_from_request( $request ) {
-		$data = array_filter( (array) wc_clean( $request['extensions']['woocommerce-gzd-dhl'] ) );
+		$data = array_filter( (array) wc_clean( $request['extensions']['woocommerce-stc-dhl'] ) );
 
 		$data = wp_parse_args(
 			$data,

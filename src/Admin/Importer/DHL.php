@@ -13,7 +13,7 @@ class DHL {
 
 	public static function is_available() {
 		$options  = get_option( 'woocommerce_pr_dhl_paket_settings' );
-		$imported = get_option( 'woocommerc_gzd_dhl_import_finished' );
+		$imported = get_option( 'woocommerc_stc_dhl_import_finished' );
 		$user     = '';
 
 		if ( $dhl = Package::get_dhl_shipping_provider() ) {
@@ -118,11 +118,6 @@ class DHL {
 				update_option( "woocommerce_shiptastic_{$address_type}_address_first_name", $first_name );
 				update_option( "woocommerce_shiptastic_{$address_type}_address_last_name", $last_name );
 			}
-		}
-
-		// Enable maps if API key exists
-		if ( isset( $settings['dhl_google_maps_api_key'] ) && ! empty( $settings['dhl_google_maps_api_key'] ) ) {
-			$dhl->update_setting( 'parcel_pickup_map_enable', 'yes' );
 		}
 
 		// Shipper state to country ISO mapping

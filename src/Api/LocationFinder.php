@@ -66,15 +66,15 @@ class LocationFinder extends Rest {
 		);
 
 		// Lets assume it is a postoffice by default
-		$result->gzd_type      = 'postoffice';
-		$result->gzd_id        = isset( $result->location->keywordId ) ? wc_clean( $result->location->keywordId ) : ''; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-		$result->gzd_result_id = wc_clean( $result->url );
+		$result->internal_type      = 'postoffice';
+		$result->internal_id        = isset( $result->location->keywordId ) ? wc_clean( $result->location->keywordId ) : ''; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		$result->internal_result_id = wc_clean( $result->url );
 
 		if ( isset( $result->location->type ) && array_key_exists( $result->location->type, $api_types ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-			$result->gzd_type = $api_types[ $result->location->type ];
+			$result->internal_type = $api_types[ $result->location->type ];
 		}
 
-		$result->gzd_name = sprintf( _x( '%1$s %2$s', 'dhl location name', 'dhl-for-shiptastic' ), wc_clean( $result->location->keyword ), wc_clean( $result->location->keywordId ) );
+		$result->internal_name = sprintf( _x( '%1$s %2$s', 'dhl location name', 'dhl-for-shiptastic' ), wc_clean( $result->location->keyword ), wc_clean( $result->location->keywordId ) );
 	}
 
 	/**
@@ -162,7 +162,7 @@ class LocationFinder extends Rest {
 				$this->adjust_location_result( $result );
 
 				// Not supporting this type
-				if ( ! in_array( $result->gzd_type, $types, true ) ) {
+				if ( ! in_array( $result->internal_type, $types, true ) ) {
 					continue;
 				}
 

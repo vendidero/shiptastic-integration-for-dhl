@@ -109,9 +109,9 @@ trait PickupDeliveryTrait {
 
 			return new PickupLocation(
 				array(
-					'code'                         => $location->gzd_id,
+					'code'                         => $location->internal_id,
 					'type'                         => $location->location->type,
-					'label'                        => $location->gzd_name,
+					'label'                        => $location->internal_name,
 					'latitude'                     => $location->place->geo->latitude,
 					'longitude'                    => $location->place->geo->longitude,
 					'supports_customer_number'     => $supports_customer_number,

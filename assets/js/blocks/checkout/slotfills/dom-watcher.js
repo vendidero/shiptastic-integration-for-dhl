@@ -17,8 +17,8 @@ const DomWatcher = ({
     useEffect(() => {
         const extensionsData = select( CHECKOUT_STORE_KEY ).getExtensionData();
 
-        if ( ! extensionsData.hasOwnProperty( 'woocommerce-gzd-dhl' ) ) {
-            dispatch( CHECKOUT_STORE_KEY ).__internalSetExtensionData( 'woocommerce-gzd-dhl', {} );
+        if ( ! extensionsData.hasOwnProperty( 'woocommerce-stc-dhl' ) ) {
+            dispatch( CHECKOUT_STORE_KEY ).__internalSetExtensionData( 'woocommerce-stc-dhl', {} );
         }
     }, [] );
 
@@ -33,7 +33,7 @@ const render = () => {
     );
 };
 
-registerPlugin( 'woocommerce-gzd-dhl-checkout-order-meta', {
+registerPlugin( 'woocommerce-stc-dhl-checkout-order-meta', {
     render,
     scope: 'woocommerce-checkout',
 } );

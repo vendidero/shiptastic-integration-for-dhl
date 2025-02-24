@@ -37,7 +37,7 @@ class ImProductList {
 		global $wpdb;
 
 		$services = array();
-		$results  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->gzd_dhl_im_product_services} WHERE product_service_product_id = %d", $product_id ) );
+		$results  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->stc_dhl_im_product_services} WHERE product_service_product_id = %d", $product_id ) );
 
 		if ( ! empty( $results ) ) {
 			foreach ( $results as $result ) {
@@ -62,23 +62,23 @@ class ImProductList {
 	public function get_services_for_product( $parent_id, $services = array() ) {
 		global $wpdb;
 
-		$query = "SELECT * FROM {$wpdb->gzd_dhl_im_products}";
+		$query = "SELECT * FROM {$wpdb->stc_dhl_im_products}";
 		$count = 1;
 
 		if ( empty( $services ) ) {
-			$query .= " INNER JOIN {$wpdb->gzd_dhl_im_product_services} S{$count} ON {$wpdb->gzd_dhl_im_products}.product_id = S{$count}.product_service_product_id";
+			$query .= " INNER JOIN {$wpdb->stc_dhl_im_product_services} S{$count} ON {$wpdb->stc_dhl_im_products}.product_id = S{$count}.product_service_product_id";
 		} else {
 			foreach ( $services as $service ) {
 				++$count;
 
-				$query .= $wpdb->prepare( " INNER JOIN {$wpdb->gzd_dhl_im_product_services} S{$count} ON {$wpdb->gzd_dhl_im_products}.product_id = S{$count}.product_service_product_id AND S{$count}.product_service_slug = %s", $service ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$query .= $wpdb->prepare( " INNER JOIN {$wpdb->stc_dhl_im_product_services} S{$count} ON {$wpdb->stc_dhl_im_products}.product_id = S{$count}.product_service_product_id AND S{$count}.product_service_slug = %s", $service ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			}
 		}
 
-		$query .= $wpdb->prepare( " WHERE {$wpdb->gzd_dhl_im_products}.product_parent_id = %d", $parent_id );
+		$query .= $wpdb->prepare( " WHERE {$wpdb->stc_dhl_im_products}.product_parent_id = %d", $parent_id );
 
 		if ( empty( $services ) ) {
-			$query .= $wpdb->prepare( " AND {$wpdb->gzd_dhl_im_products}.product_service_count = %d", 1 );
+			$query .= $wpdb->prepare( " AND {$wpdb->stc_dhl_im_products}.product_service_count = %d", 1 );
 		}
 
 		$results            = $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
@@ -87,7 +87,7 @@ class ImProductList {
 		if ( ! empty( $results ) ) {
 			foreach ( $results as $result ) {
 				$product_id       = $result->product_id;
-				$product_services = $wpdb->get_results( $wpdb->prepare( "SELECT product_service_slug FROM {$wpdb->gzd_dhl_im_product_services} WHERE {$wpdb->gzd_dhl_im_product_services}.product_service_product_id = %d", $product_id ) );
+				$product_services = $wpdb->get_results( $wpdb->prepare( "SELECT product_service_slug FROM {$wpdb->stc_dhl_im_product_services} WHERE {$wpdb->stc_dhl_im_product_services}.product_service_product_id = %d", $product_id ) );
 
 				if ( ! empty( $product_services ) ) {
 					foreach ( $product_services as $product_service ) {
@@ -130,13 +130,13 @@ class ImProductList {
 			}
 		}
 
-		$query = "SELECT * FROM {$wpdb->gzd_dhl_im_products}";
+		$query = "SELECT * FROM {$wpdb->stc_dhl_im_products}";
 		$count = 0;
 
 		if ( ! empty( $services ) ) {
 			foreach ( $services as $service ) {
 				++$count;
-				$query .= $wpdb->prepare( " INNER JOIN {$wpdb->gzd_dhl_im_product_services} S{$count} ON {$wpdb->gzd_dhl_im_products}.product_id = S{$count}.product_service_product_id AND S{$count}.product_service_slug = %s", $service ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$query .= $wpdb->prepare( " INNER JOIN {$wpdb->stc_dhl_im_product_services} S{$count} ON {$wpdb->stc_dhl_im_products}.product_id = S{$count}.product_service_product_id AND S{$count}.product_service_slug = %s", $service ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			}
 
 			$all_services = array_map(
@@ -149,10 +149,10 @@ class ImProductList {
 			$all_services = implode( ',', $all_services );
 
 			// Add a left join which must be NULL making sure that no other services are linked to that product.
-			$query .= " LEFT JOIN {$wpdb->gzd_dhl_im_product_services} S ON {$wpdb->gzd_dhl_im_products}.product_id = S.product_service_product_id AND S.product_service_slug NOT IN ($all_services)";
-			$query .= $wpdb->prepare( " WHERE {$wpdb->gzd_dhl_im_products}.product_parent_id = %d AND S.product_service_id IS NULL LIMIT 1", $parent_id );
+			$query .= " LEFT JOIN {$wpdb->stc_dhl_im_product_services} S ON {$wpdb->stc_dhl_im_products}.product_id = S.product_service_product_id AND S.product_service_slug NOT IN ($all_services)";
+			$query .= $wpdb->prepare( " WHERE {$wpdb->stc_dhl_im_products}.product_parent_id = %d AND S.product_service_id IS NULL LIMIT 1", $parent_id );
 		} else {
-			$query .= $wpdb->prepare( " WHERE {$wpdb->gzd_dhl_im_products}.product_id = %d AND {$wpdb->gzd_dhl_im_products}.product_parent_id = %d LIMIT 1", $parent_id, 0 );
+			$query .= $wpdb->prepare( " WHERE {$wpdb->stc_dhl_im_products}.product_id = %d AND {$wpdb->stc_dhl_im_products}.product_parent_id = %d LIMIT 1", $parent_id, 0 );
 		}
 
 		$result = $wpdb->get_row( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
@@ -344,8 +344,8 @@ class ImProductList {
 				}
 			}
 
-			$wpdb->query( "TRUNCATE TABLE {$wpdb->gzd_dhl_im_products}" );
-			$wpdb->query( "TRUNCATE TABLE {$wpdb->gzd_dhl_im_product_services}" );
+			$wpdb->query( "TRUNCATE TABLE {$wpdb->stc_dhl_im_products}" );
+			$wpdb->query( "TRUNCATE TABLE {$wpdb->stc_dhl_im_product_services}" );
 
 			$products = array(
 				'sales'      => $response->salesProductList->SalesProduct, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -428,13 +428,13 @@ class ImProductList {
 						continue;
 					}
 
-					$wpdb->insert( $wpdb->gzd_dhl_im_products, $to_insert );
+					$wpdb->insert( $wpdb->stc_dhl_im_products, $to_insert );
 				}
 			}
 
 			foreach ( $products_with_additional_service as $product_to_insert ) {
 				$product_base_slug = $this->get_product_base_slug( $product_to_insert['product_slug'] );
-				$parent_product    = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->gzd_dhl_im_products} WHERE product_slug = %s", $product_base_slug ) );
+				$parent_product    = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->stc_dhl_im_products} WHERE product_slug = %s", $product_base_slug ) );
 				$service_slugs     = $this->get_product_service_slugs( $product_to_insert['product_slug'] );
 
 				if ( ! empty( $parent_product ) && ! empty( $service_slugs ) ) {
@@ -442,7 +442,7 @@ class ImProductList {
 					$product_to_insert['product_service_count'] = count( $service_slugs );
 				}
 
-				$wpdb->insert( $wpdb->gzd_dhl_im_products, $product_to_insert );
+				$wpdb->insert( $wpdb->stc_dhl_im_products, $product_to_insert );
 
 				$product_id = $wpdb->insert_id;
 
@@ -454,7 +454,7 @@ class ImProductList {
 							'product_service_slug'       => $service_slug,
 						);
 
-						$wpdb->insert( $wpdb->gzd_dhl_im_product_services, $service_insert );
+						$wpdb->insert( $wpdb->stc_dhl_im_product_services, $service_insert );
 					}
 				}
 			}

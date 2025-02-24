@@ -29,14 +29,14 @@ import {
     hasPickupLocation,
     RadioControlAccordion,
     FormattedMonetaryAmount
-} from '@woocommerceGzdShipments/blocks-checkout';
+} from '@woocommerceShiptastic/blocks-checkout';
 
 const getDhlCheckoutData = ( checkoutData ) => {
-    return checkoutData.hasOwnProperty( 'woocommerce-gzd-dhl' ) ? checkoutData['woocommerce-gzd-dhl'] : {};
+    return checkoutData.hasOwnProperty( 'woocommerce-stc-dhl' ) ? checkoutData['woocommerce-stc-dhl'] : {};
 };
 
 const setDhlCheckoutData = ( checkoutData ) => {
-    dispatch( CHECKOUT_STORE_KEY ).__internalSetExtensionData( 'woocommerce-gzd-dhl', checkoutData );
+    dispatch( CHECKOUT_STORE_KEY ).__internalSetExtensionData( 'woocommerce-stc-dhl', checkoutData );
 };
 
 const DhlPreferredDaySelect = ({
@@ -369,12 +369,12 @@ const DhlPreferredDeliveryOptions = ({
         if ( updateCart ) {
             if ( 'preferred_day' === option && preferredDayCost > 0 ) {
                 extensionCartUpdate( {
-                    namespace: 'woocommerce-gzd-dhl-checkout-fees',
+                    namespace: 'woocommerce-stc-dhl-checkout-fees',
                     data: checkoutOptions,
                 } );
             } else if ( 'preferred_delivery_type' === option && homeDeliveryCost > 0 ) {
                 extensionCartUpdate( {
-                    namespace: 'woocommerce-gzd-dhl-checkout-fees',
+                    namespace: 'woocommerce-stc-dhl-checkout-fees',
                     data: checkoutOptions,
                 } );
             }
@@ -442,7 +442,7 @@ const DhlPreferredDeliveryOptions = ({
 
         if ( ! isCustomerDataUpdating ) {
             extensionCartUpdate( {
-                namespace: 'woocommerce-gzd-dhl-checkout-fees',
+                namespace: 'woocommerce-stc-dhl-checkout-fees',
                 data: currentData,
             } );
 
@@ -559,7 +559,7 @@ const render = () => {
     );
 };
 
-registerPlugin( 'woocommerce-gzd-dhl-preferred-services', {
+registerPlugin( 'woocommerce-stc-dhl-preferred-services', {
     render,
     scope: 'woocommerce-checkout',
 } );

@@ -248,7 +248,7 @@ const StylingConfig = {
         },
     },
     output: {
-        devtoolNamespace: 'wcGzdShipments',
+        devtoolNamespace: 'wcShiptastic',
         path: path.resolve( __dirname, 'build/' ),
         filename: `[name]-style.js`,
         library: [ 'wcShiptastic', 'blocks', '[name]' ],

@@ -338,7 +338,7 @@ class DeutschePost extends Auto {
 			set_transient( 'wc_stc_dhl_im_products_expire', 'yes', DAY_IN_SECONDS );
 		}
 
-		$products = $wpdb->get_results( "SELECT * FROM {$wpdb->gzd_dhl_im_products}" );
+		$products = $wpdb->get_results( "SELECT * FROM {$wpdb->stc_dhl_im_products}" );
 
 		foreach ( $products as $product ) {
 			$this->register_product(

@@ -1,9 +1,9 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
 use Exception;
-use Vendidero\Germanized\DHL\Package;
+use Vendidero\Shiptastic\DHL\Package;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -24,15 +24,15 @@ class ParcelRest extends Rest {
 		);
 
 		if ( empty( $args['postcode'] ) ) {
-			throw new Exception( esc_html_x( 'Please provide the receiver postnumber.', 'dhl', 'woocommerce-germanized-dhl' ) );
+			throw new Exception( esc_html_x( 'Please provide the receiver postnumber.', 'dhl', 'dhl-for-shiptastic' ) );
 		}
 
 		if ( empty( $args['account_num'] ) && ! Package::is_debug_mode() ) {
-			throw new Exception( esc_html_x( 'Please set an account in the DHL shipping settings.', 'dhl', 'woocommerce-germanized-dhl' ) );
+			throw new Exception( esc_html_x( 'Please set an account in the DHL shipping settings.', 'dhl', 'dhl-for-shiptastic' ) );
 		}
 
 		if ( empty( $args['start_date'] ) ) {
-			throw new Exception( esc_html_x( 'Please provide the shipment start date.', 'dhl', 'woocommerce-germanized-dhl' ) );
+			throw new Exception( esc_html_x( 'Please provide the shipment start date.', 'dhl', 'dhl-for-shiptastic' ) );
 		}
 
 		$this->account_num = $args['account_num'];

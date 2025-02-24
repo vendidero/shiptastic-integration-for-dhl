@@ -1,10 +1,10 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
 use baltpeter\Internetmarke\PartnerInformation;
 use baltpeter\Internetmarke\User;
-use Vendidero\Germanized\DHL\Package;
+use Vendidero\Shiptastic\DHL\Package;
 
 class ImRefundSoap extends \SoapClient {
 

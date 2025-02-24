@@ -4,10 +4,10 @@
  *
  * @package WooCommerce/Blocks
  */
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
 use Exception;
-use Vendidero\Germanized\DHL\Package;
+use Vendidero\Shiptastic\DHL\Package;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -51,7 +51,7 @@ abstract class Soap {
 	public function __construct( $wsdl_link ) {
 		try {
 			if ( ! Package::supports_soap() ) {
-				throw new Exception( wp_kses_post( sprintf( _x( 'To enable communication between your shop and DHL, the PHP <a href="%1$s">SOAPClient</a> is required. Please contact your host and make sure that SOAPClient is <a href="%2$s">installed</a>.', 'dhl', 'woocommerce-germanized-dhl' ), 'https://www.php.net/manual/class.soapclient.php', esc_url( admin_url( 'admin.php?page=wc-status' ) ) ) ) );
+				throw new Exception( wp_kses_post( sprintf( _x( 'To enable communication between your shop and DHL, the PHP <a href="%1$s">SOAPClient</a> is required. Please contact your host and make sure that SOAPClient is <a href="%2$s">installed</a>.', 'dhl', 'dhl-for-shiptastic' ), 'https://www.php.net/manual/class.soapclient.php', esc_url( admin_url( 'admin.php?page=wc-status' ) ) ) ) );
 			}
 
 			$this->soap_auth = new AuthSoap( $this->get_wsdl_file( $wsdl_link ) );

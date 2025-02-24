@@ -1,6 +1,6 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Label;
+namespace Vendidero\Shiptastic\DHL\Label;
 
 defined( 'ABSPATH' ) || exit;
 

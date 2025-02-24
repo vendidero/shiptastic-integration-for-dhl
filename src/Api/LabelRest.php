@@ -1,16 +1,16 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\DHL\Label;
-use Vendidero\Germanized\DHL\ParcelLocator;
-use Vendidero\Germanized\Shipments\Admin\Settings;
-use Vendidero\Germanized\Shipments\API\Response;
-use Vendidero\Germanized\Shipments\Labels\Factory;
-use Vendidero\Germanized\Shipments\PDFMerger;
-use Vendidero\Germanized\Shipments\PDFSplitter;
-use Vendidero\Germanized\Shipments\ShipmentError;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\DHL\Label;
+use Vendidero\Shiptastic\DHL\ParcelLocator;
+use Vendidero\Shiptastic\Admin\Settings;
+use Vendidero\Shiptastic\API\Response;
+use Vendidero\Shiptastic\Labels\Factory;
+use Vendidero\Shiptastic\PDFMerger;
+use Vendidero\Shiptastic\PDFSplitter;
+use Vendidero\Shiptastic\ShipmentError;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,7 +21,7 @@ class LabelRest extends PaketRest {
 	}
 
 	/**
-	 * @param \Vendidero\Germanized\DHL\Label\DHL $label
+	 * @param \Vendidero\Shiptastic\DHL\Label\DHL $label
 	 *
 	 * @throws \Exception
 	 */
@@ -30,7 +30,7 @@ class LabelRest extends PaketRest {
 	}
 
 	/**
-	 * @param \Vendidero\Germanized\DHL\Label\DHL $label
+	 * @param \Vendidero\Shiptastic\DHL\Label\DHL $label
 	 *
 	 * @return boolean|ShipmentError
 	 * @throws \Exception
@@ -41,7 +41,7 @@ class LabelRest extends PaketRest {
 		$dhl_provider = Package::get_dhl_shipping_provider();
 
 		if ( ! $shipment ) {
-			throw new \Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'woocommerce-germanized-dhl' ), $label->get_shipment_id() ) ) );
+			throw new \Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'dhl-for-shiptastic' ), $label->get_shipment_id() ) ) );
 		}
 
 		$currency            = $shipment->get_order() ? $shipment->get_order()->get_currency() : 'EUR';
@@ -50,7 +50,7 @@ class LabelRest extends PaketRest {
 			'services' => $label->get_services(),
 		);
 
-		$account_number = wc_gzd_dhl_get_billing_number( $label->get_product_id(), $billing_number_args );
+		$account_number = wc_stc_dhl_get_billing_number( $label->get_product_id(), $billing_number_args );
 		$services       = array();
 		$bank_data      = array();
 
@@ -65,7 +65,7 @@ class LabelRest extends PaketRest {
 				case 'AdditionalInsurance':
 					$services[ $service_name ] = array(
 						'currency' => $currency,
-						'value'    => apply_filters( 'woocommerce_gzd_dhl_label_api_insurance_amount', $label->get_insurance_amount(), $shipment, $label ),
+						'value'    => apply_filters( 'woocommerce_stc_dhl_label_api_insurance_amount', $label->get_insurance_amount(), $shipment, $label ),
 					);
 					break;
 				case 'IdentCheck':
@@ -86,7 +86,7 @@ class LabelRest extends PaketRest {
 						'bank_ref_2'  => 'transferNote2',
 					);
 
-					$ref_replacements = wc_gzd_dhl_get_label_payment_ref_placeholder( $shipment );
+					$ref_replacements = wc_stc_dhl_get_label_payment_ref_placeholder( $shipment );
 
 					foreach ( $bank_data_map as $key => $value ) {
 						if ( $setting_value = Package::get_setting( $key ) ) {
@@ -127,7 +127,7 @@ class LabelRest extends PaketRest {
 					$services[ $service_name ] = $label->get_preferred_neighbor();
 					break;
 				case 'ParcelOutletRouting':
-					$services[ $service_name ] = wc_gzd_dhl_get_parcel_outlet_routing_email_address( $shipment );
+					$services[ $service_name ] = wc_stc_dhl_get_parcel_outlet_routing_email_address( $shipment );
 					break;
 				case 'CDP':
 					$services['closestDropPoint'] = true;
@@ -136,7 +136,7 @@ class LabelRest extends PaketRest {
 					$services['postalDeliveryDutyPaid'] = true;
 					break;
 				case 'Endorsement':
-					$services[ $service_name ] = wc_gzd_dhl_get_label_endorsement_type( $label, $shipment, 'dhl.com' );
+					$services[ $service_name ] = wc_stc_dhl_get_label_endorsement_type( $label, $shipment, 'dhl.com' );
 					break;
 				default:
 					$services[ $service_name ] = true;
@@ -145,19 +145,19 @@ class LabelRest extends PaketRest {
 
 		if ( $label->has_inlay_return() ) {
 			$services['dhlRetoure'] = array(
-				'billingNumber' => wc_gzd_dhl_get_billing_number( 'return', $billing_number_args ),
-				'refNo'         => wc_gzd_dhl_get_inlay_return_label_reference( $label, $shipment ),
+				'billingNumber' => wc_stc_dhl_get_billing_number( 'return', $billing_number_args ),
+				'refNo'         => wc_stc_dhl_get_inlay_return_label_reference( $label, $shipment ),
 				'returnAddress' => array(
 					'name1'         => $label->get_return_company() ? $label->get_return_company() : $label->get_return_formatted_full_name(),
 					'name2'         => $label->get_return_company() ? $label->get_return_formatted_full_name() : '',
 					'addressStreet' => $label->get_return_street() . ' ' . $label->get_return_street_number(),
 					'postalCode'    => $label->get_return_postcode(),
 					'city'          => $label->get_return_city(),
-					'state'         => wc_gzd_shipments_substring( wc_gzd_dhl_format_label_state( $label->get_return_state(), $label->get_return_country() ), 0, 20 ),
+					'state'         => wc_shiptastic_substring( wc_stc_dhl_format_label_state( $label->get_return_state(), $label->get_return_country() ), 0, 20 ),
 					'contactName'   => $label->get_return_formatted_full_name(),
 					'phone'         => $label->get_return_phone(),
 					'email'         => $label->get_return_email(),
-					'country'       => wc_gzd_country_to_alpha3( $label->get_return_country() ),
+					'country'       => wc_stc_country_to_alpha3( $label->get_return_country() ),
 				),
 			);
 		}
@@ -165,7 +165,7 @@ class LabelRest extends PaketRest {
 		$shipment_request = array(
 			'product'       => $label->get_product_id(),
 			'billingNumber' => $account_number,
-			'refNo'         => wc_gzd_shipments_substring( wc_gzd_dhl_get_label_customer_reference( $label, $shipment ), 0, 35 ),
+			'refNo'         => wc_shiptastic_substring( wc_stc_dhl_get_label_customer_reference( $label, $shipment ), 0, 35 ),
 			'shipDate'      => Package::get_date_de_timezone( 'Y-m-d' ),
 			'shipper'       => array(),
 			'consignee'     => array(),
@@ -213,21 +213,21 @@ class LabelRest extends PaketRest {
 		 * @param Label\DHL  $label The label instance.
 		 *
 		 * @since 3.0.5
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		$shipper_reference = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_reference', $dhl_provider->has_custom_shipper_reference() ? $dhl_provider->get_label_custom_shipper_reference() : '', $label );
+		$shipper_reference = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_reference', $dhl_provider->has_custom_shipper_reference() ? $dhl_provider->get_label_custom_shipper_reference() : '', $label );
 
 		if ( ! empty( $shipper_reference ) ) {
 			$shipment_request['shipper']['shipperRef'] = $shipper_reference;
 		} else {
-			$name1   = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_name1', trim( $shipment->get_sender_company() ? $shipment->get_sender_company() : $shipment->get_formatted_sender_full_name() ), $label );
-			$name2   = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_name2', trim( $shipment->get_sender_company() ? $shipment->get_formatted_sender_full_name() : '' ), $label );
-			$name3   = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_name3', trim( $shipment->get_sender_address_2() ), $label );
-			$street  = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_street', $shipment->get_sender_address_1(), $label );
-			$zip     = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_zip', $shipment->get_sender_postcode(), $label );
-			$city    = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_city', $shipment->get_sender_city(), $label );
-			$email   = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_email', $shipment->get_sender_email(), $label );
-			$country = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_country', $shipment->get_sender_country(), $label );
+			$name1   = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_name1', trim( $shipment->get_sender_company() ? $shipment->get_sender_company() : $shipment->get_formatted_sender_full_name() ), $label );
+			$name2   = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_name2', trim( $shipment->get_sender_company() ? $shipment->get_formatted_sender_full_name() : '' ), $label );
+			$name3   = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_name3', trim( $shipment->get_sender_address_2() ), $label );
+			$street  = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_street', $shipment->get_sender_address_1(), $label );
+			$zip     = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_zip', $shipment->get_sender_postcode(), $label );
+			$city    = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_city', $shipment->get_sender_city(), $label );
+			$email   = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_email', $shipment->get_sender_email(), $label );
+			$country = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_country', $shipment->get_sender_country(), $label );
 
 			$fields_necessary = array(
 				'street'    => $street,
@@ -236,7 +236,7 @@ class LabelRest extends PaketRest {
 				'city'      => $city,
 			);
 
-			$address_fields         = wc_gzd_get_shipment_setting_default_address_fields();
+			$address_fields         = wc_stc_get_shipment_setting_default_address_fields();
 			$missing_address_fields = array();
 
 			foreach ( $fields_necessary as $field => $value ) {
@@ -246,7 +246,7 @@ class LabelRest extends PaketRest {
 			}
 
 			if ( ! empty( $missing_address_fields ) ) {
-				throw new \Exception( wp_kses_post( sprintf( _x( 'Your shipper address is incomplete (%1$s). Please validate your <a href="%2$s">settings</a> and try again.', 'dhl', 'woocommerce-germanized-dhl' ), implode( ', ', $missing_address_fields ), esc_url( Settings::get_settings_url( 'general', 'business_information' ) ) ) ) );
+				throw new \Exception( wp_kses_post( sprintf( _x( 'Your shipper address is incomplete (%1$s). Please validate your <a href="%2$s">settings</a> and try again.', 'dhl', 'dhl-for-shiptastic' ), implode( ', ', $missing_address_fields ), esc_url( Settings::get_settings_url( 'general', 'business_information' ) ) ) ) );
 			}
 
 			$shipment_request['shipper'] = array(
@@ -256,7 +256,7 @@ class LabelRest extends PaketRest {
 				'addressStreet' => $street,
 				'postalCode'    => $zip,
 				'city'          => $city,
-				'country'       => wc_gzd_country_to_alpha3( $country ),
+				'country'       => wc_stc_country_to_alpha3( $country ),
 				'email'         => $email,
 				'contactName'   => trim( $shipment->get_formatted_sender_full_name() ),
 			);
@@ -270,7 +270,7 @@ class LabelRest extends PaketRest {
 					'postNumber' => $shipment->get_pickup_location_customer_number(),
 					'city'       => $shipment->get_city(),
 					'postalCode' => $shipment->get_postcode(),
-					'country'    => wc_gzd_country_to_alpha3( $shipment->get_country() ),
+					'country'    => wc_stc_country_to_alpha3( $shipment->get_country() ),
 				);
 			} else {
 				$shipment_request['consignee'] = array(
@@ -278,7 +278,7 @@ class LabelRest extends PaketRest {
 					'retailID'   => (int) $shipment->get_pickup_location_code(),
 					'city'       => $shipment->get_city(),
 					'postalCode' => $shipment->get_postcode(),
-					'country'    => wc_gzd_country_to_alpha3( $shipment->get_country() ),
+					'country'    => wc_stc_country_to_alpha3( $shipment->get_country() ),
 				);
 
 				if ( ! empty( $shipment->get_pickup_location_customer_number() ) ) {
@@ -294,7 +294,7 @@ class LabelRest extends PaketRest {
 			$address_2       = $shipment->get_address_2();
 
 			if ( empty( $street_number ) && ! empty( $address_2 ) ) {
-				$address_1_tmp   = wc_gzd_split_shipment_street( $address_1 . ' ' . $address_2 );
+				$address_1_tmp   = wc_stc_split_shipment_street( $address_1 . ' ' . $address_2 );
 				$address_1       = $address_1_tmp['street'] . ' ' . $address_1_tmp['number'];
 				$address_2       = '';
 				$street_addition = $address_1_tmp['addition'];
@@ -311,15 +311,15 @@ class LabelRest extends PaketRest {
 				 * @param Label\DHL  $label The label instance.
 				 *
 				 * @since 3.0.3
-				 * @package Vendidero/Germanized/DHL
+				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'name3'                         => apply_filters( 'woocommerce_gzd_dhl_label_api_receiver_name3', $address_2, $label ),
+				'name3'                         => apply_filters( 'woocommerce_stc_dhl_label_api_receiver_name3', $address_2, $label ),
 				'addressStreet'                 => $address_1,
 				'additionalAddressInformation1' => $street_addition,
 				'postalCode'                    => $shipment->get_postcode(),
 				'city'                          => $shipment->get_city(),
-				'state'                         => wc_gzd_shipments_substring( wc_gzd_dhl_format_label_state( $shipment->get_state(), $shipment->get_country() ), 0, 20 ),
-				'country'                       => wc_gzd_country_to_alpha3( $shipment->get_country() ),
+				'state'                         => wc_shiptastic_substring( wc_stc_dhl_format_label_state( $shipment->get_state(), $shipment->get_country() ), 0, 20 ),
+				'country'                       => wc_stc_country_to_alpha3( $shipment->get_country() ),
 				/**
 				 * Choose whether to transmit the full name of the shipment receiver as contactPerson
 				 * while creating a label.
@@ -328,9 +328,9 @@ class LabelRest extends PaketRest {
 				 * @param Label\DHL  $label The label instance.
 				 *
 				 * @since 3.0.5
-				 * @package Vendidero/Germanized/DHL
+				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'contactName'                   => apply_filters( 'woocommerce_gzd_dhl_label_api_communication_contact_person', $shipment->get_formatted_full_name(), $label ),
+				'contactName'                   => apply_filters( 'woocommerce_stc_dhl_label_api_communication_contact_person', $shipment->get_formatted_full_name(), $label ),
 				/**
 				 * Choose whether to transfer the phone number to DHL on creating a label.
 				 * By default the phone number is not transmitted.
@@ -339,9 +339,9 @@ class LabelRest extends PaketRest {
 				 * @param Label\DHL  $label The label instance.
 				 *
 				 * @since 3.0.3
-				 * @package Vendidero/Germanized/DHL
+				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'phone'                         => apply_filters( 'woocommerce_gzd_dhl_label_api_communication_phone', '', $label ),
+				'phone'                         => apply_filters( 'woocommerce_stc_dhl_label_api_communication_phone', '', $label ),
 				/**
 				 * Choose whether to transfer the email to DHL on creating a label.
 				 * By default the email is only transmitted if the customer opted in.
@@ -353,9 +353,9 @@ class LabelRest extends PaketRest {
 				 * @param Label\DHL  $label The label instance.
 				 *
 				 * @since 3.0.3
-				 * @package Vendidero/Germanized/DHL
+				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'email'                         => apply_filters( 'woocommerce_gzd_dhl_label_api_communication_email', $label->has_email_notification() || isset( $services['closestDropPoint'] ) ? $shipment->get_email() : '', $label ),
+				'email'                         => apply_filters( 'woocommerce_stc_dhl_label_api_communication_email', $label->has_email_notification() || isset( $services['closestDropPoint'] ) ? $shipment->get_email() : '', $label ),
 			);
 
 			/**
@@ -368,16 +368,16 @@ class LabelRest extends PaketRest {
 
 		if ( Package::is_crossborder_shipment( $shipment->get_country(), $shipment->get_postcode() ) ) {
 			if ( count( $shipment->get_items() ) > 30 ) {
-				throw new \Exception( esc_html( sprintf( _x( 'Only %1$s shipment items can be processed, your shipment has %2$s items.', 'dhl', 'woocommerce-germanized-dhl' ), 30, count( $shipment->get_items() ) ) ) );
+				throw new \Exception( esc_html( sprintf( _x( 'Only %1$s shipment items can be processed, your shipment has %2$s items.', 'dhl', 'dhl-for-shiptastic' ), 30, count( $shipment->get_items() ) ) ) );
 			}
 
-			$customs_label_data = wc_gzd_dhl_get_shipment_customs_data( $label );
+			$customs_label_data = wc_stc_dhl_get_shipment_customs_data( $label );
 			$customs_items      = array();
 
 			foreach ( $customs_label_data['items'] as $item_id => $item_data ) {
 				$customs_items[] = array(
 					'itemDescription'  => $item_data['description'],
-					'countryOfOrigin'  => wc_gzd_country_to_alpha3( $item_data['origin_code'] ),
+					'countryOfOrigin'  => wc_stc_country_to_alpha3( $item_data['origin_code'] ),
 					'hsCode'           => $item_data['tariff_number'],
 					'packagedQuantity' => $item_data['quantity'],
 					'itemValue'        => array(
@@ -406,7 +406,7 @@ class LabelRest extends PaketRest {
 					'value'    => $customs_label_data['additional_fee'],
 					'currency' => $customs_label_data['currency'],
 				),
-				'exportDescription'  => wc_gzd_shipments_substring( $customs_label_data['export_reason_description'], 0, 80 ),
+				'exportDescription'  => wc_shiptastic_substring( $customs_label_data['export_reason_description'], 0, 80 ),
 				'officeOfOrigin'     => $customs_label_data['place_of_commital'],
 				'items'              => $customs_items,
 				'exportType'         => strtoupper( $export_type ),
@@ -417,20 +417,20 @@ class LabelRest extends PaketRest {
 				 * @param Label\Label $label The label instance.
 				 *
 				 * @since 3.3.4
-				 * @package Vendidero/Germanized/DHL
+				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'invoiceNo'          => apply_filters( 'woocommerce_gzd_dhl_label_api_export_invoice_number', $customs_label_data['invoice_number'], $label ),
+				'invoiceNo'          => apply_filters( 'woocommerce_stc_dhl_label_api_export_invoice_number', $customs_label_data['invoice_number'], $label ),
 			);
 
 			if ( ! empty( $customs_label_data['export_reference_number'] ) ) {
 				$customs_data['hasElectronicExportNotification'] = true;
-				$customs_data['MRN']                             = wc_gzd_shipments_substring( preg_replace( '/[^A-Za-z0-9]/', '', $customs_label_data['export_reference_number'] ), 0, 18 );
+				$customs_data['MRN']                             = wc_shiptastic_substring( preg_replace( '/[^A-Za-z0-9]/', '', $customs_label_data['export_reference_number'] ), 0, 18 );
 			}
 
-			$shipment_request['customs'] = apply_filters( 'woocommerce_gzd_dhl_label_rest_api_customs_data', $customs_data, $label );
+			$shipment_request['customs'] = apply_filters( 'woocommerce_stc_dhl_label_rest_api_customs_data', $customs_data, $label );
 		}
 
-		$shipment_request = apply_filters( 'woocommerce_gzd_dhl_label_rest_api_create_label_request', $shipment_request, $label, $shipment, $this );
+		$shipment_request = apply_filters( 'woocommerce_stc_dhl_label_rest_api_create_label_request', $shipment_request, $label, $shipment, $this );
 		$shipment_request = $this->walk_recursive_remove( $shipment_request );
 
 		$request = array(
@@ -440,8 +440,8 @@ class LabelRest extends PaketRest {
 			),
 		);
 
-		$label_custom_format        = wc_gzd_dhl_get_custom_label_format( $label );
-		$label_custom_return_format = wc_gzd_dhl_get_custom_label_format( $label, 'inlay_return' );
+		$label_custom_format        = wc_stc_dhl_get_custom_label_format( $label );
+		$label_custom_return_format = wc_stc_dhl_get_custom_label_format( $label, 'inlay_return' );
 
 		$args = array(
 			'combine'    => 'true',
@@ -469,7 +469,7 @@ class LabelRest extends PaketRest {
 					$shipment_data = $body['items'][0];
 
 					if ( ! isset( $shipment_data['shipmentNo'] ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-						throw new \Exception( _x( 'There was an error generating the label. Please try again or consider switching to sandbox mode.', 'dhl', 'woocommerce-germanized-dhl' ) );
+						throw new \Exception( _x( 'There was an error generating the label. Please try again or consider switching to sandbox mode.', 'dhl', 'dhl-for-shiptastic' ) );
 					}
 
 					$label->set_number( $shipment_data['shipmentNo'] ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -543,11 +543,11 @@ class LabelRest extends PaketRest {
 				}
 
 				if ( in_array( 'AdditionalInsurance', $label->get_services(), true ) && $label->get_insurance_amount() <= 500 ) {
-					if ( ! is_a( $result, 'Vendidero\Germanized\Shipments\ShipmentError' ) ) {
+					if ( ! is_a( $result, 'Vendidero\Shiptastic\ShipmentError' ) ) {
 						$result = new ShipmentError();
 					}
 
-					$result->add_soft_error( 'label-soft-error', _x( 'You\'ve explicitly booked the additional insurance service resulting in additional fees although the value of goods does not exceed EUR 500. The label has been created anyway.', 'dhl', 'woocommerce-germanized-dhl' ) );
+					$result->add_soft_error( 'label-soft-error', _x( 'You\'ve explicitly booked the additional insurance service resulting in additional fees although the value of goods does not exceed EUR 500. The label has been created anyway.', 'dhl', 'dhl-for-shiptastic' ) );
 				}
 			} catch ( \Exception $e ) {
 				try {
@@ -556,7 +556,7 @@ class LabelRest extends PaketRest {
 				} catch ( \Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
 				}
 
-				throw new \Exception( esc_html_x( 'Error while creating and uploading the label', 'dhl', 'woocommerce-germanized-dhl' ) );
+				throw new \Exception( esc_html_x( 'Error while creating and uploading the label', 'dhl', 'dhl-for-shiptastic' ) );
 			}
 		}
 
@@ -642,9 +642,9 @@ class LabelRest extends PaketRest {
 		 * @param Label\Label  $label The label instance.
 		 *
 		 * @since 3.3.0
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_gzd_dhl_label_api_export_type', strtoupper( $export_type ), $label );
+		return apply_filters( 'woocommerce_stc_dhl_label_api_export_type', strtoupper( $export_type ), $label );
 	}
 
 	public function test_connection() {
@@ -656,7 +656,7 @@ class LabelRest extends PaketRest {
 				'shipments' => array(
 					array(
 						'product'       => 'V01PAK',
-						'billingNumber' => wc_gzd_dhl_get_billing_number(
+						'billingNumber' => wc_stc_dhl_get_billing_number(
 							'V01PAK',
 							array(
 								'api_type' => 'dhl.com',
@@ -691,16 +691,16 @@ class LabelRest extends PaketRest {
 
 		if ( $response->is_error() ) {
 			if ( 401 === $response->get_code() ) {
-				$error->add( 'unauthorized', _x( 'Your DHL API credentials seem to be invalid.', 'dhl', 'woocommerce-germanized-dhl' ) );
+				$error->add( 'unauthorized', _x( 'Your DHL API credentials seem to be invalid.', 'dhl', 'dhl-for-shiptastic' ) );
 			} elseif ( 400 !== $response->get_code() ) {
 				if ( $response->is_error() ) {
 					$error = $response->get_error();
 				} else {
-					$error->add( 'dhl-api-error', _x( 'Unknown DHL API error.', 'dhl', 'woocommerce-germanized-dhl' ) );
+					$error->add( 'dhl-api-error', _x( 'Unknown DHL API error.', 'dhl', 'dhl-for-shiptastic' ) );
 				}
 			}
 		}
 
-		return wc_gzd_shipment_wp_error_has_errors( $error ) ? $error : true;
+		return wc_stc_shipment_wp_error_has_errors( $error ) ? $error : true;
 	}
 }

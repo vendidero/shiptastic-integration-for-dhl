@@ -50,9 +50,9 @@ const DhlPreferredDaySelect = ({
     const costValue = parseInt( preferredDayCost, 10 );
 
     return (
-        <div className="wc-gzd-dhl-preferred-days">
+        <div className="wc-stc-dhl-preferred-days">
             <p className="wc-block-components-checkout-step__description">
-                { _x( 'Choose a delivery day', 'dhl', 'woocommerce-germanized-dhl' ) }
+                { _x( 'Choose a delivery day', 'dhl', 'dhl-for-shiptastic' ) }
 
                 { costValue > 0 &&
                     <span className="dhl-cost"> (+ <FormattedMonetaryAmount
@@ -62,7 +62,7 @@ const DhlPreferredDaySelect = ({
                     </span>
                 }
             </p>
-            <div className="wc-gzd-dhl-preferred-day-select">
+            <div className="wc-stc-dhl-preferred-day-select">
                 { preferredDays.map( ( preferred ) => {
                     const checked = preferredDay === preferred.date;
 
@@ -75,7 +75,7 @@ const DhlPreferredDaySelect = ({
                             } }
                             checked={ checked }
                             className={ classnames(
-                                `wc-gzd-dhl-preferred-day`,
+                                `wc-stc-dhl-preferred-day`,
                                 {
                                     active: checked
                                 }
@@ -107,13 +107,13 @@ const DhlPreferredLocation = ( props ) => {
 
     return (
         <>
-            { _x( 'Choose a weather-protected and non-visible place on your property, where we can deposit the parcel in your absence.', 'dhl', 'woocommerce-germanized-dhl' ) }
+            { _x( 'Choose a weather-protected and non-visible place on your property, where we can deposit the parcel in your absence.', 'dhl', 'dhl-for-shiptastic' ) }
 
             <ValidatedTextInput
                 key="dhl-location"
                 value={ location }
                 id="dhl-location"
-                label={ _x( "e.g. Garage, Terrace", 'dhl', 'woocommerce-germanized-dhl' ) }
+                label={ _x( "e.g. Garage, Terrace", 'dhl', 'dhl-for-shiptastic' ) }
                 name="dhl_location"
                 required={ true }
                 maxLength="80"
@@ -136,13 +136,13 @@ const DhlPreferredNeighbor = ( props ) => {
 
     return (
         <>
-            { _x( 'Determine a person in your immediate neighborhood whom we can hand out your parcel in your absence. This person should live in the same building, directly opposite or next door.', 'dhl', 'woocommerce-germanized-dhl' ) }
+            { _x( 'Determine a person in your immediate neighborhood whom we can hand out your parcel in your absence. This person should live in the same building, directly opposite or next door.', 'dhl', 'dhl-for-shiptastic' ) }
 
             <ValidatedTextInput
                 key="dhl-preferred-neighbor-name"
                 value={ neighborName }
                 id="dhl-preferred-neighbor-name"
-                label={ _x( "First name, last name of neighbor", 'dhl', 'woocommerce-germanized-dhl' ) }
+                label={ _x( "First name, last name of neighbor", 'dhl', 'dhl-for-shiptastic' ) }
                 required={ true }
                 maxLength="25"
                 onChange={ ( newValue ) => {
@@ -155,7 +155,7 @@ const DhlPreferredNeighbor = ( props ) => {
                 id="dhl-preferred-neighbor-address"
                 required={ true }
                 maxLength="55"
-                label={ _x( "Street, number, postal code, city", 'dhl', 'woocommerce-germanized-dhl' ) }
+                label={ _x( "Street, number, postal code, city", 'dhl', 'dhl-for-shiptastic' ) }
                 onChange={ ( newValue ) => {
                     setPreferredOption( 'preferred_location_neighbor_address', newValue );
                 } }
@@ -178,13 +178,13 @@ const DhlPreferredLocationSelect = ( props ) => {
     const options = [
         {
             value: '',
-            label: _x( 'None', 'dhl location context', 'woocommerce-germanized-dhl' ),
+            label: _x( 'None', 'dhl location context', 'dhl-for-shiptastic' ),
             content: '',
         },
         preferredLocationEnabled ?
         {
             value: 'place',
-            label: _x( 'Drop-off location', 'dhl', 'woocommerce-germanized-dhl' ),
+            label: _x( 'Drop-off location', 'dhl', 'dhl-for-shiptastic' ),
             content: (
                 <DhlPreferredLocation { ...props } />
             ),
@@ -192,7 +192,7 @@ const DhlPreferredLocationSelect = ( props ) => {
         preferredNeighborEnabled ?
         {
             value: 'neighbor',
-            label: _x( 'Neighbor', 'dhl', 'woocommerce-germanized-dhl' ),
+            label: _x( 'Neighbor', 'dhl', 'dhl-for-shiptastic' ),
             content: (
                 <DhlPreferredNeighbor { ...props } />
             ),
@@ -200,10 +200,10 @@ const DhlPreferredLocationSelect = ( props ) => {
     ].filter( value => Object.keys( value ).length !== 0 );
 
     return (
-        <div className="wc-gzd-dhl-preferred-location">
-            <p className="wc-block-components-checkout-step__description">{ _x( 'Choose a preferred location', 'dhl', 'woocommerce-germanized-dhl' ) }</p>
+        <div className="wc-stc-dhl-preferred-location">
+            <p className="wc-block-components-checkout-step__description">{ _x( 'Choose a preferred location', 'dhl', 'dhl-for-shiptastic' ) }</p>
             <RadioControlAccordion
-                id={ 'wc-gzd-dhl-preferred-location-options' }
+                id={ 'wc-stc-dhl-preferred-location-options' }
                 selected={ preferredLocationType }
                 onChange={ ( value ) => {
                     setPreferredOption( 'preferred_location_type', value );
@@ -224,9 +224,9 @@ const DhlCdpOptions = (
     const options = [
         {
             value: 'cdp',
-            label: _x( 'Shop', 'dhl', 'woocommerce-germanized-dhl' ),
+            label: _x( 'Shop', 'dhl', 'dhl-for-shiptastic' ),
             content: (
-                _x( 'Delivery to nearby parcel store/locker or to the front door.', 'dhl', 'woocommerce-germanized-dhl' )
+                _x( 'Delivery to nearby parcel store/locker or to the front door.', 'dhl', 'dhl-for-shiptastic' )
             ),
             secondaryLabel: costValue > 0 ? (
                 <FormattedMonetaryAmount
@@ -237,9 +237,9 @@ const DhlCdpOptions = (
         },
         {
             value: 'home',
-            label: _x( 'Home Delivery', 'dhl', 'woocommerce-germanized-dhl' ),
+            label: _x( 'Home Delivery', 'dhl', 'dhl-for-shiptastic' ),
             content: (
-                _x( 'Delivery usually to the front door.', 'dhl', 'woocommerce-germanized-dhl' )
+                _x( 'Delivery usually to the front door.', 'dhl', 'dhl-for-shiptastic' )
             ),
             secondaryLabel: costValue > 0 ? (
                 <FormattedMonetaryAmount
@@ -251,11 +251,11 @@ const DhlCdpOptions = (
     ];
 
     return (
-        <div className="wc-gzd-dhl-preferred-delivery">
-            <p className="wc-block-components-checkout-step__description">{ _x( 'Choose a delivery type', 'dhl', 'woocommerce-germanized-dhl' ) }</p>
+        <div className="wc-stc-dhl-preferred-delivery">
+            <p className="wc-block-components-checkout-step__description">{ _x( 'Choose a delivery type', 'dhl', 'dhl-for-shiptastic' ) }</p>
 
             <RadioControlAccordion
-                id={ 'wc-gzd-dhl-preferred-delivery-types' }
+                id={ 'wc-stc-dhl-preferred-delivery-types' }
                 selected={ preferredDeliveryType }
                 onChange={ ( value ) => {
                     setPreferredOption( 'preferred_delivery_type', value );
@@ -288,9 +288,9 @@ const DhlPreferredWrapper = ({
     children
 }) => {
     return (
-        <div className="wc-gzd-checkout-dhl">
-            <h4 className="wc-gzd-checkout-dhl-title">
-                <span className="dhl-title">{ _x( 'DHL Preferred Delivery. Delivered just as you wish.', 'dhl', 'woocommerce-germanized-dhl' ) }</span>
+        <div className="wc-stc-checkout-dhl">
+            <h4 className="wc-stc-checkout-dhl-title">
+                <span className="dhl-title">{ _x( 'DHL Preferred Delivery. Delivered just as you wish.', 'dhl', 'dhl-for-shiptastic' ) }</span>
                 <SVG className="dhl-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 175.748 38.786">
                     <path d="M175.748 0v38.786H0V0z" fill="#fecc00"/>
                     <path d="M56.665 16.206c-.768 1.04-2.053 2.848-2.835 3.904-.397.537-1.114 1.512 1.263 1.512h12.515s2.017-2.744 3.708-5.039c2.3-3.122.199-9.618-8.024-9.618H30.908l-5.615 7.629h30.603c1.545 0 1.524.588.769 1.612zm-9.194 7.298c-2.377 0-1.66-.977-1.263-1.514.782-1.056 2.088-2.845 2.856-3.885.756-1.024.776-1.612-.771-1.612H34.297L23.02 31.819h27.501c9.083 0 14.14-6.178 15.699-8.314l-18.749-.001zm17.89 8.315h16.133l6.116-8.316-16.131.002c-.005-.001-6.118 8.314-6.118 8.314zm41.625-24.854l-6.188 8.405h-7.2l6.185-8.405H83.655l-10.79 14.657h39.46l10.787-14.657zM88.694 31.819h16.127l6.119-8.314H94.813c-.006-.001-6.119 8.314-6.119 8.314zM0 26.784v1.766h22.468l1.298-1.766zm26.181-3.28H0v1.764h24.88zM0 31.819h20.061l1.292-1.756H0zm152.072-3.27h23.676v-1.766h-22.376zm-2.405 3.27h26.081v-1.756h-24.79zm6.116-8.315l-1.297 1.766h21.262v-1.766zm-21.124-1.882l10.789-14.657h-17.081c-.006 0-10.797 14.657-10.797 14.657zm-18.472 1.882s-1.179 1.611-1.752 2.387c-2.025 2.736-.234 5.928 6.376 5.928h25.901l6.119-8.314h-36.644z" fill="#d50029"/>
@@ -524,7 +524,7 @@ const DhlPreferredDeliveryOptions = ({
     }
 
     return (
-        <div className="wc-gzd-shipping-provider-options">
+        <div className="wc-stc-shipping-provider-options">
             <DhlPreferredWrapper>
                 { preferredOptionsAvailable &&
                     <DhlPreferredOptions

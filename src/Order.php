@@ -1,6 +1,6 @@
 <?php
 
-namespace Vendidero\Germanized\DHL;
+namespace Vendidero\Shiptastic\DHL;
 
 use Exception;
 use WC_Order;
@@ -12,7 +12,6 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Shipment Order
  *
- * @class       WC_GZD_Shipment_Order
  * @version     1.0.0
  * @author      Vendidero
  */
@@ -168,14 +167,14 @@ class Order {
 		 * @param Order   $order The order instance.
 		 *
 		 * @since 3.1.6
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_gzd_dhl_order_supports_email_notification', wc_gzd_get_shipment_order( $this->get_order() )->supports_third_party_email_transmission(), $this );
+		return apply_filters( 'woocommerce_stc_dhl_order_supports_email_notification', wc_stc_get_shipment_order( $this->get_order() )->supports_third_party_email_transmission(), $this );
 	}
 
 	public function get_min_age() {
-		$min_age = function_exists( 'wc_gzd_get_order_min_age' ) ? wc_gzd_get_order_min_age( $this->get_order() ) : '';
-		$ages    = wc_gzd_dhl_get_visual_min_ages();
+		$min_age = apply_filters( 'woocommerce_stc_dhl_order_min_age', '', $this->get_order() );
+		$ages    = wc_stc_dhl_get_visual_min_ages();
 
 		if ( empty( $min_age ) || ! array_key_exists( 'A' . $min_age, $ages ) ) {
 			$min_age = '';
@@ -201,9 +200,9 @@ class Order {
 		 * @param Order   $order The order instance.
 		 *
 		 * @since 3.0.0
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_gzd_dhl_order_needs_age_verificaton', $needs_verification, $this );
+		return apply_filters( 'woocommerce_stc_dhl_order_needs_age_verificaton', $needs_verification, $this );
 	}
 
 	public function has_cod_payment() {
@@ -220,9 +219,9 @@ class Order {
 		 * @param Order $order The order instance.
 		 *
 		 * @since 3.0.0
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_gzd_dhl_order_has_cod_payment', $result, $this );
+		return apply_filters( 'woocommerce_stc_dhl_order_has_cod_payment', $result, $this );
 	}
 
 	public function get_date_of_birth() {
@@ -294,7 +293,7 @@ class Order {
 		$end   = $this->get_preferred_time_end();
 
 		if ( $start && $end ) {
-			return sprintf( _x( '%1$s-%2$s', 'dhl time-span', 'woocommerce-germanized-dhl' ), $start->date( 'H' ), $end->date( 'H' ) );
+			return sprintf( _x( '%1$s-%2$s', 'dhl time-span', 'dhl-for-shiptastic' ), $start->date( 'H' ), $end->date( 'H' ) );
 		}
 
 		return null;

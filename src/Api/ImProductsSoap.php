@@ -1,8 +1,8 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
-use Vendidero\Germanized\DHL\Package;
+use Vendidero\Shiptastic\DHL\Package;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -4,7 +4,6 @@
  *
  * Returns an array of holidays.
  *
- * @package WooCommerceGermanizedDHL/i18n
  * @version 1.0.0
  */
 defined( 'ABSPATH' ) || exit;

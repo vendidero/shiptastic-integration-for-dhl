@@ -4,9 +4,9 @@
  *
  * @package WooCommerce/Blocks
  */
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
-use Vendidero\Germanized\DHL\Package;
+use Vendidero\Shiptastic\DHL\Package;
 use Exception;
 
 defined( 'ABSPATH' ) || exit;
@@ -101,20 +101,20 @@ abstract class Rest {
 				break;
 			case 400:
 				$error_message = str_replace( '/', ' / ', isset( $response_body->statusText ) ? $response_body->statusText : '' ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-				throw new Exception( esc_html( _x( '400 - ', 'dhl', 'woocommerce-germanized-dhl' ) . $error_message ), esc_html( $response_code ) );
+				throw new Exception( esc_html( _x( '400 - ', 'dhl', 'dhl-for-shiptastic' ) . $error_message ), esc_html( $response_code ) );
 			case 401:
-				throw new Exception( esc_html_x( '401 - Unauthorized Access - Invalid token or Authentication Header parameter', 'dhl', 'woocommerce-germanized-dhl' ), esc_html( $response_code ) );
+				throw new Exception( esc_html_x( '401 - Unauthorized Access - Invalid token or Authentication Header parameter', 'dhl', 'dhl-for-shiptastic' ), esc_html( $response_code ) );
 			case 408:
-				throw new Exception( esc_html_x( '408 - Request Timeout', 'dhl', 'woocommerce-germanized-dhl' ), esc_html( $response_code ) );
+				throw new Exception( esc_html_x( '408 - Request Timeout', 'dhl', 'dhl-for-shiptastic' ), esc_html( $response_code ) );
 			case 429:
-				throw new Exception( esc_html_x( '429 - Too many requests in given amount of time', 'dhl', 'woocommerce-germanized-dhl' ), esc_html( $response_code ) );
+				throw new Exception( esc_html_x( '429 - Too many requests in given amount of time', 'dhl', 'dhl-for-shiptastic' ), esc_html( $response_code ) );
 			case 503:
-				throw new Exception( esc_html_x( '503 - Service Unavailable', 'dhl', 'woocommerce-germanized-dhl' ), esc_html( $response_code ) );
+				throw new Exception( esc_html_x( '503 - Service Unavailable', 'dhl', 'dhl-for-shiptastic' ), esc_html( $response_code ) );
 			default:
 				$response_code = empty( $response_code ) ? 404 : $response_code;
 
 				if ( empty( $response_body->statusText ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-					$error_message = _x( 'GET error or timeout occured. Please try again later.', 'dhl', 'woocommerce-germanized-dhl' );
+					$error_message = _x( 'GET error or timeout occured. Please try again later.', 'dhl', 'dhl-for-shiptastic' );
 				} else {
 					$error_message = str_replace( '/', ' / ', $response_body->statusText ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				}
@@ -197,7 +197,7 @@ abstract class Rest {
 				break;
 			default:
 				if ( empty( $response_body->detail ) ) {
-					$error_message = _x( 'POST error or timeout occured. Please try again later.', 'dhl', 'woocommerce-germanized-dhl' );
+					$error_message = _x( 'POST error or timeout occured. Please try again later.', 'dhl', 'dhl-for-shiptastic' );
 				} else {
 					$error_message = $response_body->detail;
 				}
@@ -219,7 +219,7 @@ abstract class Rest {
 		$dhl_header['Content-Type']  = 'application/json';
 		$dhl_header['Accept']        = 'application/json';
 		$dhl_header['Authorization'] = 'Bearer ' . $authorization;
-		$dhl_header['User-Agent']    = 'WooCommerce/' . $wc_version . ' (WordPress/' . $wp_version . ') Germanized-DHL/' . Package::get_version();
+		$dhl_header['User-Agent']    = 'WooCommerce/' . $wc_version . ' (WordPress/' . $wp_version . ') Shiptastic-DHL/' . Package::get_version();
 
 		$this->remote_header = $dhl_header;
 	}

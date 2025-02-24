@@ -1,6 +1,6 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
 class ImPartnerInformation extends \baltpeter\Internetmarke\PartnerInformation {
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Admin\Importer;
+namespace Vendidero\Shiptastic\DHL\Admin\Importer;
 
-use Vendidero\Germanized\DHL\Package;
+use Vendidero\Shiptastic\DHL\Package;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -13,7 +13,7 @@ class Internetmarke {
 
 	public static function is_available() {
 		$options  = get_option( '_wcdpi_settings_general' );
-		$imported = get_option( 'woocommerce_gzd_internetmarke_import_finished' );
+		$imported = get_option( 'woocommerce_stc_internetmarke_import_finished' );
 		$user     = '';
 
 		if ( $deutsche_post = Package::get_deutsche_post_shipping_provider() ) {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
 use Exception;
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\DHL\ParcelLocator;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\DHL\ParcelLocator;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,7 +26,7 @@ class LocationFinder extends Rest {
 		if ( $this->is_debug_mode() ) {
 			return 'demo-key';
 		} else {
-			return defined( 'WC_GZD_DHL_LOCATION_FINDER_API_KEY' ) ? WC_GZD_DHL_LOCATION_FINDER_API_KEY : Package::get_dhl_com_api_key();
+			return defined( 'WC_STC_DHL_LOCATION_FINDER_API_KEY' ) ? WC_STC_DHL_LOCATION_FINDER_API_KEY : Package::get_dhl_com_api_key();
 		}
 	}
 
@@ -74,7 +74,7 @@ class LocationFinder extends Rest {
 			$result->gzd_type = $api_types[ $result->location->type ];
 		}
 
-		$result->gzd_name = sprintf( _x( '%1$s %2$s', 'dhl location name', 'woocommerce-germanized-dhl' ), wc_clean( $result->location->keyword ), wc_clean( $result->location->keywordId ) );
+		$result->gzd_name = sprintf( _x( '%1$s %2$s', 'dhl location name', 'dhl-for-shiptastic' ), wc_clean( $result->location->keyword ), wc_clean( $result->location->keywordId ) );
 	}
 
 	/**
@@ -128,7 +128,7 @@ class LocationFinder extends Rest {
 		$limit = is_numeric( $limit ) ? $limit : ParcelLocator::get_max_results();
 
 		if ( empty( $address['city'] ) && empty( $address['zip'] ) ) {
-			throw new Exception( esc_html_x( 'At least shipping city or zip is required.', 'dhl', 'woocommerce-germanized-dhl' ) );
+			throw new Exception( esc_html_x( 'At least shipping city or zip is required.', 'dhl', 'dhl-for-shiptastic' ) );
 		}
 
 		$args = array(

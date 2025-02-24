@@ -1,9 +1,9 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\ShippingProvider\Services;
+namespace Vendidero\Shiptastic\DHL\ShippingProvider\Services;
 
-use Vendidero\Germanized\Shipments\ShipmentError;
-use Vendidero\Germanized\Shipments\ShippingProvider\Service;
+use Vendidero\Shiptastic\ShipmentError;
+use Vendidero\Shiptastic\ShippingProvider\Service;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -12,9 +12,9 @@ class PreferredNeighbour extends Service {
 	public function __construct( $shipping_provider, $args = array() ) {
 		$args = array(
 			'id'                 => 'PreferredNeighbour',
-			'label'              => _x( 'Neighbor', 'dhl', 'woocommerce-germanized-dhl' ),
-			'description'        => _x( 'Enable delivery to a neighbor.', 'dhl', 'woocommerce-germanized-dhl' ),
-			'long_description'   => '<div class="wc-gzd-shipments-additional-desc">' . _x( 'Enabling this option will display options for the user to deliver to their preferred neighbor during the checkout.', 'dhl', 'woocommerce-germanized-dhl' ) . '</div>',
+			'label'              => _x( 'Neighbor', 'dhl', 'dhl-for-shiptastic' ),
+			'description'        => _x( 'Enable delivery to a neighbor.', 'dhl', 'dhl-for-shiptastic' ),
+			'long_description'   => '<div class="wc-shiptastic-additional-desc ">' . _x( 'Enabling this option will display options for the user to deliver to their preferred neighbor during the checkout.', 'dhl', 'dhl-for-shiptastic' ) . '</div>',
 			'setting_id'         => 'PreferredNeighbour_enable',
 			'products'           => array( 'V01PAK', 'V62WP', 'V62KP' ),
 			'countries'          => array( 'DE' ),
@@ -27,7 +27,7 @@ class PreferredNeighbour extends Service {
 
 	protected function get_additional_label_fields( $shipment ) {
 		$label_fields = parent::get_additional_label_fields( $shipment );
-		$dhl_order    = wc_gzd_dhl_get_order( $shipment->get_order() );
+		$dhl_order    = wc_stc_dhl_get_order( $shipment->get_order() );
 		$value        = '';
 
 		if ( $dhl_order && $dhl_order->has_preferred_neighbor() ) {
@@ -39,7 +39,7 @@ class PreferredNeighbour extends Service {
 			array(
 				array(
 					'id'                => $this->get_label_field_id( 'neighbor' ),
-					'label'             => _x( 'Neighbor', 'dhl', 'woocommerce-germanized-dhl' ),
+					'label'             => _x( 'Neighbor', 'dhl', 'dhl-for-shiptastic' ),
 					'placeholder'       => '',
 					'description'       => '',
 					'value'             => $value,
@@ -60,7 +60,7 @@ class PreferredNeighbour extends Service {
 		$book_as_default = parent::book_as_default( $shipment );
 
 		if ( false === $book_as_default ) {
-			$dhl_order = wc_gzd_dhl_get_order( $shipment->get_order() );
+			$dhl_order = wc_stc_dhl_get_order( $shipment->get_order() );
 
 			if ( $dhl_order && $dhl_order->has_preferred_neighbor() ) {
 				$book_as_default = true;

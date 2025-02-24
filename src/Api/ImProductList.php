@@ -1,10 +1,10 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\Shipments\ShippingProvider\Product;
-use Vendidero\Germanized\Shipments\ShippingProvider\ProductList;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\ShippingProvider\Product;
+use Vendidero\Shiptastic\ShippingProvider\ProductList;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -167,7 +167,7 @@ class ImProductList {
 	/**
 	 * @param $product_code
 	 *
-	 * @return false|\Vendidero\Germanized\Shipments\ShippingProvider\Product
+	 * @return false|\Vendidero\Shiptastic\ShippingProvider\Product
 	 */
 	public function get_product_data_by_code( $product_code ) {
 		if ( is_null( $product_code ) ) {
@@ -236,16 +236,16 @@ class ImProductList {
 
 	public function get_additional_services() {
 		return array(
-			'PRIO' => _x( 'PRIO', 'dhl', 'woocommerce-germanized-dhl' ),
-			'ESEW' => _x( 'Einschreiben (Einwurf)', 'dhl', 'woocommerce-germanized-dhl' ),
-			'ESCH' => _x( 'Einschreiben', 'dhl', 'woocommerce-germanized-dhl' ),
-			'ESEH' => _x( 'Einschreiben (Eigenhändig)', 'dhl', 'woocommerce-germanized-dhl' ),
-			'AS16' => _x( 'Alterssichtprüfung 16', 'dhl', 'woocommerce-germanized-dhl' ),
-			'AS18' => _x( 'Alterssichtprüfung 18', 'dhl', 'woocommerce-germanized-dhl' ),
-			'ZMBF' => _x( 'Zusatzentgelt MBf', 'dhl', 'woocommerce-germanized-dhl' ),
-			'USFT' => _x( 'Unterschrift', 'dhl', 'woocommerce-germanized-dhl' ),
-			'TRCK' => _x( 'Tracked', 'dhl', 'woocommerce-germanized-dhl' ),
-			'RCKS' => _x( 'Rückschein', 'dhl', 'woocommerce-germanized-dhl' ),
+			'PRIO' => _x( 'PRIO', 'dhl', 'dhl-for-shiptastic' ),
+			'ESEW' => _x( 'Einschreiben (Einwurf)', 'dhl', 'dhl-for-shiptastic' ),
+			'ESCH' => _x( 'Einschreiben', 'dhl', 'dhl-for-shiptastic' ),
+			'ESEH' => _x( 'Einschreiben (Eigenhändig)', 'dhl', 'dhl-for-shiptastic' ),
+			'AS16' => _x( 'Alterssichtprüfung 16', 'dhl', 'dhl-for-shiptastic' ),
+			'AS18' => _x( 'Alterssichtprüfung 18', 'dhl', 'dhl-for-shiptastic' ),
+			'ZMBF' => _x( 'Zusatzentgelt MBf', 'dhl', 'dhl-for-shiptastic' ),
+			'USFT' => _x( 'Unterschrift', 'dhl', 'dhl-for-shiptastic' ),
+			'TRCK' => _x( 'Tracked', 'dhl', 'dhl-for-shiptastic' ),
+			'RCKS' => _x( 'Rückschein', 'dhl', 'dhl-for-shiptastic' ),
 		);
 	}
 
@@ -340,7 +340,7 @@ class ImProductList {
 				if ( isset( $response->message ) ) {
 					throw new \Exception( wc_clean( $response->message ) );
 				} else {
-					throw new \Exception( _x( 'No Internetmarke product data found.', 'dhl', 'woocommerce-germanized-dhl' ) );
+					throw new \Exception( _x( 'No Internetmarke product data found.', 'dhl', 'dhl-for-shiptastic' ) );
 				}
 			}
 
@@ -374,7 +374,6 @@ class ImProductList {
 						'product_destination'      => $extended_identifier->destination,
 						'product_price'            => property_exists( $product->priceDefinition, 'price' ) ? Package::eur_to_cents( $product->priceDefinition->price->calculatedGrossPrice->value ) : Package::eur_to_cents( $product->priceDefinition->grossPrice->value ), // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 						'product_information_text' => property_exists( $product, 'stampTypeList' ) ? $this->get_information_text( (array) $product->stampTypeList->stampType ) : '', // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-						'product_is_wp_int'        => false,
 					);
 
 					$product_slug = $this->sanitize_product_slug( $to_insert['product_name'] );
@@ -463,6 +462,6 @@ class ImProductList {
 			$result->add( 'soap', $e->getMessage() );
 		}
 
-		return wc_gzd_dhl_wp_error_has_errors( $result ) ? $result : true;
+		return wc_stc_shipment_wp_error_has_errors( $result ) ? $result : true;
 	}
 }

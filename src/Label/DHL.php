@@ -1,9 +1,9 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Label;
+namespace Vendidero\Shiptastic\DHL\Label;
 
-use Vendidero\Germanized\DHL\Order;
-use Vendidero\Germanized\DHL\Package;
+use Vendidero\Shiptastic\DHL\Order;
+use Vendidero\Shiptastic\DHL\Package;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -80,7 +80,7 @@ class DHL extends Label {
 	}
 
 	public function get_return_formatted_full_name() {
-		return sprintf( _x( '%1$s', 'dhl full name', 'woocommerce-germanized-dhl' ), $this->get_return_name() ); // phpcs:ignore WordPress.WP.I18n.NoEmptyStrings
+		return sprintf( _x( '%1$s', 'dhl full name', 'dhl-for-shiptastic' ), $this->get_return_name() ); // phpcs:ignore WordPress.WP.I18n.NoEmptyStrings
 	}
 
 	public function get_return_postcode( $context = 'view' ) {
@@ -257,7 +257,7 @@ class DHL extends Label {
 	public function get_inlay_return_label() {
 		$children = $this->get_children();
 
-		if ( ! empty( $children ) && is_a( $children[0], '\Vendidero\Germanized\DHL\Label\DHLInlayReturn' ) ) {
+		if ( ! empty( $children ) && is_a( $children[0], '\Vendidero\Shiptastic\DHL\Label\DHLInlayReturn' ) ) {
 			return $children[0];
 		}
 
@@ -307,7 +307,7 @@ class DHL extends Label {
 			}
 		}
 
-		if ( wc_gzd_dhl_wp_error_has_errors( $result ) ) {
+		if ( wc_stc_shipment_wp_error_has_errors( $result ) ) {
 			return $result;
 		} else {
 			return true;

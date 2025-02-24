@@ -1,7 +1,7 @@
 {
-  "name": "vendidero/woocommerce-germanized-dhl",
-  "description": "The Germanized DHL implementation.",
-  "homepage": "https://github.com/vendidero/woocommerce-germanized-dhl",
+  "name": "vendidero/dhl-for-shiptastic",
+  "description": "DHL & Deutsche Post integration for Shiptastic",
+  "homepage": "https://github.com/vendidero/dhl-for-shiptastic",
   "license": "GPL-3.0-or-later",
   "type": "wordpress-plugin",
   "version": "dev-main",
@@ -46,7 +46,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Vendidero\\Germanized\\DHL\\": "src"
+      "Vendidero\\Shiptastic\\DHL\\": "src"
     }
   }
 }

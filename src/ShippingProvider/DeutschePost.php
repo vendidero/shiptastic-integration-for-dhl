@@ -4,14 +4,14 @@
  *
  * @package WooCommerce/Blocks
  */
-namespace Vendidero\Germanized\DHL\ShippingProvider;
+namespace Vendidero\Shiptastic\DHL\ShippingProvider;
 
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\Shipments\Shipment;
-use Vendidero\Germanized\Shipments\ShippingProvider\Auto;
-use Vendidero\Germanized\Shipments\ShippingProvider\Product;
-use Vendidero\Germanized\Shipments\ShippingProvider\ProductList;
-use Vendidero\Germanized\Shipments\ShippingProvider\ServiceList;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\Shipment;
+use Vendidero\Shiptastic\ShippingProvider\Auto;
+use Vendidero\Shiptastic\ShippingProvider\Product;
+use Vendidero\Shiptastic\ShippingProvider\ProductList;
+use Vendidero\Shiptastic\ShippingProvider\ServiceList;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -37,9 +37,9 @@ class DeutschePost extends Auto {
 
 	public function get_label_classname( $type ) {
 		if ( 'return' === $type ) {
-			return '\Vendidero\Germanized\DHL\Label\DeutschePostReturn';
+			return '\Vendidero\Shiptastic\DHL\Label\DeutschePostReturn';
 		} else {
-			return '\Vendidero\Germanized\DHL\Label\DeutschePost';
+			return '\Vendidero\Shiptastic\DHL\Label\DeutschePost';
 		}
 	}
 
@@ -77,7 +77,7 @@ class DeutschePost extends Auto {
 	}
 
 	public function get_title( $context = 'view' ) {
-		return _x( 'Deutsche Post', 'dhl', 'woocommerce-germanized-dhl' );
+		return _x( 'Deutsche Post', 'dhl', 'dhl-for-shiptastic' );
 	}
 
 	public function get_name( $context = 'view' ) {
@@ -85,7 +85,7 @@ class DeutschePost extends Auto {
 	}
 
 	public function get_description( $context = 'view' ) {
-		return _x( 'Integration for products of the Deutsche Post through Internetmarke.', 'dhl', 'woocommerce-germanized-dhl' );
+		return _x( 'Integration for products of the Deutsche Post through Internetmarke.', 'dhl', 'dhl-for-shiptastic' );
 	}
 
 	public function get_default_tracking_url_placeholder() {
@@ -105,7 +105,7 @@ class DeutschePost extends Auto {
 	}
 
 	protected function get_connection_status_html( $maybe_error ) {
-		return '<span class="wc-gzd-shipment-api-connection-status ' . ( is_wp_error( $maybe_error ) ? 'connection-status-error' : 'connection-status-success' ) . '">' . ( sprintf( _x( 'Status: %1$s', 'dhl', 'woocommerce-germanized-dhl' ), ( is_wp_error( $maybe_error ) ? $maybe_error->get_error_message() : _x( 'Connected', 'dhl', 'woocommerce-germanized-dhl' ) ) ) ) . '</span>';
+		return '<span class="wc-stc-shipment-api-connection-status ' . ( is_wp_error( $maybe_error ) ? 'connection-status-error' : 'connection-status-success' ) . '">' . ( sprintf( _x( 'Status: %1$s', 'dhl', 'dhl-for-shiptastic' ), ( is_wp_error( $maybe_error ) ? $maybe_error->get_error_message() : _x( 'Connected', 'dhl', 'dhl-for-shiptastic' ) ) ) ) . '</span>';
 	}
 
 	protected function get_printing_settings() {
@@ -115,15 +115,15 @@ class DeutschePost extends Auto {
 		$settings = array_merge(
 			array(
 				array(
-					'title' => _x( 'Printing', 'dhl', 'woocommerce-germanized-dhl' ),
+					'title' => _x( 'Printing', 'dhl', 'dhl-for-shiptastic' ),
 					'type'  => 'title',
 					'id'    => 'shipping_provider_label_printing_options',
-					'desc'  => '<div class="wc-gzd-shipments-additional-desc">' . sprintf( _x( 'Choose a print format which will be selected by default when creating labels. Manually <a href="%s">refresh</a> available print formats to make sure the list is up-to-date.', 'dhl', 'woocommerce-germanized-dhl' ), esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'wc-gzd-dhl-im-page-formats-refresh' ), $settings_url ), 'wc-gzd-dhl-refresh-im-page-formats' ) ) ) . '</div>',
+					'desc'  => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Choose a print format which will be selected by default when creating labels. Manually <a href="%s">refresh</a> available print formats to make sure the list is up-to-date.', 'dhl', 'dhl-for-shiptastic' ), esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'wc-stc-dhl-im-page-formats-refresh' ), $settings_url ), 'wc-stc-dhl-refresh-im-page-formats' ) ) ) . '</div>',
 				),
 				array(
-					'title'             => _x( 'Print X-axis column', 'dhl', 'woocommerce-germanized-dhl' ),
+					'title'             => _x( 'Print X-axis column', 'dhl', 'dhl-for-shiptastic' ),
 					'id'                => 'label_position_x',
-					'desc_tip'          => _x( 'Adjust the print X-axis start column for the label.', 'dhl', 'woocommerce-germanized-dhl' ),
+					'desc_tip'          => _x( 'Adjust the print X-axis start column for the label.', 'dhl', 'dhl-for-shiptastic' ),
 					'type'              => 'number',
 					'value'             => $this->get_setting( 'label_position_x', 1 ),
 					'custom_attributes' => array(
@@ -134,9 +134,9 @@ class DeutschePost extends Auto {
 					'default'           => 1,
 				),
 				array(
-					'title'             => _x( 'Print Y-axis column', 'dhl', 'woocommerce-germanized-dhl' ),
+					'title'             => _x( 'Print Y-axis column', 'dhl', 'dhl-for-shiptastic' ),
 					'id'                => 'label_position_y',
-					'desc_tip'          => _x( 'Adjust the print Y-axis start column for the label.', 'dhl', 'woocommerce-germanized-dhl' ),
+					'desc_tip'          => _x( 'Adjust the print Y-axis start column for the label.', 'dhl', 'dhl-for-shiptastic' ),
 					'type'              => 'number',
 					'value'             => $this->get_setting( 'label_position_y', 1 ),
 					'custom_attributes' => array(
@@ -176,9 +176,9 @@ class DeutschePost extends Auto {
 			),
 
 			array(
-				'title'             => _x( 'Username', 'dhl', 'woocommerce-germanized-dhl' ),
+				'title'             => _x( 'Username', 'dhl', 'dhl-for-shiptastic' ),
 				'type'              => 'text',
-				'desc'              => '<div class="wc-gzd-shipments-additional-desc">' . sprintf( _x( 'Your credentials to the <a href="%s" target="_blank">Portokasse</a>. Please test your credentials before connecting.', 'dhl', 'woocommerce-germanized-dhl' ), 'https://portokasse.deutschepost.de/portokasse/#!/' ) . '</div>',
+				'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Your credentials to the <a href="%s" target="_blank">Portokasse</a>. Please test your credentials before connecting.', 'dhl', 'dhl-for-shiptastic' ), 'https://portokasse.deutschepost.de/portokasse/#!/' ) . '</div>',
 				'id'                => 'api_username',
 				'default'           => '',
 				'value'             => $this->get_setting( 'api_username', '' ),
@@ -186,7 +186,7 @@ class DeutschePost extends Auto {
 			),
 
 			array(
-				'title'             => _x( 'Password', 'dhl', 'woocommerce-germanized-dhl' ),
+				'title'             => _x( 'Password', 'dhl', 'dhl-for-shiptastic' ),
 				'type'              => 'password',
 				'id'                => 'api_password',
 				'default'           => '',
@@ -214,18 +214,18 @@ class DeutschePost extends Auto {
 							$settings,
 							array(
 								array(
-									'title' => _x( 'Portokasse', 'dhl', 'woocommerce-germanized-dhl' ),
+									'title' => _x( 'Portokasse', 'dhl', 'dhl-for-shiptastic' ),
 									'type'  => 'title',
 									'id'    => 'deutsche_post_portokasse_options',
 								),
 								array(
-									'title' => _x( 'Balance', 'dhl', 'woocommerce-germanized-dhl' ),
+									'title' => _x( 'Balance', 'dhl', 'dhl-for-shiptastic' ),
 									'type'  => 'html',
 									'html'  => wc_price( Package::cents_to_eur( $balance ), array( 'currency' => 'EUR' ) ),
 								),
 
 								array(
-									'title' => _x( 'Charge (€)', 'dhl', 'woocommerce-germanized-dhl' ),
+									'title' => _x( 'Charge (€)', 'dhl', 'dhl-for-shiptastic' ),
 									'type'  => 'dp_charge',
 								),
 
@@ -241,7 +241,7 @@ class DeutschePost extends Auto {
 						$settings,
 						array(
 							array(
-								'title' => _x( 'Portokasse', 'dhl', 'woocommerce-germanized-dhl' ),
+								'title' => _x( 'Portokasse', 'dhl', 'dhl-for-shiptastic' ),
 								'type'  => 'title',
 								'id'    => 'deutsche_post_api_error',
 							),
@@ -260,10 +260,10 @@ class DeutschePost extends Auto {
 						$settings,
 						array(
 							array(
-								'title' => _x( 'Products', 'dhl', 'woocommerce-germanized-dhl' ),
+								'title' => _x( 'Products', 'dhl', 'dhl-for-shiptastic' ),
 								'type'  => 'title',
 								'id'    => 'deutsche_post_product_refresh_options',
-								'desc'  => '<a class="button button-secondary" href="' . esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'wc-gzd-dhl-im-product-refresh' ), $settings_url ), 'wc-gzd-dhl-refresh-im-products' ) ) . '">' . esc_html_x( 'Refresh available products', 'dhl', 'woocommerce-germanized-dhl' ) . '</a>',
+								'desc'  => '<a class="button button-secondary" href="' . esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'wc-stc-dhl-im-product-refresh' ), $settings_url ), 'wc-stc-dhl-refresh-im-products' ) ) . '">' . esc_html_x( 'Refresh available products', 'dhl', 'dhl-for-shiptastic' ) . '</a>',
 							),
 							array(
 								'type' => 'sectionend',
@@ -279,7 +279,7 @@ class DeutschePost extends Auto {
 			$settings,
 			array(
 				array(
-					'title' => _x( 'Tracking', 'dhl', 'woocommerce-germanized-dhl' ),
+					'title' => _x( 'Tracking', 'dhl', 'dhl-for-shiptastic' ),
 					'type'  => 'title',
 					'id'    => 'tracking_options',
 				),
@@ -298,7 +298,7 @@ class DeutschePost extends Auto {
 				array(
 					'label'              => $label,
 					'shipment_types'     => array( 'return', 'simple' ),
-					'excluded_locations' => wc_gzd_get_shipping_provider_service_locations(),
+					'excluded_locations' => wc_stc_get_shipping_provider_service_locations(),
 				)
 			);
 		}
@@ -323,7 +323,7 @@ class DeutschePost extends Auto {
 	protected function register_products() {
 		global $wpdb;
 
-		if ( ! get_transient( 'wc_gzd_dhl_im_products_expire' ) ) {
+		if ( ! get_transient( 'wc_stc_dhl_im_products_expire' ) ) {
 			if ( ( $api = Package::get_internetmarke_api() ) && $api->is_configured() ) {
 				$result = Package::get_internetmarke_api()->get_product_list()->update();
 
@@ -335,7 +335,7 @@ class DeutschePost extends Auto {
 			/**
 			 * Refresh product data once per day.
 			 */
-			set_transient( 'wc_gzd_dhl_im_products_expire', 'yes', DAY_IN_SECONDS );
+			set_transient( 'wc_stc_dhl_im_products_expire', 'yes', DAY_IN_SECONDS );
 		}
 
 		$products = $wpdb->get_results( "SELECT * FROM {$wpdb->gzd_dhl_im_products}" );
@@ -371,7 +371,6 @@ class DeutschePost extends Auto {
 					'weight_unit'    => 'g',
 					'dimension_unit' => 'mm',
 					'meta'           => array(
-						'is_wp_int'        => 0 !== absint( $product->product_is_wp_int ) ? true : false,
 						'information_text' => $product->product_information_text,
 						'annotation'       => $product->product_annotation,
 						'destination'      => $product->product_destination,
@@ -382,7 +381,7 @@ class DeutschePost extends Auto {
 	}
 
 	/**
-	 * @param \Vendidero\Germanized\Shipments\Shipment $shipment
+	 * @param \Vendidero\Shiptastic\Shipment $shipment
 	 */
 	public function get_label_fields( $shipment ) {
 		if ( ! Package::get_internetmarke_api()->is_available() ) {
@@ -395,19 +394,19 @@ class DeutschePost extends Auto {
 	public function get_label_fields_html( $shipment ) {
 		$html  = parent::get_label_fields_html( $shipment );
 		$html .= '
-			<div class="columns preview-columns wc-gzd-dhl-im-product-data">
+			<div class="columns preview-columns wc-stc-dhl-im-product-data">
 		        <div class="column col-4">
-		            <p class="wc-gzd-dhl-im-product-price wc-price data-placeholder hide-default" data-replace="price_formatted"></p>
+		            <p class="wc-stc-dhl-im-product-price wc-price data-placeholder hide-default" data-replace="price_formatted"></p>
 		        </div>
 		        <div class="column col-3 col-dimensions">
-		            <p class="wc-gzd-dhl-im-product-dimensions data-placeholder hide-default" data-replace="dimensions_formatted"></p>
+		            <p class="wc-stc-dhl-im-product-dimensions data-placeholder hide-default" data-replace="dimensions_formatted"></p>
 		        </div>
 		        <div class="column col-5 col-preview">
 		            <div class="image-preview"></div>
 		        </div>
 		        <div class="column col-12">
-		            <p class="wc-gzd-dhl-im-product-description data-placeholder hide-default" data-replace="description_formatted"></p>
-		            <p class="wc-gzd-dhl-im-product-information-text data-placeholder hide-default" data-replace="information_text_formatted"></p>
+		            <p class="wc-stc-dhl-im-product-description data-placeholder hide-default" data-replace="description_formatted"></p>
+		            <p class="wc-stc-dhl-im-product-information-text data-placeholder hide-default" data-replace="information_text_formatted"></p>
 		        </div>
 		    </div>
 		';
@@ -416,7 +415,7 @@ class DeutschePost extends Auto {
 	}
 
 	/**
-	 * @param \Vendidero\Germanized\Shipments\Shipment $shipment
+	 * @param \Vendidero\Shiptastic\Shipment $shipment
 	 *
 	 * @return array
 	 */
@@ -425,20 +424,19 @@ class DeutschePost extends Auto {
 	}
 
 	/**
-	 * @param \Vendidero\Germanized\Shipments\Shipment $shipment
+	 * @param \Vendidero\Shiptastic\Shipment $shipment
 	 *
 	 * @return array|\WP_Error
 	 */
 	protected function get_simple_label_fields( $shipment ) {
-		$props     = $this->get_default_label_props( $shipment );
-		$products  = $this->get_products(
+		$props    = $this->get_default_label_props( $shipment );
+		$products = $this->get_products(
 			array(
 				'shipment'  => $shipment,
 				'parent_id' => 0,
 			)
 		);
-		$settings  = parent::get_simple_label_fields( $shipment );
-		$is_wp_int = false;
+		$settings = parent::get_simple_label_fields( $shipment );
 
 		/**
 		 * When retrieving the label fields make sure to only include parent products
@@ -457,60 +455,53 @@ class DeutschePost extends Auto {
 			}
 		}
 
-		if ( ! empty( $props['product_id'] ) ) {
-			$is_wp_int = Package::get_internetmarke_api()->is_warenpost_international( $props['product_id'] );
-		}
-
 		if ( $products->empty() ) {
-			return new \WP_Error( 'dp-label-missing-products', sprintf( _x( 'Sorry but none of your selected <a href="%s">Deutsche Post Products</a> is available for this shipment. Please verify your shipment data (e.g. weight) and try again.', 'dhl', 'woocommerce-germanized-dhl' ), esc_url( $this->get_edit_link( 'label' ) ) ) );
+			return new \WP_Error( 'dp-label-missing-products', sprintf( _x( 'Sorry but none of your selected <a href="%s">Deutsche Post Products</a> is available for this shipment. Please verify your shipment data (e.g. weight) and try again.', 'dhl', 'dhl-for-shiptastic' ), esc_url( $this->get_edit_link( 'label' ) ) ) );
 		}
 
 		$settings = array_merge( $settings, $this->get_available_additional_services( $props['product_id'], $props['services'] ) );
-
-		if ( ! $is_wp_int ) {
-			$settings = array_merge(
-				$settings,
+		$settings = array_merge(
+			$settings,
+			array(
 				array(
-					array(
-						'id'   => '',
-						'type' => 'columns',
+					'id'   => '',
+					'type' => 'columns',
+				),
+				array(
+					'id'                => 'position_x',
+					'label'             => _x( 'Print X-Position', 'dhl', 'dhl-for-shiptastic' ),
+					'description'       => '',
+					'type'              => 'number',
+					'wrapper_class'     => 'column col-6',
+					'style'             => 'width: 100%;',
+					'custom_attributes' => array(
+						'min'  => 0,
+						'step' => 1,
 					),
-					array(
-						'id'                => 'position_x',
-						'label'             => _x( 'Print X-Position', 'dhl', 'woocommerce-germanized-dhl' ),
-						'description'       => '',
-						'type'              => 'number',
-						'wrapper_class'     => 'column col-6',
-						'style'             => 'width: 100%;',
-						'custom_attributes' => array(
-							'min'  => 0,
-							'step' => 1,
-						),
-						'value'             => isset( $default_args['position_x'] ) ? $default_args['position_x'] : 1,
+					'value'             => isset( $default_args['position_x'] ) ? $default_args['position_x'] : 1,
+				),
+				array(
+					'id'                => 'position_y',
+					'label'             => _x( 'Print Y-Position', 'dhl', 'dhl-for-shiptastic' ),
+					'description'       => '',
+					'type'              => 'number',
+					'wrapper_class'     => 'column col-6',
+					'style'             => 'width: 100%;',
+					'custom_attributes' => array(
+						'min'  => 0,
+						'step' => 1,
 					),
-					array(
-						'id'                => 'position_y',
-						'label'             => _x( 'Print Y-Position', 'dhl', 'woocommerce-germanized-dhl' ),
-						'description'       => '',
-						'type'              => 'number',
-						'wrapper_class'     => 'column col-6',
-						'style'             => 'width: 100%;',
-						'custom_attributes' => array(
-							'min'  => 0,
-							'step' => 1,
-						),
-						'value'             => isset( $default_args['position_y'] ) ? $default_args['position_y'] : 1,
-					),
-				)
-			);
-		}
+					'value'             => isset( $default_args['position_y'] ) ? $default_args['position_y'] : 1,
+				),
+			)
+		);
 
 		return $settings;
 	}
 
 	public function get_available_additional_services( $product_id, $selected_services = array() ) {
 		$im_product_id = $this->get_product( $product_id )->get_internal_id();
-		$services      = \Vendidero\Germanized\DHL\Package::get_internetmarke_api()->get_product_list()->get_services_for_product( $im_product_id, $selected_services );
+		$services      = \Vendidero\Shiptastic\DHL\Package::get_internetmarke_api()->get_product_list()->get_services_for_product( $im_product_id, $selected_services );
 		$settings      = array(
 			array(
 				'id'   => 'additional-services',
@@ -523,7 +514,7 @@ class DeutschePost extends Auto {
 				'id'            => 'service_' . $service,
 				'wrapper_class' => 'form-field-checkbox',
 				'type'          => 'checkbox',
-				'label'         => \Vendidero\Germanized\DHL\Package::get_internetmarke_api()->get_product_list()->get_additional_service_title( $service ),
+				'label'         => \Vendidero\Shiptastic\DHL\Package::get_internetmarke_api()->get_product_list()->get_additional_service_title( $service ),
 				'value'         => in_array( $service, $selected_services, true ) ? 'yes' : 'no',
 			);
 		}
@@ -600,7 +591,7 @@ class DeutschePost extends Auto {
 			$im_product_code = Package::get_internetmarke_api()->get_product_code( $args['product_id'], $args['services'] );
 
 			if ( false === $im_product_code ) {
-				$error->add( 500, _x( 'The services chosen are not available for the current product.', 'dhl', 'woocommerce-germanized-dhl' ) );
+				$error->add( 500, _x( 'The services chosen are not available for the current product.', 'dhl', 'dhl-for-shiptastic' ) );
 			} else {
 				$args['product_id'] = $im_product_code;
 			}
@@ -616,7 +607,7 @@ class DeutschePost extends Auto {
 			 * In case no other products are available or this is a manual request - return error
 			 */
 			if ( empty( $available_products ) || ( is_admin() && current_user_can( 'manage_woocommerce' ) ) ) {
-				$error->add( 500, sprintf( _x( 'Sorry but none of your selected <a href="%s">Deutsche Post Products</a> is available for this shipment. Please verify your shipment data (e.g. weight) and try again.', 'dhl', 'woocommerce-germanized-dhl' ), esc_url( $this->get_edit_link( 'label' ) ) ) );
+				$error->add( 500, sprintf( _x( 'Sorry but none of your selected <a href="%s">Deutsche Post Products</a> is available for this shipment. Please verify your shipment data (e.g. weight) and try again.', 'dhl', 'dhl-for-shiptastic' ), esc_url( $this->get_edit_link( 'label' ) ) ) );
 			} else {
 				/**
 				 * In case the chosen product is not available - use the first product available instead
@@ -642,10 +633,10 @@ class DeutschePost extends Auto {
 		if ( ! empty( $args['product_id'] ) ) {
 			$args['stamp_total'] = Package::get_internetmarke_api()->get_product_total( $args['product_id'] );
 		} else {
-			$error->add( 500, sprintf( _x( 'Deutsche Post product is missing for %s.', 'dhl', 'woocommerce-germanized-dhl' ), $shipment->get_id() ) );
+			$error->add( 500, sprintf( _x( 'Deutsche Post product is missing for %s.', 'dhl', 'dhl-for-shiptastic' ), $shipment->get_id() ) );
 		}
 
-		if ( wc_gzd_dhl_wp_error_has_errors( $error ) ) {
+		if ( wc_stc_dhl_wp_error_has_errors( $error ) ) {
 			return $error;
 		}
 
@@ -670,13 +661,13 @@ class DeutschePost extends Auto {
 					'id'    => 'deutsche_post_pickup_options',
 				),
 				array(
-					'title'             => _x( 'Packstation', 'dhl', 'woocommerce-germanized-dhl' ),
-					'desc'              => _x( 'Enable delivery to Packstation.', 'dhl', 'woocommerce-germanized-dhl' ),
-					'desc_tip'          => _x( 'Let customers choose a Packstation as delivery address.', 'dhl', 'woocommerce-germanized-dhl' ),
+					'title'             => _x( 'Packstation', 'dhl', 'dhl-for-shiptastic' ),
+					'desc'              => _x( 'Enable delivery to Packstation.', 'dhl', 'dhl-for-shiptastic' ),
+					'desc_tip'          => _x( 'Let customers choose a Packstation as delivery address.', 'dhl', 'dhl-for-shiptastic' ),
 					'id'                => 'parcel_pickup_packstation_enable',
 					'value'             => wc_bool_to_string( $this->get_setting( 'parcel_pickup_packstation_enable' ) ),
 					'default'           => 'yes',
-					'type'              => 'gzd_shipments_toggle',
+					'type'              => 'shiptastic_toggle',
 					'custom_attributes' => array( 'data-show_if_pickup_locations_enable' => '' ),
 				),
 				array(

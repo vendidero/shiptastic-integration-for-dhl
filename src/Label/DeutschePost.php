@@ -1,8 +1,8 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Label;
+namespace Vendidero\Shiptastic\DHL\Label;
 
-use Vendidero\Germanized\DHL\Package;
+use Vendidero\Shiptastic\DHL\Package;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -166,8 +166,6 @@ class DeutschePost extends Label {
 	public function is_warenpost_international() {
 		if ( ! empty( $this->get_wp_int_awb() ) ) {
 			return true;
-		} elseif ( $api = Package::get_internetmarke_api() ) {
-			return $api->is_warenpost_international( $this->get_product_id() );
 		}
 
 		return false;
@@ -203,7 +201,7 @@ class DeutschePost extends Label {
 			$result->add( 'deutsche-post-api-error', $e->getMessage() );
 		}
 
-		if ( wc_gzd_dhl_wp_error_has_errors( $result ) ) {
+		if ( wc_stc_shipment_wp_error_has_errors( $result ) ) {
 			return $result;
 		} else {
 			return true;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\ShippingProvider\Services;
+namespace Vendidero\Shiptastic\DHL\ShippingProvider\Services;
 
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\Shipments\ShipmentError;
-use Vendidero\Germanized\Shipments\ShippingProvider\Service;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\ShipmentError;
+use Vendidero\Shiptastic\ShippingProvider\Service;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -13,9 +13,9 @@ class PreferredDay extends Service {
 	public function __construct( $shipping_provider, $args = array() ) {
 		$args = array(
 			'id'                 => 'PreferredDay',
-			'label'              => _x( 'Delivery day', 'dhl', 'woocommerce-germanized-dhl' ),
-			'description'        => _x( 'Enable delivery day delivery.', 'dhl', 'woocommerce-germanized-dhl' ),
-			'long_description'   => '<div class="wc-gzd-shipments-additional-desc">' . _x( 'Enabling this option will display options for the user to select their delivery day of delivery during the checkout.', 'dhl', 'woocommerce-germanized-dhl' ) . '</div>',
+			'label'              => _x( 'Delivery day', 'dhl', 'dhl-for-shiptastic' ),
+			'description'        => _x( 'Enable delivery day delivery.', 'dhl', 'dhl-for-shiptastic' ),
+			'long_description'   => '<div class="wc-shiptastic-additional-desc ">' . _x( 'Enabling this option will display options for the user to select their delivery day of delivery during the checkout.', 'dhl', 'dhl-for-shiptastic' ) . '</div>',
 			'setting_id'         => 'PreferredDay_enable',
 			'products'           => array( 'V01PAK' ),
 			'countries'          => array( 'DE' ),
@@ -29,7 +29,7 @@ class PreferredDay extends Service {
 	protected function get_additional_label_fields( $shipment ) {
 		$label_fields   = parent::get_additional_label_fields( $shipment );
 		$preferred_days = $this->get_preferred_day_options( $shipment->get_postcode() );
-		$dhl_order      = wc_gzd_dhl_get_order( $shipment->get_order() );
+		$dhl_order      = wc_stc_dhl_get_order( $shipment->get_order() );
 		$value          = '';
 
 		if ( $dhl_order && $dhl_order->has_preferred_day() ) {
@@ -41,10 +41,10 @@ class PreferredDay extends Service {
 			array(
 				array(
 					'id'                => $this->get_label_field_id( 'day' ),
-					'label'             => _x( 'Delivery day', 'dhl', 'woocommerce-germanized-dhl' ),
+					'label'             => _x( 'Delivery day', 'dhl', 'dhl-for-shiptastic' ),
 					'description'       => '',
 					'value'             => $value,
-					'options'           => wc_gzd_dhl_get_preferred_days_select_options( $preferred_days, '' ),
+					'options'           => wc_stc_dhl_get_preferred_days_select_options( $preferred_days, '' ),
 					'custom_attributes' => array( 'data-show-if-service_PreferredDay' => '' ),
 					'type'              => 'select',
 				),
@@ -73,7 +73,7 @@ class PreferredDay extends Service {
 		$book_as_default = parent::book_as_default( $shipment );
 
 		if ( false === $book_as_default ) {
-			$dhl_order = wc_gzd_dhl_get_order( $shipment->get_order() );
+			$dhl_order = wc_stc_dhl_get_order( $shipment->get_order() );
 
 			if ( $dhl_order && $dhl_order->has_preferred_day() ) {
 				$book_as_default = true;
@@ -89,9 +89,9 @@ class PreferredDay extends Service {
 		$preferred_days = $this->get_preferred_day_options( $shipment->get_postcode() );
 
 		if ( empty( $preferred_day ) || ! array_key_exists( $preferred_day, $preferred_days ) ) {
-			$error->add( 500, _x( 'Please choose a valid preferred delivery day.', 'dhl', 'woocommerce-germanized-dhl' ) );
+			$error->add( 500, _x( 'Please choose a valid preferred delivery day.', 'dhl', 'dhl-for-shiptastic' ) );
 		}
 
-		return wc_gzd_shipment_wp_error_has_errors( $error ) ? $error : true;
+		return wc_stc_shipment_wp_error_has_errors( $error ) ? $error : true;
 	}
 }

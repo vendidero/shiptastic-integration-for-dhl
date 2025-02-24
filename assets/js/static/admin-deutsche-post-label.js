@@ -1,5 +1,5 @@
-window.germanized = window.germanized || {};
-window.germanized.admin = window.germanized.admin || {};
+window.shiptastic = window.shiptastic || {};
+window.shiptastic.admin = window.shiptastic.admin || {};
 
 ( function( $, admin ) {
 
@@ -11,19 +11,19 @@ window.germanized.admin = window.germanized.admin || {};
 
         init: function () {
             var self    = admin.dhl_post_label;
-            self.params = wc_gzd_admin_deutsche_post_label_params;
+            self.params = wc_shiptastic_dhl_admin_deutsche_post_label_params;
 
-            $( document.body ).on( 'wc_gzd_shipments_admin_shipment_modal_after_load_success', self.onLoadLabelModal )
+            $( document.body ).on( 'wc_shiptastic_admin_shipment_modal_after_load_success', self.onLoadLabelModal )
         },
 
         onLoadLabelModal: function( e, data, modal ) {
             var self = admin.dhl_post_label;
 
-            modal.$modal.off( 'change.gzd-dp-fields' );
-            modal.$modal.on( 'change.gzd-dp-fields', '#wc-gzd-shipment-label-admin-fields-deutsche_post #product_id', { adminShipmentModal: modal }, self.onChangeProduct );
-            modal.$modal.on( 'change.gzd-dp-fields', '#wc-gzd-shipment-label-admin-fields-deutsche_post #product_id, #wc-gzd-shipment-label-admin-fields-deutsche_post #wc-gzd-shipment-label-wrapper-additional-services :input', { adminShipmentModal: modal }, self.onRefreshPreview );
+            modal.$modal.off( 'change.stc-dp-fields' );
+            modal.$modal.on( 'change.stc-dp-fields', '#wc-stc-shipment-label-admin-fields-deutsche_post #product_id', { adminShipmentModal: modal }, self.onChangeProduct );
+            modal.$modal.on( 'change.stc-dp-fields', '#wc-stc-shipment-label-admin-fields-deutsche_post #product_id, #wc-stc-shipment-label-admin-fields-deutsche_post #wc-stc-shipment-label-wrapper-additional-services :input', { adminShipmentModal: modal }, self.onRefreshPreview );
 
-            if ( modal.$modal.find( '#wc-gzd-shipment-label-admin-fields-deutsche_post' ).length > 0 ) {
+            if ( modal.$modal.find( '#wc-stc-shipment-label-admin-fields-deutsche_post' ).length > 0 ) {
                 var event = new $.Event( 'change' );
 
                 event.data = {
@@ -35,14 +35,14 @@ window.germanized.admin = window.germanized.admin || {};
         },
 
         getSelectedAdditionalServices: function() {
-            return $( "#wc-gzd-shipment-label-wrapper-additional-services :input:checked" ).map( function() {
+            return $( "#wc-stc-shipment-label-wrapper-additional-services :input:checked" ).map( function() {
                 return $( this ).attr( 'name' ).replace( 'service_', '' );
             }).get();
         },
 
         onChangeProduct: function( event ) {
             // Reset services before submitting preview to prevent invalid services being passed.
-            $( "#wc-gzd-shipment-label-wrapper-additional-services :input:checked" ).prop( 'checked', false );
+            $( "#wc-stc-shipment-label-wrapper-additional-services :input:checked" ).prop( 'checked', false );
         },
 
         onRefreshPreview: function( event ) {
@@ -53,21 +53,15 @@ window.germanized.admin = window.germanized.admin || {};
             params['security']          = self.params.refresh_label_preview_nonce;
             params['product_id']        = self.getProductId();
             params['selected_services'] = self.getSelectedAdditionalServices();
-            params['action']            = 'woocommerce_gzd_dhl_refresh_deutsche_post_label_preview';
+            params['action']            = 'woocommerce_stc_dhl_refresh_deutsche_post_label_preview';
 
             modal.doAjax( params, self.onPreviewSuccess );
         },
 
         onPreviewSuccess: function( data ) {
             var self         = admin.dhl_post_label,
-                $wrapper     = $( '.wc-gzd-dhl-im-product-data .col-preview' ),
-                $img_wrapper = $( '.wc-gzd-dhl-im-product-data' ).find( '.image-preview' );
-
-            if ( data.is_wp_int ) {
-                $wrapper.parents( '.wc-gzd-shipment-create-label' ).find( '.page_format_field' ).hide();
-            } else {
-                $wrapper.parents( '.wc-gzd-shipment-create-label' ).find( '.page_format_field' ).show();
-            }
+                $wrapper     = $( '.wc-stc-dhl-im-product-data .col-preview' ),
+                $img_wrapper = $( '.wc-stc-dhl-im-product-data' ).find( '.image-preview' );
 
             if ( data.preview_url ) {
                 $wrapper.block({
@@ -95,12 +89,12 @@ window.germanized.admin = window.germanized.admin || {};
         },
 
         getProductId: function() {
-            return $( '#wc-gzd-shipment-label-admin-fields-deutsche_post #product_id' ).val();
+            return $( '#wc-stc-shipment-label-admin-fields-deutsche_post #product_id' ).val();
         },
 
         replaceProductData: function( productData ) {
             var self = admin.dhl_post_label,
-                $wrapper = $( '.wc-gzd-shipment-create-label' ).find( '.wc-gzd-dhl-im-product-data' );
+                $wrapper = $( '.wc-stc-shipment-create-label' ).find( '.wc-stc-dhl-im-product-data' );
 
             $wrapper.find( '.data-placeholder' ).html( '' );
 
@@ -118,7 +112,7 @@ window.germanized.admin = window.germanized.admin || {};
     };
 
     $( document ).ready( function() {
-        germanized.admin.dhl_post_label.init();
+        shiptastic.admin.dhl_post_label.init();
     });
 
-})( jQuery, window.germanized.admin );
+})( jQuery, window.shiptastic.admin );

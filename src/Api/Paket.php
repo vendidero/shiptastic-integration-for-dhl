@@ -4,14 +4,14 @@
  *
  * @package WooCommerce/Blocks
  */
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
-use Vendidero\Germanized\DHL\Package;
+use Vendidero\Shiptastic\DHL\Package;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
 use Exception;
-use Vendidero\Germanized\DHL\ParcelServices;
+use Vendidero\Shiptastic\DHL\ParcelServices;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -67,9 +67,9 @@ class Paket {
 
 		if ( is_null( $this->label_api ) ) {
 			if ( ! empty( $error_message ) ) {
-				throw new Exception( esc_html( sprintf( _x( 'Label API not available: %s', 'dhl', 'woocommerce-germanized-dhl' ), $error_message ) ) );
+				throw new Exception( esc_html( sprintf( _x( 'Label API not available: %s', 'dhl', 'dhl-for-shiptastic' ), $error_message ) ) );
 			} else {
-				throw new Exception( esc_html_x( 'Label API not available', 'dhl', 'woocommerce-germanized-dhl' ) );
+				throw new Exception( esc_html_x( 'Label API not available', 'dhl', 'dhl-for-shiptastic' ) );
 			}
 		}
 
@@ -94,9 +94,9 @@ class Paket {
 
 		if ( is_null( $this->label_rest_api ) ) {
 			if ( ! empty( $error_message ) ) {
-				throw new Exception( esc_html( sprintf( _x( 'Label API not available: %s', 'dhl', 'woocommerce-germanized-dhl' ), $error_message ) ) );
+				throw new Exception( esc_html( sprintf( _x( 'Label API not available: %s', 'dhl', 'dhl-for-shiptastic' ), $error_message ) ) );
 			} else {
-				throw new Exception( esc_html_x( 'Label API not available', 'dhl', 'woocommerce-germanized-dhl' ) );
+				throw new Exception( esc_html_x( 'Label API not available', 'dhl', 'dhl-for-shiptastic' ) );
 			}
 		}
 
@@ -117,7 +117,7 @@ class Paket {
 		}
 
 		if ( is_null( $this->finder_api ) ) {
-			throw new Exception( esc_html_x( 'Parcel Finder API not available', 'dhl', 'woocommerce-germanized-dhl' ) );
+			throw new Exception( esc_html_x( 'Parcel Finder API not available', 'dhl', 'dhl-for-shiptastic' ) );
 		}
 
 		return $this->finder_api;
@@ -137,7 +137,7 @@ class Paket {
 		}
 
 		if ( is_null( $this->return_api ) ) {
-			throw new Exception( esc_html_x( 'Return API not available', 'dhl', 'woocommerce-germanized-dhl' ) );
+			throw new Exception( esc_html_x( 'Return API not available', 'dhl', 'dhl-for-shiptastic' ) );
 		}
 
 		return $this->return_api;
@@ -157,7 +157,7 @@ class Paket {
 		}
 
 		if ( is_null( $this->parcel_api ) ) {
-			throw new Exception( esc_html_x( 'Parcel API not available', 'dhl', 'woocommerce-germanized-dhl' ) );
+			throw new Exception( esc_html_x( 'Parcel API not available', 'dhl', 'dhl-for-shiptastic' ) );
 		}
 
 		return $this->parcel_api;
@@ -224,9 +224,9 @@ class Paket {
 			 * @param boolean $is_working_day True if saturday should be considered a working day.
 			 *
 			 * @since 3.0.0
-			 * @package Vendidero/Germanized/DHL
+			 * @package Vendidero/Shiptastic/DHL
 			 */
-			if ( apply_filters( 'woocommerce_gzd_dhl_consider_saturday_as_working_day', true ) ) {
+			if ( apply_filters( 'woocommerce_stc_dhl_consider_saturday_as_working_day', true ) ) {
 				$is_working_day = $datetime->format( 'N' ) > 6 ? false : true;
 			} else {
 				$is_working_day = $datetime->format( 'N' ) > 5 ? false : true;
@@ -253,7 +253,7 @@ class Paket {
 	 * @throws Exception
 	 */
 	public function get_preferred_available_days( $postcode, $cutoff_time = '' ) {
-		$exclude_working_days = wc_gzd_dhl_get_excluded_working_days();
+		$exclude_working_days = wc_stc_dhl_get_excluded_working_days();
 
 		// Always exclude Sunday
 		$exclude_working_days = array_merge( $exclude_working_days, array( 'sun' ) );
@@ -315,13 +315,13 @@ class Paket {
 
 	protected function get_preferred_days( $preferred_services ) {
 		$day_of_week_arr = array(
-			'1' => _x( 'Mon', 'dhl', 'woocommerce-germanized-dhl' ),
-			'2' => _x( 'Tue', 'dhl', 'woocommerce-germanized-dhl' ),
-			'3' => _x( 'Wed', 'dhl', 'woocommerce-germanized-dhl' ),
-			'4' => _x( 'Thu', 'dhl', 'woocommerce-germanized-dhl' ),
-			'5' => _x( 'Fri', 'dhl', 'woocommerce-germanized-dhl' ),
-			'6' => _x( 'Sat', 'dhl', 'woocommerce-germanized-dhl' ),
-			'7' => _x( 'Sun', 'dhl', 'woocommerce-germanized-dhl' ),
+			'1' => _x( 'Mon', 'dhl', 'dhl-for-shiptastic' ),
+			'2' => _x( 'Tue', 'dhl', 'dhl-for-shiptastic' ),
+			'3' => _x( 'Wed', 'dhl', 'dhl-for-shiptastic' ),
+			'4' => _x( 'Thu', 'dhl', 'dhl-for-shiptastic' ),
+			'5' => _x( 'Fri', 'dhl', 'dhl-for-shiptastic' ),
+			'6' => _x( 'Sat', 'dhl', 'dhl-for-shiptastic' ),
+			'7' => _x( 'Sun', 'dhl', 'dhl-for-shiptastic' ),
 		);
 
 		$preferred_days = array();
@@ -338,7 +338,7 @@ class Paket {
 			}
 
 			// Add none option
-			array_unshift( $preferred_days, _x( 'None', 'dhl day context', 'woocommerce-germanized-dhl' ) );
+			array_unshift( $preferred_days, _x( 'None', 'dhl day context', 'dhl-for-shiptastic' ) );
 		}
 
 		return $preferred_days;

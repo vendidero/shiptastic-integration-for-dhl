@@ -1,12 +1,12 @@
 <?php
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\Shipments\API\Auth\Basic;
-use Vendidero\Germanized\Shipments\API\Auth\OAuth;
-use Vendidero\Germanized\Shipments\DataStores\Shipment;
-use Vendidero\Germanized\Shipments\SecretBox;
-use Vendidero\Germanized\Shipments\ShipmentError;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\API\Auth\Basic;
+use Vendidero\Shiptastic\API\Auth\OAuth;
+use Vendidero\Shiptastic\DataStores\Shipment;
+use Vendidero\Shiptastic\SecretBox;
+use Vendidero\Shiptastic\ShipmentError;
 
 defined( 'ABSPATH' ) || exit;
 

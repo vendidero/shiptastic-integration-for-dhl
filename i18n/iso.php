@@ -4,7 +4,6 @@
  *
  * Returns an array of alpha2 to alpha3 iso codes.
  *
- * @package WooCommerceGermanizedDHL/i18n
  * @version 1.0.0
  */
 defined( 'ABSPATH' ) || exit;

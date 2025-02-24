@@ -1,5 +1,5 @@
-window.germanized = window.germanized || {};
-window.germanized.admin = window.germanized.admin || {};
+window.shiptastic = window.shiptastic || {};
+window.shiptastic.admin = window.shiptastic.admin || {};
 
 /*
  * http://www.myersdaily.org/joseph/javascript/md5-text.html
@@ -205,15 +205,15 @@ window.germanized.admin = window.germanized.admin || {};
         init: function () {
             var self = admin.dhl_internetmarke;
 
-            $( document ).on( 'click', '#woocommerce_gzd_dhl_im_portokasse_charge', self.onCharge );
+            $( document ).on( 'click', '#woocommerce_stc_dhl_im_portokasse_charge', self.onCharge );
         },
 
         onCharge: function() {
             var $button = $( this ),
                 data    = $button.data(),
-                amount  = $( '#woocommerce_gzd_dhl_im_portokasse_charge_amount' ).val();
+                amount  = $( '#woocommerce_stc_dhl_im_portokasse_charge_amount' ).val();
 
-            $form = $( '<form target="_blank" action="' + $button.data( 'url' ) + '" id="wc-gzd-dhl-im-portokasse-form" method="POST" style=""></form>' ).appendTo( 'body' );
+            $form = $( '<form target="_blank" action="' + $button.data( 'url' ) + '" id="wc-stc-dhl-im-portokasse-form" method="POST" style=""></form>' ).appendTo( 'body' );
 
             $.each( data, function( index, value ) {
                 $form.append( '<input type="hidden" name="' + index.toUpperCase() + '" value="' + value + '" />' );
@@ -260,7 +260,7 @@ window.germanized.admin = window.germanized.admin || {};
     };
 
     $( document ).ready( function() {
-        germanized.admin.dhl_internetmarke.init();
+        shiptastic.admin.dhl_internetmarke.init();
     });
 
-})( jQuery, window.germanized.admin, window );
+})( jQuery, window.shiptastic.admin, window );

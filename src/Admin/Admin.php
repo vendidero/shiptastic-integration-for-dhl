@@ -1,12 +1,12 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Admin;
+namespace Vendidero\Shiptastic\DHL\Admin;
 
-use Vendidero\Germanized\DHL\Admin\Importer\DHL;
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\DHL\ParcelServices;
-use Vendidero\Germanized\Shipments\Shipment;
-use Vendidero\Germanized\Shipments\ReturnShipment;
+use Vendidero\Shiptastic\DHL\Admin\Importer\DHL;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\DHL\ParcelServices;
+use Vendidero\Shiptastic\Shipment;
+use Vendidero\Shiptastic\ReturnShipment;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,13 +22,8 @@ class Admin {
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_styles' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_scripts' ), 30 );
 
-		add_action( 'admin_init', array( __CLASS__, 'download_legacy_label' ) );
-
 		// Legacy meta box
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_legacy_meta_box' ), 20 );
-
-		// Template check
-		add_filter( 'woocommerce_gzd_template_check', array( __CLASS__, 'add_template_check' ), 10, 1 );
 
 		// Admin fields
 		add_action( 'woocommerce_admin_field_dhl_receiver_ids', array( __CLASS__, 'output_receiver_ids_field' ), 10 );
@@ -53,9 +48,9 @@ class Admin {
 	 * @return string
 	 */
 	public static function preferred_delivery_notice( $method_str, $order ) {
-		if ( $dhl_order = wc_gzd_dhl_get_order( $order ) ) {
+		if ( $dhl_order = wc_stc_dhl_get_order( $order ) ) {
 			if ( $dhl_order->has_preferred_day() ) {
-				$method_str .= ' - ' . sprintf( _x( 'Preferred day: %1$s', 'dhl', 'woocommerce-germanized-dhl' ), $dhl_order->get_preferred_day()->date_i18n( get_option( 'date_format' ) ) );
+				$method_str .= ' - ' . sprintf( _x( 'Preferred day: %1$s', 'dhl', 'dhl-for-shiptastic' ), $dhl_order->get_preferred_day()->date_i18n( get_option( 'date_format' ) ) );
 			}
 		}
 
@@ -66,12 +61,12 @@ class Admin {
 	 * @param \WC_Order $order
 	 */
 	public static function preferred_delivery_order( $order ) {
-		if ( $dhl_order = wc_gzd_dhl_get_order( $order ) ) {
+		if ( $dhl_order = wc_stc_dhl_get_order( $order ) ) {
 			$dhl_data = array();
 
 			if ( $dhl_order->has_preferred_day() ) {
 				$dhl_data[] = array(
-					'label' => _x( 'Delivery day', 'dhl', 'woocommerce-germanized-dhl' ),
+					'label' => _x( 'Delivery day', 'dhl', 'dhl-for-shiptastic' ),
 					'value' => $dhl_order->get_preferred_day()->date_i18n( get_option( 'date_format' ) ),
 				);
 			}
@@ -81,28 +76,28 @@ class Admin {
 				$type        = $dhl_order->get_preferred_delivery_type();
 
 				$dhl_data[] = array(
-					'label' => _x( 'Delivery type', 'dhl', 'woocommerce-germanized-dhl' ),
+					'label' => _x( 'Delivery type', 'dhl', 'dhl-for-shiptastic' ),
 					'value' => array_key_exists( $type, $type_titles ) ? $type_titles[ $type ] : $type,
 				);
 			}
 
 			if ( $dhl_order->has_preferred_location() ) {
 				$dhl_data[] = array(
-					'label' => _x( 'Preferred location', 'dhl', 'woocommerce-germanized-dhl' ),
+					'label' => _x( 'Preferred location', 'dhl', 'dhl-for-shiptastic' ),
 					'value' => $dhl_order->get_preferred_location(),
 				);
 			}
 
 			if ( $dhl_order->has_preferred_neighbor() ) {
 				$dhl_data[] = array(
-					'label' => _x( 'Preferred neighbor', 'dhl', 'woocommerce-germanized-dhl' ),
+					'label' => _x( 'Preferred neighbor', 'dhl', 'dhl-for-shiptastic' ),
 					'value' => $dhl_order->get_preferred_neighbor_formatted_address(),
 				);
 			}
 			?>
 			<?php if ( ! empty( $dhl_data ) ) : ?>
-				<p class="wc-gzd-shipment-order-meta-data">
-					<strong><?php echo esc_html_x( 'DHL Preferred Delivery', 'dhl', 'woocommerce-germanized-dhl' ); ?>:</strong><br/>
+				<p class="wc-stc-shipment-order-meta-data">
+					<strong><?php echo esc_html_x( 'DHL Preferred Delivery', 'dhl', 'dhl-for-shiptastic' ); ?>:</strong><br/>
 					<?php foreach ( $dhl_data as $dhl_dataset ) : ?>
 						<span class="label"><?php echo esc_html( $dhl_dataset['label'] ); ?>: </span><span class="value"><?php echo esc_html( $dhl_dataset['value'] ); ?></span><br/>
 					<?php endforeach; ?>
@@ -117,7 +112,7 @@ class Admin {
 			if ( isset( $_GET['im-refresh-type'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$refresh_type    = wc_clean( wp_unslash( $_GET['im-refresh-type'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$refresh_type    = in_array( $refresh_type, array( 'products', 'print_formats' ), true ) ? $refresh_type : 'products';
-				$refresh_message = isset( $_GET['success'] ) ? _x( 'Refreshed data successfully.', 'dhl', 'woocommerce-germanized-dhl' ) : sprintf( _x( 'Error while refreshing data: %1$s', 'dhl', 'woocommerce-germanized-dhl' ), get_transient( "_wc_gzd_dhl_im_{$refresh_type}_refresh_error" ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$refresh_message = isset( $_GET['success'] ) ? _x( 'Refreshed data successfully.', 'dhl', 'dhl-for-shiptastic' ) : sprintf( _x( 'Error while refreshing data: %1$s', 'dhl', 'dhl-for-shiptastic' ), get_transient( "_wc_stc_dhl_im_{$refresh_type}_refresh_error" ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				?>
 				<div class="notice fade <?php echo ( isset( $_GET['success'] ) ? 'updated' : 'error' );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>">
 					<p><?php echo wp_kses_post( $refresh_message ); ?></p>
@@ -126,7 +121,7 @@ class Admin {
 			} elseif ( isset( $_GET['has-imported'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				?>
 				<div class="notice fade updated">
-					<p><?php echo wp_kses_post( sprintf( _x( 'New to DHL in Germanized? Learn how to <a href="%s" target="_blank">easily create DHL labels</a> to your shipments.', 'dhl', 'woocommerce-germanized-dhl' ), esc_url( 'https://vendidero.de/doc/woocommerce-germanized/dhl-labels-zu-sendungen-erstellen' ) ) );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?></p>
+					<p><?php echo wp_kses_post( sprintf( _x( 'New to DHL in Shiptastic? Learn how to <a href="%s" target="_blank">easily create DHL labels</a> to your shipments.', 'dhl', 'dhl-for-shiptastic' ), esc_url( 'https://vendidero.de/doc/woocommerce-germanized/dhl-labels-zu-sendungen-erstellen' ) ) );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?></p>
 				</div>
 				<?php
 			}
@@ -134,13 +129,13 @@ class Admin {
 	}
 
 	public static function refresh_data() {
-		if ( current_user_can( 'manage_woocommerce' ) && isset( $_GET['action'], $_GET['_wpnonce'] ) && 'wc-gzd-dhl-im-product-refresh' === $_GET['action'] ) {
-			if ( wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ), 'wc-gzd-dhl-refresh-im-products' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if ( current_user_can( 'manage_woocommerce' ) && isset( $_GET['action'], $_GET['_wpnonce'] ) && 'wc-stc-dhl-im-product-refresh' === $_GET['action'] ) {
+			if ( wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ), 'wc-stc-dhl-refresh-im-products' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$result       = Package::get_internetmarke_api()->update_products();
 				$settings_url = add_query_arg( array( 'im-refresh-type' => 'products' ), Package::get_deutsche_post_shipping_provider()->get_edit_link( 'config_set_simple_label' ) );
 
 				if ( is_wp_error( $result ) ) {
-					set_transient( '_wc_gzd_dhl_im_products_refresh_error', $result->get_error_message(), MINUTE_IN_SECONDS * 5 );
+					set_transient( '_wc_stc_dhl_im_products_refresh_error', $result->get_error_message(), MINUTE_IN_SECONDS * 5 );
 
 					$settings_url = add_query_arg( array( 'error' => 1 ), $settings_url );
 				} else {
@@ -150,13 +145,13 @@ class Admin {
 				wp_safe_redirect( esc_url_raw( $settings_url ) );
 				exit();
 			}
-		} elseif ( current_user_can( 'manage_woocommerce' ) && isset( $_GET['action'], $_GET['_wpnonce'] ) && 'wc-gzd-dhl-im-page-formats-refresh' === $_GET['action'] ) {
-			if ( wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ), 'wc-gzd-dhl-refresh-im-page-formats' ) ) {  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		} elseif ( current_user_can( 'manage_woocommerce' ) && isset( $_GET['action'], $_GET['_wpnonce'] ) && 'wc-stc-dhl-im-page-formats-refresh' === $_GET['action'] ) {
+			if ( wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ), 'wc-stc-dhl-refresh-im-page-formats' ) ) {  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$result       = Package::get_internetmarke_api()->get_page_formats( true );
 				$settings_url = add_query_arg( array( 'im-refresh-type' => 'page_formats' ), Package::get_deutsche_post_shipping_provider()->get_edit_link( 'printing' ) );
 
 				if ( is_wp_error( $result ) ) {
-					set_transient( '_wc_gzd_dhl_im_page_formats_refresh_error', $result->get_error_message(), MINUTE_IN_SECONDS * 5 );
+					set_transient( '_wc_stc_dhl_im_page_formats_refresh_error', $result->get_error_message(), MINUTE_IN_SECONDS * 5 );
 
 					$settings_url = add_query_arg( array( 'error' => 1 ), $settings_url );
 				} else {
@@ -166,8 +161,8 @@ class Admin {
 				wp_safe_redirect( esc_url_raw( $settings_url ) );
 				exit();
 			}
-		} elseif ( current_user_can( 'manage_woocommerce' ) && isset( $_GET['action'], $_GET['_wpnonce'] ) && 'wc-gzd-dhl-refresh-retoure-receiver-ids' === $_GET['action'] ) {
-			if ( wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ), 'wc-gzd-dhl-refresh-retoure-receiver-ids' ) ) {  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		} elseif ( current_user_can( 'manage_woocommerce' ) && isset( $_GET['action'], $_GET['_wpnonce'] ) && 'wc-stc-dhl-refresh-retoure-receiver-ids' === $_GET['action'] ) {
+			if ( wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ), 'wc-stc-dhl-refresh-retoure-receiver-ids' ) ) {  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$receiver_ids = Package::get_api()->get_return_api()->get_receiver_ids();
 				$settings_url = add_query_arg( array( 'refresh-type' => 'retoure-receiver-ids' ), Package::get_dhl_shipping_provider()->get_edit_link( 'config_set_return_label' ) );
 
@@ -235,14 +230,14 @@ class Admin {
 		?>
 
 		<tr valign="top">
-			<th scope="row" class="titledesc"><?php echo esc_html_x( 'Charge (€)', 'dhl', 'woocommerce-germanized-dhl' ); ?></th>
-			<td class="forminp forminp-custom" id="woocommerce_gzd_dhl_im_portokasse_charge_wrapper">
-				<input type="text" placeholder="10.00" style="max-width: 150px; margin-right: 10px;" class="wc-input-price short" name="woocommerce_gzd_dhl_im_portokasse_charge_amount" id="woocommerce_gzd_dhl_im_portokasse_charge_amount" />
+			<th scope="row" class="titledesc"><?php echo esc_html_x( 'Charge (€)', 'dhl', 'dhl-for-shiptastic' ); ?></th>
+			<td class="forminp forminp-custom" id="woocommerce_stc_dhl_im_portokasse_charge_wrapper">
+				<input type="text" placeholder="10.00" style="max-width: 150px; margin-right: 10px;" class="wc-input-price short" name="woocommerce_stc_dhl_im_portokasse_charge_amount" id="woocommerce_stc_dhl_im_portokasse_charge_amount" />
 
-				<a id="woocommerce_gzd_dhl_im_portokasse_charge" class="button button-secondary" data-url="https://portokasse.deutschepost.de/portokasse/marketplace/enter-app-payment" data-success_url="<?php echo esc_url( add_query_arg( array( 'wallet-charge-success' => 'yes' ), $settings_url ) ); ?>" data-cancel_url="<?php echo esc_url( add_query_arg( array( 'wallet-charge-success' => 'no' ), $settings_url ) ); ?>" data-partner_id="<?php echo esc_attr( Package::get_internetmarke_partner_id() ); ?>" data-key_phase="<?php echo esc_attr( Package::get_internetmarke_key_phase() ); ?>" data-user_token="<?php echo esc_attr( $user_token ); ?>" data-schluessel_dpwn_partner="<?php echo esc_attr( Package::get_internetmarke_token() ); ?>" data-wallet="<?php echo esc_attr( $balance ); ?>">
-					<?php echo esc_html_x( 'Charge Portokasse', 'dhl', 'woocommerce-germanized-dhl' ); ?>
+				<a id="woocommerce_stc_dhl_im_portokasse_charge" class="button button-secondary" data-url="https://portokasse.deutschepost.de/portokasse/marketplace/enter-app-payment" data-success_url="<?php echo esc_url( add_query_arg( array( 'wallet-charge-success' => 'yes' ), $settings_url ) ); ?>" data-cancel_url="<?php echo esc_url( add_query_arg( array( 'wallet-charge-success' => 'no' ), $settings_url ) ); ?>" data-partner_id="<?php echo esc_attr( Package::get_internetmarke_partner_id() ); ?>" data-key_phase="<?php echo esc_attr( Package::get_internetmarke_key_phase() ); ?>" data-user_token="<?php echo esc_attr( $user_token ); ?>" data-schluessel_dpwn_partner="<?php echo esc_attr( Package::get_internetmarke_token() ); ?>" data-wallet="<?php echo esc_attr( $balance ); ?>">
+					<?php echo esc_html_x( 'Charge Portokasse', 'dhl', 'dhl-for-shiptastic' ); ?>
 				</a>
-				<p class="description"><?php printf( esc_html_x( 'The minimum amount is %s', 'dhl', 'woocommerce-germanized-dhl' ), wc_price( 10, array( 'currency' => 'EUR' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
+				<p class="description"><?php printf( esc_html_x( 'The minimum amount is %s', 'dhl', 'dhl-for-shiptastic' ), wc_price( 10, array( 'currency' => 'EUR' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 			</td>
 		</tr>
 		<?php
@@ -253,15 +248,15 @@ class Admin {
 		ob_start();
 		?>
 		<tr valign="top">
-			<th scope="row" class="titledesc"><?php echo esc_html_x( 'Participation', 'dhl', 'woocommerce-germanized-dhl' ); ?></th>
+			<th scope="row" class="titledesc"><?php echo esc_html_x( 'Participation', 'dhl', 'dhl-for-shiptastic' ); ?></th>
 			<td class="forminp" id="dhl_participation_numbers">
 				<div class="wc_input_table_wrapper">
 					<table class="widefat wc_input_table sortable" cellspacing="0">
 						<thead>
 						<tr>
-							<th><?php echo esc_html_x( 'Product', 'dhl', 'woocommerce-germanized-dhl' ); ?></th>
-							<th><?php echo esc_html_x( 'Participation Number', 'dhl', 'woocommerce-germanized-dhl' ); ?> <?php echo wc_help_tip( _x( 'The participation number for the chosen product. Find your participation number in your DHL business customer portal.', 'dhl', 'woocommerce-germanized-dhl' ) ); ?></th>
-							<th><?php echo esc_html_x( 'GoGreen', 'dhl', 'woocommerce-germanized-dhl' ); ?> <?php echo wc_help_tip( _x( 'Optionally choose a separate participation number for GoGreen. Leave empty in case your main participation number includes GoGreen already.', 'dhl', 'woocommerce-germanized-dhl' ) ); ?></th>
+							<th><?php echo esc_html_x( 'Product', 'dhl', 'dhl-for-shiptastic' ); ?></th>
+							<th><?php echo esc_html_x( 'Participation Number', 'dhl', 'dhl-for-shiptastic' ); ?> <?php echo wc_help_tip( _x( 'The participation number for the chosen product. Find your participation number in your DHL business customer portal.', 'dhl', 'dhl-for-shiptastic' ) ); ?></th>
+							<th><?php echo esc_html_x( 'GoGreen', 'dhl', 'dhl-for-shiptastic' ); ?> <?php echo wc_help_tip( _x( 'Optionally choose a separate participation number for GoGreen. Leave empty in case your main participation number includes GoGreen already.', 'dhl', 'dhl-for-shiptastic' ) ); ?></th>
 						</tr>
 						</thead>
 						<tbody class="dhl_particpation_number_settings">
@@ -295,15 +290,15 @@ class Admin {
 		$settings_url = isset( $option['settings_url'] ) ? $option['settings_url'] : '';
 		?>
 		<tr valign="top">
-			<th scope="row" class="titledesc"><?php echo esc_html_x( 'Receiver Ids', 'dhl', 'woocommerce-germanized-dhl' ); ?></th>
+			<th scope="row" class="titledesc"><?php echo esc_html_x( 'Receiver Ids', 'dhl', 'dhl-for-shiptastic' ); ?></th>
 			<td class="forminp" id="dhl_receiver_ids">
 				<div class="wc_input_table_wrapper">
 					<table class="widefat wc_input_table sortable" cellspacing="0">
-						<input type="text" name="dhl_settings_hider" style="display: none" data-show_if_woocommerce_gzd_dhl_label_retoure_enable="" />
+						<input type="text" name="dhl_settings_hider" style="display: none" data-show_if_woocommerce_stc_dhl_label_retoure_enable="" />
 						<thead>
 						<tr>
-							<th><?php echo esc_html_x( 'Receiver Id', 'dhl', 'woocommerce-germanized-dhl' ); ?> <?php echo wc_help_tip( _x( 'Find your Receiver Ids within your DHL contract data.', 'dhl', 'woocommerce-germanized-dhl' ) ); ?></th>
-							<th><?php echo esc_html_x( 'Country Code', 'dhl', 'woocommerce-germanized-dhl' ); ?> <?php echo wc_help_tip( _x( 'Leave empty to use the Receiver Id as fallback.', 'dhl', 'woocommerce-germanized-dhl' ) ); ?></th>
+							<th><?php echo esc_html_x( 'Receiver Id', 'dhl', 'dhl-for-shiptastic' ); ?> <?php echo wc_help_tip( _x( 'Find your Receiver Ids within your DHL contract data.', 'dhl', 'dhl-for-shiptastic' ) ); ?></th>
+							<th><?php echo esc_html_x( 'Country Code', 'dhl', 'dhl-for-shiptastic' ); ?> <?php echo wc_help_tip( _x( 'Leave empty to use the Receiver Id as fallback.', 'dhl', 'dhl-for-shiptastic' ) ); ?></th>
 						</tr>
 						</thead>
 						<tbody class="receiver_ids">
@@ -322,9 +317,9 @@ class Admin {
 						<tfoot>
 						<tr>
 							<th colspan="2" style="font-weight: normal; padding-right: 10px;">
-								<a href="#" class="add button"><?php echo esc_html_x( '+ Add receiver', 'dhl', 'woocommerce-germanized-dhl' ); ?></a>
-								<a href="#" class="remove_rows button"><?php echo esc_html_x( 'Remove selected receiver(s)', 'dhl', 'woocommerce-germanized-dhl' ); ?></a>
-								<a style="float: right; margin-right: 0; margin-left: 5px;" href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'wc-gzd-dhl-refresh-retoure-receiver-ids' ), $settings_url ), 'wc-gzd-dhl-refresh-retoure-receiver-ids' ) ); ?>" class="button button-primary"><?php echo esc_html_x( 'Refresh via API', 'dhl', 'woocommerce-germanized-dhl' ); ?></a>
+								<a href="#" class="add button"><?php echo esc_html_x( '+ Add receiver', 'dhl', 'dhl-for-shiptastic' ); ?></a>
+								<a href="#" class="remove_rows button"><?php echo esc_html_x( 'Remove selected receiver(s)', 'dhl', 'dhl-for-shiptastic' ); ?></a>
+								<a style="float: right; margin-right: 0; margin-left: 5px;" href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'wc-stc-dhl-refresh-retoure-receiver-ids' ), $settings_url ), 'wc-stc-dhl-refresh-retoure-receiver-ids' ) ); ?>" class="button button-primary"><?php echo esc_html_x( 'Refresh via API', 'dhl', 'dhl-for-shiptastic' ); ?></a>
 							</th>
 						</tr>
 						</tfoot>
@@ -353,17 +348,11 @@ class Admin {
 		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
-	public static function add_template_check( $check ) {
-		$check['germanized']['path'][] = Package::get_path() . '/templates';
-
-		return $check;
-	}
-
 	public static function add_legacy_meta_box() {
 		global $post;
 
 		if ( ! DHL::is_plugin_enabled() && ( $post && 'shop_order' === $post->post_type && get_post_meta( $post->ID, '_pr_shipment_dhl_label_tracking' ) ) ) {
-			add_meta_box( 'woocommerce-gzd-shipment-dhl-legacy-label', _x( 'DHL Label', 'dhl', 'woocommerce-germanized-dhl' ), array( __CLASS__, 'legacy_meta_box' ), 'shop_order', 'side', 'high' );
+			add_meta_box( 'woocommerce-gzd-shipment-dhl-legacy-label', _x( 'DHL Label', 'dhl', 'dhl-for-shiptastic' ), array( __CLASS__, 'legacy_meta_box' ), 'shop_order', 'side', 'high' );
 		}
 	}
 
@@ -375,29 +364,29 @@ class Admin {
 		$meta     = $order->get_meta( '_pr_shipment_dhl_label_tracking' );
 
 		if ( ! empty( $meta ) ) {
-			echo '<p>' . esc_html_x( 'This label has been generated by the DHL for WooCommerce Plugin and is shown for legacy purposes.', 'dhl', 'woocommerce-germanized-dhl' ) . '</p>';
-			echo '<a class="button button-primary" target="_blank" href="' . esc_url( self::get_legacy_label_download_url( $order_id ) ) . '">' . esc_html_x( 'Download label', 'dhl', 'woocommerce-germanized-dhl' ) . '</a>';
+			echo '<p>' . esc_html_x( 'This label has been generated by the DHL for WooCommerce Plugin and is shown for legacy purposes.', 'dhl', 'dhl-for-shiptastic' ) . '</p>';
+			echo '<a class="button button-primary" target="_blank" href="' . esc_url( self::get_legacy_label_download_url( $order_id ) ) . '">' . esc_html_x( 'Download label', 'dhl', 'dhl-for-shiptastic' ) . '</a>';
 		}
 	}
 
 	public static function get_legacy_label_download_url( $order_id ) {
 		$url = add_query_arg(
 			array(
-				'action'   => 'wc-gzd-dhl-download-legacy-label',
+				'action'   => 'wc-stc-dhl-download-legacy-label',
 				'order_id' => $order_id,
 				'force'    => 'yes',
 			),
-			wp_nonce_url( admin_url(), 'dhl-download-legacy-label' )
+			wp_nonce_url( admin_url(), 'wc-stc-dhl-download-legacy-label' )
 		);
 
 		return esc_url_raw( $url );
 	}
 
 	public static function download_legacy_label() {
-		if ( isset( $_GET['action'] ) && 'wc-gzd-dhl-download-legacy-label' === $_GET['action'] && isset( $_REQUEST['_wpnonce'] ) ) {
-			if ( isset( $_GET['order_id'] ) && wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'dhl-download-legacy-label' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if ( isset( $_GET['action'] ) && 'wc-stc-dhl-download-legacy-label' === $_GET['action'] && isset( $_REQUEST['_wpnonce'] ) ) {
+			if ( isset( $_GET['order_id'] ) && wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'wc-stc-dhl-download-legacy-label' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$order_id = absint( $_GET['order_id'] );
-				$args     = \Vendidero\Germanized\Shipments\Labels\DownloadHandler::parse_args(
+				$args     = \Vendidero\Shiptastic\Labels\DownloadHandler::parse_args(
 					array(
 						'force' => wc_string_to_bool( isset( $_GET['force'] ) ? wc_clean( wp_unslash( $_GET['force'] ) ) : false ),
 					)
@@ -413,7 +402,7 @@ class Admin {
 							if ( file_exists( $path ) ) {
 								$filename = basename( $path );
 
-								\Vendidero\Germanized\Shipments\Labels\DownloadHandler::download( $path, $filename, $args['force'] );
+								\Vendidero\Shiptastic\Labels\DownloadHandler::download( $path, $filename, $args['force'] );
 							}
 						}
 					}
@@ -429,24 +418,24 @@ class Admin {
 		$screen_id = $screen ? $screen->id : '';
 		$suffix    = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		wp_register_script( 'wc-gzd-admin-dhl-internetmarke', Package::get_assets_build_url( 'static/admin-internetmarke.js' ), array( 'jquery' ), Package::get_version() ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
-		wp_register_script( 'wc-gzd-admin-deutsche-post-label', Package::get_assets_build_url( 'static/admin-deutsche-post-label.js' ), array( 'wc-gzd-shipments-admin-shipment-modal' ), Package::get_version() ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
+		wp_register_script( 'wc-shiptastic-dhl-admin-internetmarke', Package::get_assets_build_url( 'static/admin-internetmarke.js' ), array( 'jquery' ), Package::get_version() ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
+		wp_register_script( 'wc-shiptastic-dhl-admin-deutsche-post-label', Package::get_assets_build_url( 'static/admin-deutsche-post-label.js' ), array( 'wc-stc-shipments-admin-shipment-modal' ), Package::get_version() ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
 
-		if ( wp_script_is( 'wc-gzd-shipments-admin-shipment-modal', 'enqueued' ) ) {
-			wp_enqueue_script( 'wc-gzd-admin-deutsche-post-label' );
+		if ( wp_script_is( 'wc-shiptastic-admin-shipment-modal', 'enqueued' ) ) {
+			wp_enqueue_script( 'wc-shiptastic-dhl-admin-deutsche-post-label' );
 
 			wp_localize_script(
-				'wc-gzd-admin-deutsche-post-label',
-				'wc_gzd_admin_deutsche_post_label_params',
+				'wc-shiptastic-dhl-admin-deutsche-post-label',
+				'wc_shiptastic_dhl_admin_deutsche_post_label_params',
 				array(
-					'refresh_label_preview_nonce' => wp_create_nonce( 'wc-gzd-dhl-refresh-deutsche-post-label-preview' ),
+					'refresh_label_preview_nonce' => wp_create_nonce( 'wc-stc-dhl-refresh-deutsche-post-label-preview' ),
 				)
 			);
 		}
 
 		// Shipping zone methods
 		if ( 'woocommerce_page_wc-settings' === $screen_id && isset( $_GET['provider'] ) && 'deutsche_post' === $_GET['provider'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			wp_enqueue_script( 'wc-gzd-admin-dhl-internetmarke' );
+			wp_enqueue_script( 'wc-shiptastic-dhl-admin-internetmarke' );
 		}
 	}
 
@@ -456,15 +445,15 @@ class Admin {
 		$suffix    = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		// Register admin styles.
-		wp_register_style( 'woocommerce_gzd_dhl_admin', Package::get_assets_build_url( 'static/admin-styles.css' ), array( 'woocommerce_admin_styles' ), Package::get_version() );
+		wp_register_style( 'woocommerce_stc_dhl_admin', Package::get_assets_build_url( 'static/admin-styles.css' ), array( 'woocommerce_admin_styles' ), Package::get_version() );
 
 		// Admin styles for WC pages only.
 		if ( in_array( $screen_id, self::get_screen_ids(), true ) ) {
-			wp_enqueue_style( 'woocommerce_gzd_dhl_admin' );
+			wp_enqueue_style( 'woocommerce_stc_dhl_admin' );
 		}
 	}
 
 	public static function get_screen_ids() {
-		return \Vendidero\Germanized\Shipments\Admin\Admin::get_screen_ids();
+		return \Vendidero\Shiptastic\Admin\Admin::get_screen_ids();
 	}
 }

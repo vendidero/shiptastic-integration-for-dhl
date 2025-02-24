@@ -1,4 +1,4 @@
-WooCommerce Germanized DHL
+DHL Germany for Shiptastic
 
 Copyright 2011 by the contributors
 

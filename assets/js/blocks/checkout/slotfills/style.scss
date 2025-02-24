@@ -1,10 +1,10 @@
-.wc-gzd-checkout-dhl {
-  .wc-gzd-dhl-preferred-days,
-  .wc-gzd-dhl-preferred-location {
+.wc-stc-checkout-dhl {
+  .wc-stc-dhl-preferred-days,
+  .wc-stc-dhl-preferred-location {
     margin-bottom: 1em;
   }
 
-  .wc-gzd-checkout-dhl-title {
+  .wc-stc-checkout-dhl-title {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -17,14 +17,14 @@
     }
   }
 
-  .wc-gzd-dhl-preferred-day-select {
+  .wc-stc-dhl-preferred-day-select {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     margin: 0;
     padding: 0;
 
-    .wc-gzd-dhl-preferred-day {
+    .wc-stc-dhl-preferred-day {
       color: inherit;
       flex-basis: 10%;
       flex-grow: 1;

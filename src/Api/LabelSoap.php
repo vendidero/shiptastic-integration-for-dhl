@@ -1,15 +1,15 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
 use Exception;
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\DHL\Label;
-use Vendidero\Germanized\Shipments\Admin\Settings;
-use Vendidero\Germanized\Shipments\Labels\Factory;
-use Vendidero\Germanized\Shipments\PDFMerger;
-use Vendidero\Germanized\Shipments\PDFSplitter;
-use Vendidero\Germanized\DHL\ParcelLocator;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\DHL\Label;
+use Vendidero\Shiptastic\Admin\Settings;
+use Vendidero\Shiptastic\Labels\Factory;
+use Vendidero\Shiptastic\PDFMerger;
+use Vendidero\Shiptastic\PDFSplitter;
+use Vendidero\Shiptastic\DHL\ParcelLocator;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -108,7 +108,7 @@ class LabelSoap extends Soap {
 		} catch ( Exception $e ) {
 			switch ( $e->getMessage() ) {
 				case 'Unauthorized':
-					$error->add( 'unauthorized', _x( 'Your DHL API credentials seem to be invalid.', 'dhl', 'woocommerce-germanized-dhl' ) );
+					$error->add( 'unauthorized', _x( 'Your DHL API credentials seem to be invalid.', 'dhl', 'dhl-for-shiptastic' ) );
 					break;
 				default:
 					$error->add( $e->getCode(), $e->getMessage() );
@@ -116,7 +116,7 @@ class LabelSoap extends Soap {
 			}
 		}
 
-		return wc_gzd_shipment_wp_error_has_errors( $error ) ? $error : true;
+		return wc_stc_shipment_wp_error_has_errors( $error ) ? $error : true;
 	}
 
 	/**
@@ -180,10 +180,10 @@ class LabelSoap extends Soap {
 
 			switch ( $e->getMessage() ) {
 				case 'Unauthorized':
-					throw new Exception( esc_html_x( 'Your DHL API credentials seem to be invalid. Please check your DHL settings.', 'dhl', 'woocommerce-germanized-dhl' ) );
+					throw new Exception( esc_html_x( 'Your DHL API credentials seem to be invalid. Please check your DHL settings.', 'dhl', 'dhl-for-shiptastic' ) );
 				case "SOAP-ERROR: Encoding: object has no 'customsTariffNumber' property":
 				case "SOAP-ERROR: Encoding: object has no 'countryCodeOrigin' property":
-					throw new Exception( esc_html_x( 'Your products are missing data relevant for custom declarations. Please provide missing DHL fields (country of origin, HS code) in your product data > shipping tab.', 'dhl', 'woocommerce-germanized-dhl' ) );
+					throw new Exception( esc_html_x( 'Your products are missing data relevant for custom declarations. Please provide missing DHL fields (country of origin, HS code) in your product data > shipping tab.', 'dhl', 'dhl-for-shiptastic' ) );
 			}
 
 			throw $e;
@@ -191,10 +191,10 @@ class LabelSoap extends Soap {
 
 		if ( ! isset( $response_body->Status ) || ! isset( $response_body->CreationState ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			if ( isset( $response_body->Status ) && ! empty( $response_body->Status->statusText ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-				throw new Exception( esc_html( sprintf( _x( 'There was an error contacting the DHL API: %s.', 'dhl', 'woocommerce-germanized-dhl' ), $response_body->Status->statusText ) ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				throw new Exception( esc_html( sprintf( _x( 'There was an error contacting the DHL API: %s.', 'dhl', 'dhl-for-shiptastic' ), $response_body->Status->statusText ) ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			}
 
-			throw new Exception( esc_html_x( 'An error ocurred while contacting the DHL API. Please consider enabling the sandbox mode.', 'dhl', 'woocommerce-germanized-dhl' ) );
+			throw new Exception( esc_html_x( 'An error ocurred while contacting the DHL API. Please consider enabling the sandbox mode.', 'dhl', 'dhl-for-shiptastic' ) );
 		}
 
 		return $this->update_label( $label, $response_body->Status, $response_body->CreationState ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -216,7 +216,7 @@ class LabelSoap extends Soap {
 
 				throw new Exception( wp_kses_post( $messages ) );
 			} else {
-				throw new Exception( esc_html_x( 'There was an error generating the label. Please try again or consider switching to sandbox mode.', 'dhl', 'woocommerce-germanized-dhl' ) );
+				throw new Exception( esc_html_x( 'There was an error generating the label. Please try again or consider switching to sandbox mode.', 'dhl', 'dhl-for-shiptastic' ) );
 			}
 		} else {
 			$return_label = false;
@@ -294,7 +294,7 @@ class LabelSoap extends Soap {
 				// Delete the label dues to errors.
 				$label->delete();
 
-				throw new Exception( esc_html_x( 'Error while creating and uploading the label', 'dhl', 'woocommerce-germanized-dhl' ) );
+				throw new Exception( esc_html_x( 'Error while creating and uploading the label', 'dhl', 'dhl-for-shiptastic' ) );
 			}
 
 			return $label;
@@ -333,12 +333,12 @@ class LabelSoap extends Soap {
 		 * @param Label\DHL $label The label object.
 		 *
 		 * @since 3.0.0
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		do_action( 'woocommerce_gzd_dhl_label_api_deleted', $label );
+		do_action( 'woocommerce_stc_dhl_label_api_deleted', $label );
 
 		if ( 0 !== $response_body->Status->statusCode ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-			throw new Exception( esc_html( sprintf( _x( 'Could not delete label - %s', 'dhl', 'woocommerce-germanized-dhl' ), $response_body->Status->statusMessage ) ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			throw new Exception( esc_html( sprintf( _x( 'Could not delete label - %s', 'dhl', 'dhl-for-shiptastic' ), $response_body->Status->statusMessage ) ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		}
 
 		return $label;
@@ -372,7 +372,7 @@ class LabelSoap extends Soap {
 		$dhl_provider = Package::get_dhl_shipping_provider();
 
 		if ( ! $shipment ) {
-			throw new Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'woocommerce-germanized-dhl' ), $label->get_shipment_id() ) ) );
+			throw new Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'dhl-for-shiptastic' ), $label->get_shipment_id() ) ) );
 		}
 
 		$services  = array();
@@ -389,7 +389,7 @@ class LabelSoap extends Soap {
 
 			switch ( $service ) {
 				case 'AdditionalInsurance':
-					$services[ $service ]['insuranceAmount'] = apply_filters( 'woocommerce_gzd_dhl_label_api_insurance_amount', $label->get_insurance_amount(), $shipment, $label );
+					$services[ $service ]['insuranceAmount'] = apply_filters( 'woocommerce_stc_dhl_label_api_insurance_amount', $label->get_insurance_amount(), $shipment, $label );
 					break;
 				case 'IdentCheck':
 					$services[ $service ]['Ident']['surname']     = $shipment->get_last_name();
@@ -409,7 +409,7 @@ class LabelSoap extends Soap {
 						'bank_bic'    => 'bic',
 					);
 
-					$ref_replacements = wc_gzd_dhl_get_label_payment_ref_placeholder( $shipment );
+					$ref_replacements = wc_stc_dhl_get_label_payment_ref_placeholder( $shipment );
 
 					foreach ( $bank_data_map as $key => $value ) {
 						if ( $setting_value = Package::get_setting( $key ) ) {
@@ -434,10 +434,10 @@ class LabelSoap extends Soap {
 					$services[ $service ]['details'] = $label->get_preferred_neighbor();
 					break;
 				case 'ParcelOutletRouting':
-					$services[ $service ]['details'] = wc_gzd_dhl_get_parcel_outlet_routing_email_address( $shipment );
+					$services[ $service ]['details'] = wc_stc_dhl_get_parcel_outlet_routing_email_address( $shipment );
 					break;
 				case 'Endorsement':
-					$services[ $service ]['type'] = wc_gzd_dhl_get_label_endorsement_type( $label, $shipment );
+					$services[ $service ]['type'] = wc_stc_dhl_get_label_endorsement_type( $label, $shipment );
 					break;
 				case 'ClosestDropPoint':
 					unset( $services[ $service ] );
@@ -455,8 +455,8 @@ class LabelSoap extends Soap {
 		}
 
 		$billing_number_args       = array( 'services' => $label->get_services() );
-		$account_number            = wc_gzd_dhl_get_billing_number( $label->get_product_id(), $billing_number_args );
-		$formatted_recipient_state = wc_gzd_dhl_format_label_state( $shipment->get_state(), $shipment->get_country() );
+		$account_number            = wc_stc_dhl_get_billing_number( $label->get_product_id(), $billing_number_args );
+		$formatted_recipient_state = wc_stc_dhl_format_label_state( $shipment->get_state(), $shipment->get_country() );
 
 		$dhl_label_body = array(
 			'Version'           => array(
@@ -471,7 +471,7 @@ class LabelSoap extends Soap {
 					'ShipmentDetails' => array(
 						'product'           => $label->get_product_id(),
 						'accountNumber'     => $account_number,
-						'customerReference' => wc_gzd_dhl_get_label_customer_reference( $label, $shipment ),
+						'customerReference' => wc_stc_dhl_get_label_customer_reference( $label, $shipment ),
 						'shipmentDate'      => Package::get_date_de_timezone( 'Y-m-d' ),
 						'ShipmentItem'      => array(
 							'weightInKG' => $label->get_weight(),
@@ -494,11 +494,11 @@ class LabelSoap extends Soap {
 							 * @param Label\DHL  $label The label instance.
 							 *
 							 * @since 3.0.3
-							 * @package Vendidero/Germanized/DHL
+							 * @package Vendidero/Shiptastic/DHL
 							 */
-							'name3'        => apply_filters( 'woocommerce_gzd_dhl_label_api_receiver_name3', wc_gzd_dhl_get_label_shipment_address_addition( $shipment ), $label ),
+							'name3'        => apply_filters( 'woocommerce_stc_dhl_label_api_receiver_name3', wc_stc_dhl_get_label_shipment_address_addition( $shipment ), $label ),
 							'streetName'   => $shipment->get_address_street(),
-							'streetNumber' => wc_gzd_dhl_get_label_shipment_street_number( $shipment ),
+							'streetNumber' => wc_stc_dhl_get_label_shipment_street_number( $shipment ),
 							'zip'          => $shipment->get_postcode(),
 							'city'         => $shipment->get_city(),
 							/**
@@ -508,9 +508,9 @@ class LabelSoap extends Soap {
 							 * @param Label\DHL  $label The label instance.
 							 *
 							 * @since 3.0.3
-							 * @package Vendidero/Germanized/DHL
+							 * @package Vendidero/Shiptastic/DHL
 							 */
-							'province'     => apply_filters( 'woocommerce_gzd_dhl_label_api_province', ( ! $shipment->is_shipping_inner_eu() && $shipment->get_city() !== $formatted_recipient_state ? $formatted_recipient_state : '' ), $label ),
+							'province'     => apply_filters( 'woocommerce_stc_dhl_label_api_province', ( ! $shipment->is_shipping_inner_eu() && $shipment->get_city() !== $formatted_recipient_state ? $formatted_recipient_state : '' ), $label ),
 							'Origin'       => array(
 								'countryISOCode' => $shipment->get_country(),
 								'state'          => $formatted_recipient_state,
@@ -525,9 +525,9 @@ class LabelSoap extends Soap {
 							 * @param Label\DHL  $label The label instance.
 							 *
 							 * @since 3.0.5
-							 * @package Vendidero/Germanized/DHL
+							 * @package Vendidero/Shiptastic/DHL
 							 */
-							'contactPerson' => apply_filters( 'woocommerce_gzd_dhl_label_api_communication_contact_person', $shipment->get_formatted_full_name(), $label ),
+							'contactPerson' => apply_filters( 'woocommerce_stc_dhl_label_api_communication_contact_person', $shipment->get_formatted_full_name(), $label ),
 							/**
 							 * Choose whether to transfer the phone number to DHL on creating a label.
 							 * By default the phone number is not transmitted.
@@ -536,9 +536,9 @@ class LabelSoap extends Soap {
 							 * @param Label\DHL  $label The label instance.
 							 *
 							 * @since 3.0.3
-							 * @package Vendidero/Germanized/DHL
+							 * @package Vendidero/Shiptastic/DHL
 							 */
-							'phone'         => apply_filters( 'woocommerce_gzd_dhl_label_api_communication_phone', '', $label ),
+							'phone'         => apply_filters( 'woocommerce_stc_dhl_label_api_communication_phone', '', $label ),
 							/**
 							 * Choose whether to transfer the email to DHL on creating a label.
 							 * By default the email is only transmitted if the customer opted in.
@@ -550,9 +550,9 @@ class LabelSoap extends Soap {
 							 * @param Label\DHL  $label The label instance.
 							 *
 							 * @since 3.0.3
-							 * @package Vendidero/Germanized/DHL
+							 * @package Vendidero/Shiptastic/DHL
 							 */
-							'email'         => apply_filters( 'woocommerce_gzd_dhl_label_api_communication_email', $label->has_email_notification() || isset( $services['CDP'] ) ? $shipment->get_email() : '', $label ),
+							'email'         => apply_filters( 'woocommerce_stc_dhl_label_api_communication_email', $label->has_email_notification() || isset( $services['CDP'] ) ? $shipment->get_email() : '', $label ),
 						),
 					),
 				),
@@ -568,23 +568,23 @@ class LabelSoap extends Soap {
 		 * @param Label\DHL  $label The label instance.
 		 *
 		 * @since 3.0.5
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		$shipper_reference = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_reference', $dhl_provider->has_custom_shipper_reference() ? $dhl_provider->get_label_custom_shipper_reference() : '', $label );
+		$shipper_reference = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_reference', $dhl_provider->has_custom_shipper_reference() ? $dhl_provider->get_label_custom_shipper_reference() : '', $label );
 
 		if ( ! empty( $shipper_reference ) ) {
 			$dhl_label_body['ShipmentOrder']['Shipment']['ShipperReference'] = $shipper_reference;
 		} else {
-			$name1         = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_name1', $shipment->get_sender_company() ? $shipment->get_sender_company() : $shipment->get_formatted_sender_full_name(), $label );
-			$name2         = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_name2', $shipment->get_sender_company() ? $shipment->get_formatted_sender_full_name() : '', $label );
-			$street_number = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_street_number', $shipment->get_sender_address_street_number(), $label );
-			$street        = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_street_name', $shipment->get_sender_address_street(), $label );
-			$zip           = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_zip', $shipment->get_sender_postcode(), $label );
-			$city          = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_city', $shipment->get_sender_city(), $label );
-			$phone         = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_phone', $shipment->get_sender_phone(), $label );
-			$email         = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_email', $shipment->get_sender_email(), $label );
-			$country       = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_country', $shipment->get_sender_country(), $label );
-			$state         = apply_filters( 'woocommerce_gzd_dhl_label_api_shipper_state', $shipment->get_sender_state(), $label );
+			$name1         = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_name1', $shipment->get_sender_company() ? $shipment->get_sender_company() : $shipment->get_formatted_sender_full_name(), $label );
+			$name2         = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_name2', $shipment->get_sender_company() ? $shipment->get_formatted_sender_full_name() : '', $label );
+			$street_number = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_street_number', $shipment->get_sender_address_street_number(), $label );
+			$street        = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_street_name', $shipment->get_sender_address_street(), $label );
+			$zip           = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_zip', $shipment->get_sender_postcode(), $label );
+			$city          = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_city', $shipment->get_sender_city(), $label );
+			$phone         = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_phone', $shipment->get_sender_phone(), $label );
+			$email         = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_email', $shipment->get_sender_email(), $label );
+			$country       = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_country', $shipment->get_sender_country(), $label );
+			$state         = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_state', $shipment->get_sender_state(), $label );
 
 			$fields_necessary = array(
 				'street'        => $street,
@@ -594,7 +594,7 @@ class LabelSoap extends Soap {
 				'city'          => $city,
 			);
 
-			$address_fields         = wc_gzd_get_shipment_setting_default_address_fields();
+			$address_fields         = wc_stc_get_shipment_setting_default_address_fields();
 			$missing_address_fields = array();
 
 			foreach ( $fields_necessary as $field => $value ) {
@@ -604,7 +604,7 @@ class LabelSoap extends Soap {
 			}
 
 			if ( ! empty( $missing_address_fields ) ) {
-				throw new Exception( wp_kses_post( sprintf( _x( 'Your shipper address is incomplete (%1$s). Please validate your <a href="%2$s">settings</a> and try again.', 'dhl', 'woocommerce-germanized-dhl' ), implode( ', ', $missing_address_fields ), esc_url( Settings::get_settings_url( 'general', 'business_information' ) ) ) ) );
+				throw new Exception( wp_kses_post( sprintf( _x( 'Your shipper address is incomplete (%1$s). Please validate your <a href="%2$s">settings</a> and try again.', 'dhl', 'dhl-for-shiptastic' ), implode( ', ', $missing_address_fields ), esc_url( Settings::get_settings_url( 'general', 'business_information' ) ) ) ) );
 			}
 
 			$dhl_label_body['ShipmentOrder']['Shipment']['Shipper'] = array(
@@ -619,7 +619,7 @@ class LabelSoap extends Soap {
 					'city'         => $city,
 					'Origin'       => array(
 						'countryISOCode' => $country,
-						'state'          => wc_gzd_dhl_format_label_state( $state, $country ),
+						'state'          => wc_stc_dhl_format_label_state( $state, $country ),
 					),
 				),
 				'Communication' => array(
@@ -630,8 +630,8 @@ class LabelSoap extends Soap {
 			);
 		}
 
-		$label_custom_format        = wc_gzd_dhl_get_custom_label_format( $label );
-		$label_custom_return_format = wc_gzd_dhl_get_custom_label_format( $label, 'inlay_return' );
+		$label_custom_format        = wc_stc_dhl_get_custom_label_format( $label );
+		$label_custom_return_format = wc_stc_dhl_get_custom_label_format( $label, 'inlay_return' );
 
 		if ( ! empty( $label_custom_format ) ) {
 			$dhl_label_body['labelFormat'] = $label_custom_format;
@@ -651,7 +651,7 @@ class LabelSoap extends Soap {
 					'city'   => $shipment->get_city(),
 					'Origin' => array(
 						'countryISOCode' => $shipment->get_country(),
-						'state'          => wc_gzd_dhl_format_label_state( $shipment->get_state(), $shipment->get_country() ),
+						'state'          => wc_stc_dhl_format_label_state( $shipment->get_state(), $shipment->get_country() ),
 					),
 				);
 
@@ -678,8 +678,8 @@ class LabelSoap extends Soap {
 		}
 
 		if ( $label->has_inlay_return() ) {
-			$dhl_label_body['ShipmentOrder']['Shipment']['ShipmentDetails']['returnShipmentAccountNumber'] = wc_gzd_dhl_get_billing_number( 'return', $billing_number_args );
-			$dhl_label_body['ShipmentOrder']['Shipment']['ShipmentDetails']['returnShipmentReference']     = wc_gzd_dhl_get_inlay_return_label_reference( $label, $shipment );
+			$dhl_label_body['ShipmentOrder']['Shipment']['ShipmentDetails']['returnShipmentAccountNumber'] = wc_stc_dhl_get_billing_number( 'return', $billing_number_args );
+			$dhl_label_body['ShipmentOrder']['Shipment']['ShipmentDetails']['returnShipmentReference']     = wc_stc_dhl_get_inlay_return_label_reference( $label, $shipment );
 
 			$dhl_label_body['ShipmentOrder']['Shipment']['ReturnReceiver'] = array(
 				'Name'          => array(
@@ -693,7 +693,7 @@ class LabelSoap extends Soap {
 					'city'         => $label->get_return_city(),
 					'Origin'       => array(
 						'countryISOCode' => $label->get_return_country(),
-						'state'          => wc_gzd_dhl_format_label_state( $label->get_return_state(), $label->get_return_country() ),
+						'state'          => wc_stc_dhl_format_label_state( $label->get_return_state(), $label->get_return_country() ),
 					),
 				),
 				'Communication' => array(
@@ -710,10 +710,10 @@ class LabelSoap extends Soap {
 
 		if ( Package::is_crossborder_shipment( $shipment->get_country(), $shipment->get_postcode() ) ) {
 			if ( count( $shipment->get_items() ) > self::DHL_MAX_ITEMS ) {
-				throw new Exception( esc_html( sprintf( _x( 'Only %1$s shipment items can be processed, your shipment has %2$s items.', 'dhl', 'woocommerce-germanized-dhl' ), self::DHL_MAX_ITEMS, count( $shipment->get_items() ) ) ) );
+				throw new Exception( esc_html( sprintf( _x( 'Only %1$s shipment items can be processed, your shipment has %2$s items.', 'dhl', 'dhl-for-shiptastic' ), self::DHL_MAX_ITEMS, count( $shipment->get_items() ) ) ) );
 			}
 
-			$customs_label_data = wc_gzd_dhl_get_shipment_customs_data( $label );
+			$customs_label_data = wc_stc_dhl_get_shipment_customs_data( $label );
 			$customs_items      = array();
 
 			foreach ( $customs_label_data['items'] as $item_id => $item_data ) {
@@ -759,19 +759,19 @@ class LabelSoap extends Soap {
 				 * @param Label\Label $label The label instance.
 				 *
 				 * @since 3.3.4
-				 * @package Vendidero/Germanized/DHL
+				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'invoiceNumber'              => apply_filters( 'woocommerce_gzd_dhl_label_api_export_invoice_number', $customs_label_data['invoice_number'], $label ),
+				'invoiceNumber'              => apply_filters( 'woocommerce_stc_dhl_label_api_export_invoice_number', $customs_label_data['invoice_number'], $label ),
 			);
 
 			if ( ! empty( $customs_label_data['export_reference_number'] ) ) {
 				$customs_data['WithElectronicExportNtfctn'] = array(
 					'active' => 1,
 				);
-				$customs_data['MRN']                        = wc_gzd_shipments_substring( preg_replace( '/[^A-Za-z0-9]/', '', $customs_label_data['export_reference_number'] ), 0, 18 );
+				$customs_data['MRN']                        = wc_shiptastic_substring( preg_replace( '/[^A-Za-z0-9]/', '', $customs_label_data['export_reference_number'] ), 0, 18 );
 			}
 
-			$dhl_label_body['ShipmentOrder']['Shipment']['ExportDocument'] = apply_filters( 'woocommerce_gzd_dhl_label_api_customs_data', $customs_data, $label );
+			$dhl_label_body['ShipmentOrder']['Shipment']['ExportDocument'] = apply_filters( 'woocommerce_stc_dhl_label_api_customs_data', $customs_data, $label );
 		}
 
 		// Unset/remove any items that are empty strings or 0, even if required!
@@ -793,7 +793,7 @@ class LabelSoap extends Soap {
 			}
 		}
 
-		return apply_filters( 'woocommerce_gzd_dhl_label_api_create_label_request', $this->body_request, $label, $shipment, $this );
+		return apply_filters( 'woocommerce_stc_dhl_label_api_create_label_request', $this->body_request, $label, $shipment, $this );
 	}
 
 	protected function get_export_type( $customs_data, $label ) {
@@ -828,8 +828,8 @@ class LabelSoap extends Soap {
 		 * @param Label\Label  $label The label instance.
 		 *
 		 * @since 3.3.0
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_gzd_dhl_label_api_export_type', strtoupper( $export_type ), $label );
+		return apply_filters( 'woocommerce_stc_dhl_label_api_export_type', strtoupper( $export_type ), $label );
 	}
 }

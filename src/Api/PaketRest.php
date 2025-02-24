@@ -1,23 +1,23 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\DHL\Label;
-use Vendidero\Germanized\DHL\ParcelLocator;
-use Vendidero\Germanized\Shipments\Admin\Settings;
-use Vendidero\Germanized\Shipments\API\Response;
-use Vendidero\Germanized\Shipments\Labels\Factory;
-use Vendidero\Germanized\Shipments\PDFMerger;
-use Vendidero\Germanized\Shipments\PDFSplitter;
-use Vendidero\Germanized\Shipments\ShipmentError;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\DHL\Label;
+use Vendidero\Shiptastic\DHL\ParcelLocator;
+use Vendidero\Shiptastic\Admin\Settings;
+use Vendidero\Shiptastic\API\Response;
+use Vendidero\Shiptastic\Labels\Factory;
+use Vendidero\Shiptastic\PDFMerger;
+use Vendidero\Shiptastic\PDFSplitter;
+use Vendidero\Shiptastic\ShipmentError;
 
 defined( 'ABSPATH' ) || exit;
 
-abstract class PaketRest extends \Vendidero\Germanized\Shipments\API\REST {
+abstract class PaketRest extends \Vendidero\Shiptastic\API\REST {
 
 	protected function get_auth_instance() {
-		if ( apply_filters( 'woocommerce_gzd_dhl_paket_rest_api_use_oauth', true ) ) {
+		if ( apply_filters( 'woocommerce_stc_dhl_paket_rest_api_use_oauth', true ) ) {
 			return new OAuthPaket( $this );
 		} else {
 			return new BasicAuthPaket( $this );
@@ -59,7 +59,7 @@ abstract class PaketRest extends \Vendidero\Germanized\Shipments\API\REST {
 				}
 			}
 		} elseif ( empty( $response_body['status']['detail'] ) && empty( $response_body['detail'] ) ) {
-			$error_message = _x( 'POST error or timeout occurred. Please try again later.', 'dhl', 'woocommerce-germanized-dhl' );
+			$error_message = _x( 'POST error or timeout occurred. Please try again later.', 'dhl', 'dhl-for-shiptastic' );
 
 			if ( ! in_array( $error_message, $error_messages, true ) ) {
 				$error_messages[] = $error_message;

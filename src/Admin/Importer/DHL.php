@@ -1,8 +1,8 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Admin\Importer;
+namespace Vendidero\Shiptastic\DHL\Admin\Importer;
 
-use Vendidero\Germanized\DHL\Package;
+use Vendidero\Shiptastic\DHL\Package;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -99,14 +99,14 @@ class DHL {
 				$prop_name = $address_type . '_' . $prop;
 
 				if ( ! empty( $old_settings[ 'dhl_' . $prop_name ] ) ) {
-					update_option( "woocommerce_gzd_shipments_{$address_type}_address_{$new_prop}", $old_settings[ 'dhl_' . $prop_name ] );
+					update_option( "woocommerce_shiptastic_{$address_type}_address_{$new_prop}", $old_settings[ 'dhl_' . $prop_name ] );
 				}
 			}
 
 			if ( ! empty( $old_settings[ "dhl_{$address_type}_address" ] ) ) {
 				$address_1 = $old_settings[ "dhl_{$address_type}_address" ] . ' ' . ( isset( $old_settings[ "dhl_{$address_type}_address_no" ] ) ? $old_settings[ "dhl_{$address_type}_address_no" ] : '' );
 
-				update_option( "woocommerce_gzd_shipments_{$address_type}_address_address_1", $address_1 );
+				update_option( "woocommerce_shiptastic_{$address_type}_address_address_1", $address_1 );
 			}
 
 			if ( ! empty( $old_settings[ "dhl_{$address_type}_name" ] ) ) {
@@ -115,8 +115,8 @@ class DHL {
 				$first_name = implode( ' ', array_splice( $name_first, 0, ( count( $name ) - 1 ) ) );
 				$last_name  = $name[ count( $name ) - 1 ];
 
-				update_option( "woocommerce_gzd_shipments_{$address_type}_address_first_name", $first_name );
-				update_option( "woocommerce_gzd_shipments_{$address_type}_address_last_name", $last_name );
+				update_option( "woocommerce_shiptastic_{$address_type}_address_first_name", $first_name );
+				update_option( "woocommerce_shiptastic_{$address_type}_address_last_name", $last_name );
 			}
 		}
 
@@ -133,13 +133,13 @@ class DHL {
 
 		if ( ! empty( $shipper_country ) && ! empty( $isos ) ) {
 			if ( ( $key = array_search( $shipper_country, $isos, true ) ) !== false ) {
-				update_option( 'woocommerce_gzd_shipments_shipper_address_country', $key );
+				update_option( 'woocommerce_shiptastic_shipper_address_country', $key );
 			}
 		}
 
 		if ( ! empty( $return_country ) && ! empty( $isos ) ) {
 			if ( ( $key = array_search( $return_country, $isos, true ) ) !== false ) {
-				update_option( 'woocommerce_gzd_shipments_return_address_country', $key );
+				update_option( 'woocommerce_shiptastic_return_address_country', $key );
 			}
 		}
 

@@ -1,17 +1,17 @@
 <?php
 
-namespace Vendidero\Germanized\DHL;
+namespace Vendidero\Shiptastic\DHL;
 
 use DateTime;
 use DateTimeZone;
 use Exception;
-use Vendidero\Germanized\DHL\Api\Paket;
-use Vendidero\Germanized\DHL\ShippingProvider\DeutschePost;
-use Vendidero\Germanized\DHL\ShippingProvider\DHL;
-use Vendidero\Germanized\DHL\Api\Internetmarke;
-use Vendidero\Germanized\Shipments\Registry\Container;
-use Vendidero\Germanized\Shipments\Shipment;
-use Vendidero\Germanized\Shipments\ShippingProvider\Helper;
+use Vendidero\Shiptastic\DHL\Api\Paket;
+use Vendidero\Shiptastic\DHL\ShippingProvider\DeutschePost;
+use Vendidero\Shiptastic\DHL\ShippingProvider\DHL;
+use Vendidero\Shiptastic\DHL\Api\Internetmarke;
+use Vendidero\Shiptastic\Registry\Container;
+use Vendidero\Shiptastic\Shipment;
+use Vendidero\Shiptastic\ShippingProvider\Helper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,8 +26,6 @@ class Package {
 	 * @var string
 	 */
 	const VERSION = '3.5.0';
-
-	public static $upload_dir_suffix = '';
 
 	// These are all considered domestic by DHL
 	protected static $us_territories = array( 'US', 'GU', 'AS', 'PR', 'UM', 'VI' );
@@ -46,14 +44,14 @@ class Package {
 	public static function init() {
 		if ( self::has_dependencies() ) {
 			// Add shipping provider
-			add_filter( 'woocommerce_gzd_shipping_provider_class_names', array( __CLASS__, 'add_shipping_provider_class_name' ), 10, 1 );
+			add_filter( 'woocommerce_shiptastic_shipping_provider_class_names', array( __CLASS__, 'add_shipping_provider_class_name' ), 10, 1 );
 		}
 
 		/**
 		 * Make sure provider is loaded after main shipments module.
 		 */
-		if ( ! did_action( 'woocommerce_gzd_shipments_init' ) ) {
-			add_action( 'woocommerce_gzd_shipments_init', array( __CLASS__, 'on_shipments_init' ) );
+		if ( ! did_action( 'woocommerce_shiptastic_init' ) ) {
+			add_action( 'woocommerce_shiptastic_init', array( __CLASS__, 'on_shipments_init' ) );
 		} else {
 			self::on_shipments_init();
 		}
@@ -64,14 +62,11 @@ class Package {
 			return;
 		}
 
-		// Legacy data store
-		add_filter( 'woocommerce_data_stores', array( __CLASS__, 'register_data_stores' ), 10, 1 );
-		add_filter( 'woocommerce_gzd_shipment_is_shipping_domestic', array( __CLASS__, 'shipping_domestic' ), 10, 2 );
-		add_filter( 'woocommerce_gzd_shipment_is_shipping_inner_eu', array( __CLASS__, 'shipping_inner_eu' ), 10, 2 );
+		add_filter( 'woocommerce_shiptastic_shipment_is_shipping_domestic', array( __CLASS__, 'shipping_domestic' ), 10, 2 );
+		add_filter( 'woocommerce_shiptastic_shipment_is_shipping_inner_eu', array( __CLASS__, 'shipping_inner_eu' ), 10, 2 );
 
 		self::includes();
 		self::define_tables();
-		self::maybe_set_upload_dir();
 
 		if ( self::is_enabled() ) {
 			self::init_hooks();
@@ -92,7 +87,7 @@ class Package {
 			/**
 			 * Inner DE to Helgoland are not treated as crossborder
 			 */
-			if ( 'DE' === \Vendidero\Germanized\Shipments\Package::get_base_country() && 'DE' === $shipment->get_country() ) {
+			if ( 'DE' === \Vendidero\Shiptastic\Package::get_base_country() && 'DE' === $shipment->get_country() ) {
 				$is_shipping_domestic = true;
 			}
 		}
@@ -114,7 +109,7 @@ class Package {
 			/**
 			 * Shipments to Helgoland are not treated as crossborder
 			 */
-			if ( \Vendidero\Germanized\Shipments\Package::base_country_belongs_to_eu_customs_area() && 'DE' === $shipment->get_country() ) {
+			if ( \Vendidero\Shiptastic\Package::base_country_belongs_to_eu_customs_area() && 'DE' === $shipment->get_country() ) {
 				$is_shipping_inner_eu = true;
 			}
 		}
@@ -123,7 +118,7 @@ class Package {
 	}
 
 	public static function has_dependencies() {
-		return ( class_exists( 'WooCommerce' ) && class_exists( '\Vendidero\Germanized\Shipments\Package' ) && \Vendidero\Germanized\Shipments\Package::has_dependencies() && self::base_country_is_supported() && apply_filters( 'woocommerce_gzd_dhl_enabled', true ) );
+		return ( class_exists( 'WooCommerce' ) && class_exists( '\Vendidero\Shiptastic\Package' ) && \Vendidero\Shiptastic\Package::has_dependencies() && self::base_country_is_supported() && apply_filters( 'woocommerce_stc_dhl_enabled', true ) );
 	}
 
 	public static function has_load_dependencies() {
@@ -182,9 +177,9 @@ class Package {
 		 * @param string $country The country as ISO code.
 		 *
 		 * @since 3.0.0
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_gzd_dhl_holidays', $holidays, $country );
+		return apply_filters( 'woocommerce_stc_dhl_holidays', $holidays, $country );
 	}
 
 	/**
@@ -195,8 +190,8 @@ class Package {
 
 		// List of tables without prefixes.
 		$tables = array(
-			'gzd_dhl_im_products'         => 'woocommerce_gzd_dhl_im_products',
-			'gzd_dhl_im_product_services' => 'woocommerce_gzd_dhl_im_product_services',
+			'gzd_dhl_im_products'         => 'woocommerce_stc_dhl_im_products',
+			'gzd_dhl_im_product_services' => 'woocommerce_stc_dhl_im_product_services',
 		);
 
 		foreach ( $tables as $name => $table ) {
@@ -208,7 +203,7 @@ class Package {
 	public static function legacy_label_table_exists() {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . 'woocommerce_gzd_dhl_labels';
+		$table_name = $wpdb->prefix . 'woocommerce_stc_dhl_labels';
 		$query      = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
 
 		if ( $table_name !== $wpdb->get_var( $query ) ) { // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
@@ -216,16 +211,6 @@ class Package {
 		}
 
 		return true;
-	}
-
-	public static function maybe_set_upload_dir() {
-		// Create a dir suffix
-		if ( ! get_option( 'woocommerce_gzd_dhl_upload_dir_suffix', false ) ) {
-			self::$upload_dir_suffix = substr( self::generate_key(), 0, 10 );
-			update_option( 'woocommerce_gzd_dhl_upload_dir_suffix', self::$upload_dir_suffix );
-		} else {
-			self::$upload_dir_suffix = get_option( 'woocommerce_gzd_dhl_upload_dir_suffix' );
-		}
 	}
 
 	public static function is_enabled() {
@@ -241,12 +226,11 @@ class Package {
 	}
 
 	public static function get_country_iso_alpha3( $country_code ) {
-		return \Vendidero\Germanized\Shipments\Package::get_country_iso_alpha3( $country_code );
+		return \Vendidero\Shiptastic\Package::get_country_iso_alpha3( $country_code );
 	}
 
 	private static function includes() {
-		include_once self::get_path() . '/includes/wc-gzd-dhl-core-functions.php';
-		include_once self::get_path() . '/includes/wc-gzd-dhl-legacy-functions.php';
+		include_once self::get_path() . '/includes/wc-stc-dhl-core-functions.php';
 
 		if ( self::is_enabled() ) {
 			self::container()->get( Bootstrap::class );
@@ -286,7 +270,7 @@ class Package {
 		add_filter( 'woocommerce_gzd_default_plugin_template', array( __CLASS__, 'filter_templates' ), 10, 3 );
 
 		// Register additional label types
-		add_filter( 'woocommerce_gzd_shipment_label_types', array( __CLASS__, 'register_label_types' ), 10 );
+		add_filter( 'woocommerce_shiptastic_shipment_label_types', array( __CLASS__, 'register_label_types' ), 10 );
 	}
 
 	public static function register_label_types( $types ) {
@@ -323,9 +307,9 @@ class Package {
 	 * @return false|DHL
 	 */
 	public static function get_dhl_shipping_provider() {
-		$provider = wc_gzd_get_shipping_provider( 'dhl' );
+		$provider = wc_stc_get_shipping_provider( 'dhl' );
 
-		if ( ! is_a( $provider, '\Vendidero\Germanized\DHL\ShippingProvider\DHL' ) ) {
+		if ( ! is_a( $provider, '\Vendidero\Shiptastic\DHL\ShippingProvider\DHL' ) ) {
 			return false;
 		}
 
@@ -336,9 +320,9 @@ class Package {
 	 * @return false|DeutschePost
 	 */
 	public static function get_deutsche_post_shipping_provider() {
-		$provider = wc_gzd_get_shipping_provider( 'deutsche_post' );
+		$provider = wc_stc_get_shipping_provider( 'deutsche_post' );
 
-		if ( ! is_a( $provider, '\Vendidero\Germanized\DHL\ShippingProvider\DeutschePost' ) ) {
+		if ( ! is_a( $provider, '\Vendidero\Shiptastic\DHL\ShippingProvider\DeutschePost' ) ) {
 			return false;
 		}
 
@@ -354,8 +338,8 @@ class Package {
 	}
 
 	public static function add_shipping_provider_class_name( $class_names ) {
-		$class_names['dhl']           = '\Vendidero\Germanized\DHL\ShippingProvider\DHL';
-		$class_names['deutsche_post'] = '\Vendidero\Germanized\DHL\ShippingProvider\DeutschePost';
+		$class_names['dhl']           = '\Vendidero\Shiptastic\DHL\ShippingProvider\DHL';
+		$class_names['deutsche_post'] = '\Vendidero\Shiptastic\DHL\ShippingProvider\DeutschePost';
 
 		return $class_names;
 	}
@@ -371,13 +355,7 @@ class Package {
 	}
 
 	public static function is_integration() {
-		return class_exists( 'WooCommerce_Germanized' ) ? true : false;
-	}
-
-	public static function register_data_stores( $stores ) {
-		$stores['dhl-legacy-label'] = 'Vendidero\Germanized\DHL\Legacy\DataStores\Label';
-
-		return $stores;
+		return \Vendidero\Shiptastic\Package::is_integration() ? true : false;
 	}
 
 	public static function get_api() {
@@ -423,7 +401,7 @@ class Package {
 	 * @return string
 	 */
 	public static function get_i18n_path() {
-		return apply_filters( 'woocommerce_gzd_dhl_get_i18n_path', self::get_path( 'i18n/languages' ) );
+		return apply_filters( 'woocommerce_stc_dhl_get_i18n_path', self::get_path( 'i18n/languages' ) );
 	}
 
 	/**
@@ -432,11 +410,11 @@ class Package {
 	 * @return string
 	 */
 	public static function get_i18n_textdomain() {
-		return apply_filters( 'woocommerce_gzd_dhl_get_i18n_textdomain', 'woocommerce-germanized-dhl' );
+		return apply_filters( 'woocommerce_stc_dhl_get_i18n_textdomain', 'dhl-for-shiptastic' );
 	}
 
 	public static function get_template_path() {
-		return 'woocommerce-germanized/';
+		return \Vendidero\Shiptastic\Package::get_template_path();
 	}
 
 	/**
@@ -484,7 +462,7 @@ class Package {
 	}
 
 	public static function is_debug_mode() {
-		$is_debug_mode = ( defined( 'WC_GZD_DHL_DEBUG' ) && WC_GZD_DHL_DEBUG );
+		$is_debug_mode = ( defined( 'WC_STC_DHL_DEBUG' ) && WC_STC_DHL_DEBUG );
 
 		if ( ! $is_debug_mode && ( $provider = self::get_dhl_shipping_provider() ) ) {
 			$is_debug_mode = $provider->is_sandbox();
@@ -494,7 +472,7 @@ class Package {
 	}
 
 	public static function enable_logging() {
-		return ( defined( 'WC_GZD_DHL_LOG_ENABLE' ) && WC_GZD_DHL_LOG_ENABLE ) || self::is_debug_mode();
+		return ( defined( 'WC_STC_DHL_LOG_ENABLE' ) && WC_STC_DHL_LOG_ENABLE ) || self::is_debug_mode();
 	}
 
 	private static function define_constant( $name, $value ) {
@@ -517,10 +495,6 @@ class Package {
 
 	public static function get_internetmarke_main_url() {
 		return 'https://internetmarke.deutschepost.de/OneClickForAppV3?wsdl';
-	}
-
-	public static function get_warenpost_international_rest_url() {
-		return 'https://api.deutschepost.com';
 	}
 
 	public static function get_internetmarke_products_url() {
@@ -560,48 +534,16 @@ class Package {
 	}
 
 	public static function get_internetmarke_username() {
-		if ( self::is_debug_mode() && defined( 'WC_GZD_DHL_IM_SANDBOX_USER' ) ) {
-			return WC_GZD_DHL_IM_SANDBOX_USER;
-		} else {
-			return self::get_setting( 'deutsche_post_api_username' );
-		}
-	}
-
-	public static function get_internetmarke_warenpost_int_ekp() {
-		$ekp = self::get_setting( 'deutsche_post_warenpost_int_ekp' );
-
-		if ( empty( $ekp ) ) {
-			$ekp = '0000012207';
-		}
-
-		return $ekp;
-	}
-
-	/**
-	 * The Warenpost International API (necessary for customs forms)
-	 * needs separate Sandbox credentials. In live mode the Portokasse credentials are being used.
-	 *
-	 * @return string
-	 */
-	public static function get_internetmarke_warenpost_int_username() {
-		if ( self::is_debug_mode() && defined( 'WC_GZD_DHL_IM_WP_SANDBOX_USER' ) ) {
-			return WC_GZD_DHL_IM_WP_SANDBOX_USER;
+		if ( self::is_debug_mode() && defined( 'WC_STC_DHL_IM_SANDBOX_USER' ) ) {
+			return WC_STC_DHL_IM_SANDBOX_USER;
 		} else {
 			return self::get_setting( 'deutsche_post_api_username' );
 		}
 	}
 
 	public static function get_internetmarke_password() {
-		if ( self::is_debug_mode() && defined( 'WC_GZD_DHL_IM_SANDBOX_PASSWORD' ) ) {
-			return WC_GZD_DHL_IM_SANDBOX_PASSWORD;
-		} else {
-			return self::get_setting( 'deutsche_post_api_password' );
-		}
-	}
-
-	public static function get_internetmarke_warenpost_int_password() {
-		if ( self::is_debug_mode() && defined( 'WC_GZD_DHL_IM_WP_SANDBOX_PASSWORD' ) ) {
-			return WC_GZD_DHL_IM_WP_SANDBOX_PASSWORD;
+		if ( self::is_debug_mode() && defined( 'WC_STC_DHL_IM_SANDBOX_PASSWORD' ) ) {
+			return WC_STC_DHL_IM_SANDBOX_PASSWORD;
 		} else {
 			return self::get_setting( 'deutsche_post_api_password' );
 		}
@@ -613,7 +555,7 @@ class Package {
 	 * @return mixed|string|void
 	 */
 	public static function get_cig_user() {
-		$debug_user = defined( 'WC_GZD_DHL_SANDBOX_USER' ) ? WC_GZD_DHL_SANDBOX_USER : self::get_setting( 'api_sandbox_username' );
+		$debug_user = defined( 'WC_STC_DHL_SANDBOX_USER' ) ? WC_STC_DHL_SANDBOX_USER : self::get_setting( 'api_sandbox_username' );
 		$debug_user = strtolower( $debug_user );
 
 		return self::is_debug_mode() ? $debug_user : self::get_app_id();
@@ -625,7 +567,7 @@ class Package {
 	 * @return mixed|string|void
 	 */
 	public static function get_cig_password() {
-		$debug_pwd = defined( 'WC_GZD_DHL_SANDBOX_PASSWORD' ) ? WC_GZD_DHL_SANDBOX_PASSWORD : self::get_setting( 'api_sandbox_password' );
+		$debug_pwd = defined( 'WC_STC_DHL_SANDBOX_PASSWORD' ) ? WC_STC_DHL_SANDBOX_PASSWORD : self::get_setting( 'api_sandbox_password' );
 
 		return self::is_debug_mode() ? $debug_pwd : self::get_app_token();
 	}
@@ -665,26 +607,26 @@ class Package {
 		$use_legacy_soap    = false;
 		$has_custom_setting = false;
 
-		if ( $dhl = wc_gzd_get_shipping_provider( 'dhl' ) ) {
+		if ( $dhl = wc_stc_get_shipping_provider( 'dhl' ) ) {
 			if ( $dhl->get_setting( 'api_type' ) ) {
 				$use_legacy_soap    = 'soap' === $dhl->get_setting( 'api_type' );
 				$has_custom_setting = true;
 
-				if ( defined( 'WC_GZD_DHL_LEGACY_SOAP' ) ) {
-					$use_legacy_soap = WC_GZD_DHL_LEGACY_SOAP;
+				if ( defined( 'WC_STC_DHL_LEGACY_SOAP' ) ) {
+					$use_legacy_soap = WC_STC_DHL_LEGACY_SOAP;
 				}
 			}
 		}
 
 		if ( ! $has_custom_setting ) {
-			$use_legacy_soap = ( defined( 'WC_GZD_DHL_LEGACY_SOAP' ) ? WC_GZD_DHL_LEGACY_SOAP : ( 'yes' === get_option( 'woocommerce_gzd_dhl_enable_legacy_soap' ) ) );
+			$use_legacy_soap = ( defined( 'WC_STC_DHL_LEGACY_SOAP' ) ? WC_STC_DHL_LEGACY_SOAP : ( 'yes' === get_option( 'woocommerce_stc_dhl_enable_legacy_soap' ) ) );
 		}
 
 		if ( ! self::supports_soap() ) {
 			$use_legacy_soap = false;
 		}
 
-		return apply_filters( 'woocommerce_gzd_dhl_use_legacy_soap_api', $use_legacy_soap );
+		return apply_filters( 'woocommerce_stc_dhl_use_legacy_soap_api', $use_legacy_soap );
 	}
 
 	public static function get_label_rest_api_url() {
@@ -743,9 +685,9 @@ class Package {
 		 * @param string $country The country code of the retoure.
 		 *
 		 * @since 3.0.0
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_gzd_dhl_retoure_receiver', $country_receiver, $country );
+		return apply_filters( 'woocommerce_stc_dhl_retoure_receiver', $country_receiver, $country );
 	}
 
 	/**
@@ -801,60 +743,6 @@ class Package {
 		return md5( serialize( $key ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 	}
 
-	public static function get_upload_dir_suffix() {
-		return self::$upload_dir_suffix;
-	}
-
-	public static function get_upload_dir() {
-
-		self::set_upload_dir_filter();
-		$upload_dir = wp_upload_dir();
-		self::unset_upload_dir_filter();
-
-		/**
-		 * Filter to adjust the DHL label upload directory. By default
-		 * DHL labels are stored in a custom directory under wp-content/uploads.
-		 *
-		 * @param array $upload_dir Array containing `wp_upload_dir` data.
-		 *
-		 * @since 3.0.0
-		 * @package Vendidero/Germanized/DHL
-		 */
-		return apply_filters( 'woocommerce_gzd_dhl_upload_dir', $upload_dir );
-	}
-
-	public static function get_relative_upload_dir( $path ) {
-
-		self::set_upload_dir_filter();
-		$path = _wp_relative_upload_path( $path );
-		self::unset_upload_dir_filter();
-
-		/**
-		 * Filter to retrieve the DHL label relative upload path.
-		 *
-		 * @param array $path Relative path.
-		 *
-		 * @since 3.0.0
-		 * @package Vendidero/Germanized/DHL
-		 */
-		return apply_filters( 'woocommerce_gzd_dhl_relative_upload_dir', $path );
-	}
-
-	public static function set_upload_dir_filter() {
-		add_filter( 'upload_dir', array( __CLASS__, 'filter_upload_dir' ), 150, 1 );
-	}
-
-	public static function get_file_by_path( $file ) {
-		// If the file is relative, prepend upload dir.
-		if ( $file && 0 !== strpos( $file, '/' ) && ( ( $uploads = self::get_upload_dir() ) && false === $uploads['error'] ) ) {
-			$file = $uploads['basedir'] . "/$file";
-
-			return $file;
-		} else {
-			return $file;
-		}
-	}
-
 	public static function get_core_wsdl_file( $file ) {
 		$file = basename( $file );
 		$file = str_replace( '?wsdl', '', $file );
@@ -903,7 +791,7 @@ class Package {
 		}
 
 		$file_link     = $wsdl_link;
-		$transient     = 'wc_gzd_dhl_wsdl_' . sanitize_key( $main_file );
+		$transient     = 'wc_stc_dhl_wsdl_' . sanitize_key( $main_file );
 		$new_file_name = $main_file;
 		$files_exist   = true;
 		$is_zip        = false;
@@ -926,11 +814,11 @@ class Package {
 			 * Check if all required files exist locally
 			 */
 			foreach ( $required_files as $file ) {
-				$inner_transient = 'wc_gzd_dhl_wsdl_' . sanitize_key( $file );
+				$inner_transient = 'wc_stc_dhl_wsdl_' . sanitize_key( $file );
 				$file_path       = get_transient( $inner_transient );
 
 				if ( $file_path ) {
-					$file_path = \Vendidero\Germanized\Shipments\Package::get_file_by_path( $file_path );
+					$file_path = \Vendidero\Shiptastic\Package::get_file_by_path( $file_path );
 				}
 
 				if ( ! $file_path || ! file_exists( $file_path ) ) {
@@ -950,15 +838,15 @@ class Package {
 		 * @param string         $wsdl_link The link to the original WSDL file.
 		 *
 		 * @since 3.1.2
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		$alternate_file = apply_filters( 'woocommerce_gzd_dhl_alternate_wsdl_file', false, $wsdl_link );
+		$alternate_file = apply_filters( 'woocommerce_stc_dhl_alternate_wsdl_file', false, $wsdl_link );
 
 		if ( ( $files_exist && $file_path ) || $alternate_file ) {
 			if ( $is_core_file ) {
 				$wsdl_link = $alternate_file ? $alternate_file : $file_path;
 			} else {
-				$wsdl_link = $alternate_file ? $alternate_file : \Vendidero\Germanized\Shipments\Package::get_file_by_path( $file_path );
+				$wsdl_link = $alternate_file ? $alternate_file : \Vendidero\Shiptastic\Package::get_file_by_path( $file_path );
 			}
 		} else {
 			if ( ! function_exists( 'download_url' ) ) {
@@ -986,7 +874,7 @@ class Package {
 				$tmp_file = download_url( $file_link, 1500 );
 
 				if ( ! is_wp_error( $tmp_file ) ) {
-					$uploads    = \Vendidero\Germanized\Shipments\Package::get_upload_dir();
+					$uploads    = \Vendidero\Shiptastic\Package::get_upload_dir();
 					$new_file   = trailingslashit( $uploads['path'] ) . $new_file_name;
 					$has_copied = @copy( $tmp_file, $new_file ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 
@@ -1005,11 +893,11 @@ class Package {
 								$new_wsdl_link = false;
 
 								foreach ( $required_files as $file ) {
-									$transient = 'wc_gzd_dhl_wsdl_' . sanitize_key( $file );
+									$transient = 'wc_stc_dhl_wsdl_' . sanitize_key( $file );
 									$file_path = $uploads['path'] . "/$file";
 
 									if ( file_exists( $file_path ) ) {
-										set_transient( $transient, \Vendidero\Germanized\Shipments\Package::get_relative_upload_dir( $file_path ), $transient_valid );
+										set_transient( $transient, \Vendidero\Shiptastic\Package::get_relative_upload_dir( $file_path ), $transient_valid );
 
 										if ( $file === $main_file ) {
 											$new_wsdl_link = $file_path;
@@ -1026,11 +914,11 @@ class Package {
 
 							@unlink( $new_file ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.unlink_unlink
 						} else {
-							$transient = 'wc_gzd_dhl_wsdl_' . sanitize_key( $main_file );
+							$transient = 'wc_stc_dhl_wsdl_' . sanitize_key( $main_file );
 							$file_path = $uploads['path'] . "/$main_file";
 
 							if ( file_exists( $file_path ) ) {
-								set_transient( $transient, \Vendidero\Germanized\Shipments\Package::get_relative_upload_dir( $file_path ), $transient_valid );
+								set_transient( $transient, \Vendidero\Shiptastic\Package::get_relative_upload_dir( $file_path ), $transient_valid );
 								$wsdl_link = $file_path;
 							}
 						}
@@ -1042,41 +930,6 @@ class Package {
 		}
 
 		return $wsdl_link;
-	}
-
-	public static function unset_upload_dir_filter() {
-		remove_filter( 'upload_dir', array( __CLASS__, 'filter_upload_dir' ), 150 );
-	}
-
-	public static function filter_upload_dir( $args ) {
-		$upload_base = trailingslashit( $args['basedir'] );
-		$upload_url  = trailingslashit( $args['baseurl'] );
-
-		/**
-		 * Filter to adjust the DHL label upload path. By default
-		 * DHL labels are stored in a custom directory under wp-content/uploads.
-		 *
-		 * @param string $path Path to the upload directory.
-		 *
-		 * @since 3.0.0
-		 * @package Vendidero/Germanized/DHL
-		 */
-		$args['basedir'] = apply_filters( 'woocommerce_gzd_dhl_upload_path', $upload_base . 'wc-gzd-dhl-' . self::get_upload_dir_suffix() );
-		/**
-		 * Filter to adjust the DHL label upload URL. By default
-		 * DHL labels are stored in a custom directory under wp-content/uploads.
-		 *
-		 * @param string $url URL to the upload directory.
-		 *
-		 * @since 3.0.0
-		 * @package Vendidero/Germanized/DHL
-		 */
-		$args['baseurl'] = apply_filters( 'woocommerce_gzd_dhl_upload_url', $upload_url . 'wc-gzd-dhl-' . self::get_upload_dir_suffix() );
-
-		$args['path'] = $args['basedir'] . $args['subdir'];
-		$args['url']  = $args['baseurl'] . $args['subdir'];
-
-		return $args;
 	}
 
 	public static function get_participation_number( $product, $args = array() ) {
@@ -1151,9 +1004,9 @@ class Package {
 		 *
 		 * @param boolean $enable_logging True if logging should be enabled. False otherwise.
 		 *
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		if ( ! apply_filters( 'woocommerce_gzd_dhl_enable_logging', $enable_logging ) ) {
+		if ( ! apply_filters( 'woocommerce_stc_dhl_enable_logging', $enable_logging ) ) {
 			return false;
 		}
 
@@ -1161,11 +1014,11 @@ class Package {
 			$type = 'info';
 		}
 
-		$logger->{$type}( $message, array( 'source' => 'woocommerce-germanized-dhl' ) );
+		$logger->{$type}( $message, array( 'source' => 'dhl-for-shiptastic' ) );
 	}
 
 	public static function get_available_countries() {
-		return array( 'DE' => _x( 'Germany', 'dhl', 'woocommerce-germanized-dhl' ) );
+		return array( 'DE' => _x( 'Germany', 'dhl', 'dhl-for-shiptastic' ) );
 	}
 
 	public static function get_base_country() {
@@ -1175,9 +1028,9 @@ class Package {
 		 * @param string $country The country as ISO code.
 		 *
 		 * @since 3.0.0
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_gzd_dhl_base_country', \Vendidero\Germanized\Shipments\Package::get_base_country() );
+		return apply_filters( 'woocommerce_stc_dhl_base_country', \Vendidero\Shiptastic\Package::get_base_country() );
 	}
 
 	public static function get_us_territories() {
@@ -1188,12 +1041,12 @@ class Package {
 	 * Function return whether the sender and receiver country is the same territory
 	 */
 	public static function is_shipping_domestic( $country_receiver, $postcode = '' ) {
-		$is_domestic = \Vendidero\Germanized\Shipments\Package::is_shipping_domestic( $country_receiver, array( 'postcode' => $postcode ) );
+		$is_domestic = \Vendidero\Shiptastic\Package::is_shipping_domestic( $country_receiver, array( 'postcode' => $postcode ) );
 
 		/**
 		 * Shipments from DE to Helgoland are not treated as crossborder
 		 */
-		if ( ! $is_domestic && 'DE' === $country_receiver && \Vendidero\Germanized\Shipments\Package::base_country_belongs_to_eu_customs_area() ) {
+		if ( ! $is_domestic && 'DE' === $country_receiver && \Vendidero\Shiptastic\Package::base_country_belongs_to_eu_customs_area() ) {
 			$is_domestic = true;
 		}
 
@@ -1204,7 +1057,7 @@ class Package {
 	 * Check if it is an EU shipment
 	 */
 	public static function is_eu_shipment( $country_receiver, $postcode = '' ) {
-		return \Vendidero\Germanized\Shipments\Package::is_shipping_inner_eu_country( $country_receiver, array( 'postcode' => $postcode ) );
+		return \Vendidero\Shiptastic\Package::is_shipping_inner_eu_country( $country_receiver, array( 'postcode' => $postcode ) );
 	}
 
 	protected static function get_eu_countries() {
@@ -1221,12 +1074,12 @@ class Package {
 	 * Function return whether the sender and receiver country is "crossborder" i.e. needs CUSTOMS declarations (outside EU)
 	 */
 	public static function is_crossborder_shipment( $country_receiver, $postcode = '' ) {
-		$is_crossborder = \Vendidero\Germanized\Shipments\Package::is_shipping_international( $country_receiver, array( 'postcode' => $postcode ) );
+		$is_crossborder = \Vendidero\Shiptastic\Package::is_shipping_international( $country_receiver, array( 'postcode' => $postcode ) );
 
 		/**
 		 * Shipments from DE to Helgoland are not treated as crossborder
 		 */
-		if ( $is_crossborder && 'DE' === $country_receiver && \Vendidero\Germanized\Shipments\Package::base_country_belongs_to_eu_customs_area() ) {
+		if ( $is_crossborder && 'DE' === $country_receiver && \Vendidero\Shiptastic\Package::base_country_belongs_to_eu_customs_area() ) {
 			$is_crossborder = false;
 		}
 

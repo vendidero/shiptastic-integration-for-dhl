@@ -1,5 +1,5 @@
 .shipments-create-label {
-  .wc-gzd-shipment-im-additional-services {
+  .wc-stc-shipment-im-additional-services {
     p.label {
       margin-top: 10px;
       width: 100%;
@@ -9,7 +9,7 @@
     }
   }
 
-  .wc-gzd-dhl-im-product-data {
+  .wc-stc-dhl-im-product-data {
     margin-top: 2em;
     min-width: 700px;
     margin-left: -1rem !important;
@@ -24,7 +24,7 @@
       }
     }
 
-    .wc-gzd-dhl-im-product-price {
+    .wc-stc-dhl-im-product-price {
       background: #ffd633;
       border-radius: 4px;
       padding: .5em 1em;
@@ -53,7 +53,7 @@
       }
     }
 
-    .wc-gzd-dhl-im-product-information-text, .wc-gzd-dhl-im-product-description {
+    .wc-stc-dhl-im-product-information-text, .wc-stc-dhl-im-product-description {
       font-size: 11px;
       color: #999;
       line-height: 1.5em;

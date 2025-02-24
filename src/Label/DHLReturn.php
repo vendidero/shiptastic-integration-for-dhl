@@ -1,9 +1,9 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Label;
+namespace Vendidero\Shiptastic\DHL\Label;
 
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\Shipments\Interfaces\ShipmentReturnLabel;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\Interfaces\ShipmentReturnLabel;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -23,7 +23,7 @@ class DHLReturn extends ReturnLabel {
 	);
 
 	protected function get_hook_prefix() {
-		return 'woocommerce_gzd_dhl_return_label_get_';
+		return 'woocommerce_stc_dhl_return_label_get_';
 	}
 
 	public function get_type() {
@@ -46,14 +46,14 @@ class DHLReturn extends ReturnLabel {
 		 * Returns the return receiver id for a certain DHL label.
 		 *
 		 * The dynamic portion of the hook name, `$this->get_hook_prefix()` constructs an individual
-		 * hook name which uses `woocommerce_gzd_dhl_return_label_get_` as a prefix.
+		 * hook name which uses `woocommerce_stc_dhl_return_label_get_` as a prefix.
 		 *
-		 * Example hook name: `woocommerce_gzd_shipments_dhl_return_label_get_receiver_id`
+		 * Example hook name: `woocommerce_shiptastic_dhl_return_label_get_receiver_id`
 		 *
 		 * @param string      $id The receiver id.
 		 * @param ReturnLabel $label The return label
 		 *
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
 		return apply_filters( "{$this->get_hook_prefix()}receiver_id", $id, $this );
 	}
@@ -82,7 +82,7 @@ class DHLReturn extends ReturnLabel {
 			}
 		}
 
-		if ( wc_gzd_dhl_wp_error_has_errors( $result ) ) {
+		if ( wc_stc_shipment_wp_error_has_errors( $result ) ) {
 			return $result;
 		} else {
 			return true;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\ShippingProvider\Services;
+namespace Vendidero\Shiptastic\DHL\ShippingProvider\Services;
 
-use Vendidero\Germanized\Shipments\ShipmentError;
-use Vendidero\Germanized\Shipments\ShippingProvider\Service;
+use Vendidero\Shiptastic\ShipmentError;
+use Vendidero\Shiptastic\ShippingProvider\Service;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -12,8 +12,8 @@ class AdditionalInsurance extends Service {
 	public function __construct( $shipping_provider, $args = array() ) {
 		$args = array(
 			'id'          => 'AdditionalInsurance',
-			'label'       => _x( 'Additional Insurance', 'dhl', 'woocommerce-germanized-dhl' ),
-			'description' => _x( 'Add an additional insurance to labels.', 'dhl', 'woocommerce-germanized-dhl' ),
+			'label'       => _x( 'Additional Insurance', 'dhl', 'dhl-for-shiptastic' ),
+			'description' => _x( 'Add an additional insurance to labels.', 'dhl', 'dhl-for-shiptastic' ),
 			'products'    => array( 'V01PAK', 'V53WPAK', 'V54EPAK' ),
 		);
 
@@ -41,7 +41,7 @@ class AdditionalInsurance extends Service {
 					'id'                => $this->get_label_field_id( 'insurance_amount' ),
 					'class'             => 'wc_input_decimal',
 					'data_type'         => 'price',
-					'label'             => _x( 'Value of Goods', 'dhl', 'woocommerce-germanized-dhl' ),
+					'label'             => _x( 'Value of Goods', 'dhl', 'dhl-for-shiptastic' ),
 					'placeholder'       => '',
 					'description'       => '',
 					'value'             => wc_format_localized_decimal( $value ),

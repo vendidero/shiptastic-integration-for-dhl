@@ -1,11 +1,11 @@
 {
-  "name": "woocommerce-germanized-dhl",
-  "title": "DHL for Germanized",
+  "name": "dhl-for-shiptastic",
+  "title": "DHL Germany for Shiptastic",
   "version": "3.5.0",
   "homepage": "https://vendidero.de",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vendidero/woocommerce-germanized-dhl.git"
+    "url": "https://github.com/vendidero/dhl-for-shiptastic.git"
   },
   "license": "GPL-3.0+",
   "main": "build/index.js",
@@ -24,9 +24,7 @@
     "plugin-zip": "wp-scripts plugin-zip",
     "start": "wp-scripts start",
     "deploy": "composer install --no-dev && sh ./bin/github-deploy.sh",
-    "package-plugin": "./bin/build-plugin-zip.sh",
-    "docker-clean": "docker-compose rm && docker-compose pull && docker-compose build --no-cache wordpress-unit-tests && docker-compose up -d --force-recreate --build db && docker-compose up -d --force-recreate --build wordpress-unit-tests && docker exec wordpress_test /usr/local/bin/dockerInit wordpress wordpress wordpress db latest latest true",
-    "phpunit": "docker-compose up -d db && docker-compose up -d --build wordpress-unit-tests && docker exec -it --workdir /var/www/html/wp-content/plugins/woocommerce-germanized-shipments shipments_wordpress_test php ./vendor/bin/phpunit"
+    "package-plugin": "./bin/build-plugin-zip.sh"
   },
   "devDependencies": {
     "@woocommerce/dependency-extraction-webpack-plugin": "^2.2.0",

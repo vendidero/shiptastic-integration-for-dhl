@@ -1,11 +1,11 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Blocks\Integrations;
+namespace Vendidero\Shiptastic\DHL\Blocks\Integrations;
 
 use Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface;
-use Vendidero\Germanized\DHL\Blocks\Assets;
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\DHL\ParcelServices;
+use Vendidero\Shiptastic\DHL\Blocks\Assets;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\DHL\ParcelServices;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,7 +22,7 @@ class PreferredServices implements IntegrationInterface {
 	 * @return string
 	 */
 	public function get_name() {
-		return 'woocommerce-germanized-dhl-preferred-services';
+		return 'dhl-for-shiptastic-preferred-services';
 	}
 
 	/**
@@ -31,8 +31,8 @@ class PreferredServices implements IntegrationInterface {
 	public function initialize() {
 		$this->assets = Package::container()->get( Assets::class );
 
-		$this->assets->register_script( 'wc-gzd-shipments-blocks-dhl-checkout', $this->assets->get_block_asset_build_path( 'checkout' ), array( 'wc-gzd-shipments-blocks-dhl' ) );
-		$this->assets->register_style( 'wc-gzd-shipments-blocks-dhl-checkout', $this->assets->get_block_asset_build_path( 'style-checkout', 'css' ) );
+		$this->assets->register_script( 'wc-stc-shipments-blocks-dhl-checkout', $this->assets->get_block_asset_build_path( 'checkout' ), array( 'wc-stc-shipments-blocks-dhl' ) );
+		$this->assets->register_style( 'wc-stc-shipments-blocks-dhl-checkout', $this->assets->get_block_asset_build_path( 'style-checkout', 'css' ) );
 
 		$asset_registry = \Automattic\WooCommerce\Blocks\Package::container()->get( \Automattic\WooCommerce\Blocks\Assets\AssetDataRegistry::class );
 		$asset_registry->add( 'dhlCdpCountries', ParcelServices::get_cdp_countries() );
@@ -41,7 +41,7 @@ class PreferredServices implements IntegrationInterface {
 		add_action(
 			'woocommerce_blocks_enqueue_checkout_block_scripts_after',
 			function () {
-				wp_enqueue_style( 'wc-gzd-shipments-blocks-dhl-checkout' );
+				wp_enqueue_style( 'wc-stc-shipments-blocks-dhl-checkout' );
 			}
 		);
 	}
@@ -52,7 +52,7 @@ class PreferredServices implements IntegrationInterface {
 	 * @return string[]
 	 */
 	public function get_script_handles() {
-		return array( 'wc-gzd-shipments-blocks-dhl-checkout' );
+		return array( 'wc-stc-shipments-blocks-dhl-checkout' );
 	}
 
 	/**
@@ -61,7 +61,7 @@ class PreferredServices implements IntegrationInterface {
 	 * @return string[]
 	 */
 	public function get_editor_script_handles() {
-		return array( 'wc-gzd-shipments-blocks-dhl-checkout' );
+		return array( 'wc-stc-shipments-blocks-dhl-checkout' );
 	}
 
 	/**

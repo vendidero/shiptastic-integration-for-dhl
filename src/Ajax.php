@@ -1,8 +1,8 @@
 <?php
 
-namespace Vendidero\Germanized\DHL;
+namespace Vendidero\Shiptastic\DHL;
 
-use Vendidero\Germanized\Shipments\Admin\Settings;
+use Vendidero\Shiptastic\Admin\Settings;
 
 /**
  * WC_Ajax class.
@@ -25,8 +25,8 @@ class Ajax {
 		);
 
 		foreach ( $ajax_events as $ajax_event ) {
-			add_action( 'wp_ajax_woocommerce_gzd_dhl_' . $ajax_event, array( __CLASS__, 'suppress_errors' ), 5 );
-			add_action( 'wp_ajax_woocommerce_gzd_dhl_' . $ajax_event, array( __CLASS__, $ajax_event ) );
+			add_action( 'wp_ajax_woocommerce_stc_dhl_' . $ajax_event, array( __CLASS__, 'suppress_errors' ), 5 );
+			add_action( 'wp_ajax_woocommerce_stc_dhl_' . $ajax_event, array( __CLASS__, $ajax_event ) );
 		}
 	}
 
@@ -42,7 +42,7 @@ class Ajax {
 	 *
 	 */
 	public static function refresh_deutsche_post_label_preview() {
-		check_ajax_referer( 'wc-gzd-dhl-refresh-deutsche-post-label-preview', 'security' );
+		check_ajax_referer( 'wc-stc-dhl-refresh-deutsche-post-label-preview', 'security' );
 
 		if ( ! current_user_can( 'edit_shop_orders' ) || ! isset( $_POST['product_id'], $_POST['reference_id'] ) ) {
 			wp_die( -1 );
@@ -61,7 +61,6 @@ class Ajax {
 		$im_product_id     = absint( $_POST['product_id'] );
 		$shipment_id       = absint( $_POST['reference_id'] );
 		$product_id        = $im_product_id;
-		$is_wp_int         = false;
 		$response          = array(
 			'success'      => true,
 			'preview_url'  => '',
@@ -78,7 +77,6 @@ class Ajax {
 			if ( $im_product_id ) {
 				$preview_url  = Package::get_internetmarke_api()->preview_stamp( $im_product_id );
 				$preview_data = Package::get_internetmarke_api()->get_product_preview_data( $im_product_id );
-				$is_wp_int    = Package::get_internetmarke_api()->is_warenpost_international( $im_product_id );
 
 				if ( $preview_url ) {
 					$response['preview_url']  = $preview_url;
@@ -87,12 +85,10 @@ class Ajax {
 			}
 		}
 
-		$response['is_wp_int'] = $is_wp_int;
-
-		if ( ( $provider = Package::get_deutsche_post_shipping_provider() ) && ( $shipment = wc_gzd_get_shipment( $shipment_id ) ) ) {
+		if ( ( $provider = Package::get_deutsche_post_shipping_provider() ) && ( $shipment = wc_stc_get_shipment( $shipment_id ) ) ) {
 			$fields = $provider->get_available_additional_services( $product_id, $selected_services );
 
-			$response['fragments']['#wc-gzd-shipment-label-wrapper-additional-services'] = Settings::render_label_fields( $fields, $shipment );
+			$response['fragments']['#wc-stc-shipment-label-wrapper-additional-services'] = Settings::render_label_fields( $fields, $shipment );
 		}
 
 		wp_send_json( $response );

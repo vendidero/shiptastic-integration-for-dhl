@@ -1,11 +1,11 @@
 <?php
 
-namespace Vendidero\Germanized\DHL;
+namespace Vendidero\Shiptastic\DHL;
 
 use Exception;
-use Vendidero\Germanized\Shipments\Interfaces\ShippingProvider;
-use Vendidero\Germanized\Shipments\PickupDelivery;
-use Vendidero\Germanized\Shipments\Shipment;
+use Vendidero\Shiptastic\Interfaces\ShippingProvider;
+use Vendidero\Shiptastic\PickupDelivery;
+use Vendidero\Shiptastic\Shipment;
 use WC_Checkout;
 use WC_Order;
 use WP_Error;
@@ -19,11 +19,11 @@ defined( 'ABSPATH' ) || exit;
 class ParcelLocator {
 
 	public static function init() {
-		add_filter( 'woocommerce_gzd_shipment_order_pickup_location_code', array( __CLASS__, 'legacy_pickup_location_code' ), 10, 2 );
-		add_filter( 'woocommerce_gzd_shipment_order_pickup_location_customer_number', array( __CLASS__, 'legacy_pickup_location_customer_number' ), 10, 2 );
+		add_filter( 'woocommerce_shiptastic_shipment_order_pickup_location_code', array( __CLASS__, 'legacy_pickup_location_code' ), 10, 2 );
+		add_filter( 'woocommerce_shiptastic_shipment_order_pickup_location_customer_number', array( __CLASS__, 'legacy_pickup_location_customer_number' ), 10, 2 );
 
 		add_filter( 'woocommerce_shipment_get_pickup_location_customer_number', array( __CLASS__, 'legacy_shipment_postnumber' ), 10, 2 );
-		add_filter( 'woocommerce_gzd_shipment_customer_pickup_location_customer_number', array( __CLASS__, 'legacy_user_postnumber' ), 10, 2 );
+		add_filter( 'woocommerce_shiptastic_shipment_customer_pickup_location_customer_number', array( __CLASS__, 'legacy_user_postnumber' ), 10, 2 );
 
 		add_action( 'woocommerce_after_save_address_validation', array( __CLASS__, 'remove_legacy_customer_data' ), 10, 4 );
 		add_action( 'woocommerce_process_shop_order_meta', array( __CLASS__, 'remove_legacy_order_data' ), 50 );
@@ -128,7 +128,7 @@ class ParcelLocator {
 
 	public static function get_postnumber_by_shipment( $shipment ) {
 		if ( is_numeric( $shipment ) ) {
-			$shipment = wc_gzd_get_shipment( $shipment );
+			$shipment = wc_stc_get_shipment( $shipment );
 		}
 
 		return self::remove_whitespace( $shipment->get_pickup_location_customer_number() );
@@ -150,9 +150,9 @@ class ParcelLocator {
 		 *
 		 * @param array $country_codes Array of country codes which support DHL parcel shop delivery.
 		 *
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		$codes = apply_filters( 'woocommerce_gzd_dhl_parcel_locator_countries', $countries );
+		$codes = apply_filters( 'woocommerce_stc_dhl_parcel_locator_countries', $countries );
 
 		return $codes;
 	}
@@ -163,9 +163,9 @@ class ParcelLocator {
 		 *
 		 * @param array $gateways Array of gateway IDs to exclude.
 		 *
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		$codes = apply_filters( 'woocommerce_gzd_dhl_parcel_locator_excluded_gateways', PickupDelivery::get_excluded_gateways() );
+		$codes = apply_filters( 'woocommerce_stc_dhl_parcel_locator_excluded_gateways', PickupDelivery::get_excluded_gateways() );
 
 		return $codes;
 	}
@@ -190,9 +190,9 @@ class ParcelLocator {
 		 * @param WC_Order $order The order object.
 		 *
 		 * @since 3.0.0
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_gzd_dhl_order_postnumber', $post_number, $order );
+		return apply_filters( 'woocommerce_stc_dhl_order_postnumber', $post_number, $order );
 	}
 
 	public static function get_shipping_address_type_by_order( $order ) {
@@ -275,9 +275,9 @@ class ParcelLocator {
 		 * @param WP_User $user The user object.
 		 *
 		 * @since 3.0.0
-		 * @package Vendidero/Germanized/DHL
+		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_gzd_dhl_user_postnumber', $post_number, $user );
+		return apply_filters( 'woocommerce_stc_dhl_user_postnumber', $post_number, $user );
 	}
 
 	protected static function remove_whitespace( $str ) {
@@ -317,7 +317,7 @@ class ParcelLocator {
 			$is_supported = in_array( $provider, array( 'dhl' ), true );
 		}
 
-		return apply_filters( 'woocommerce_gzd_dhl_provider_supports_pickup_location', $is_supported, $provider, $location_type );
+		return apply_filters( 'woocommerce_stc_dhl_provider_supports_pickup_location', $is_supported, $provider, $location_type );
 	}
 
 	public static function is_postoffice_enabled( $provider = false ) {

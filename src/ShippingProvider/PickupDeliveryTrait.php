@@ -1,9 +1,9 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\ShippingProvider;
+namespace Vendidero\Shiptastic\DHL\ShippingProvider;
 
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\DHL\ParcelLocator;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\DHL\ParcelLocator;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -150,7 +150,7 @@ trait PickupDeliveryTrait {
 		$locations = array();
 
 		if ( $query_args['shipping_method'] ) {
-			$zone = \Vendidero\Germanized\Shipments\Package::get_shipping_zone( $address['country'], array( 'postcode' => $address['postcode'] ) );
+			$zone = \Vendidero\Shiptastic\Package::get_shipping_zone( $address['country'], array( 'postcode' => $address['postcode'] ) );
 
 			$config_set = $query_args['shipping_method']->get_configuration_set(
 				array(
@@ -201,7 +201,7 @@ trait PickupDeliveryTrait {
 	protected function get_pickup_location_cache_key( $location_code, $address ) {
 		$address       = $this->parse_pickup_location_address_args( $address );
 		$location_code = $this->parse_pickup_location_code( $location_code );
-		$cache_key     = 'woocommerce_gzd_shipments_dhl_pickup_location_' . sanitize_key( $location_code ) . '_' . sanitize_key( $address['country'] ) . '_' . $address['postcode'];
+		$cache_key     = 'woocommerce_shiptastic_dhl_pickup_location_' . sanitize_key( $location_code ) . '_' . sanitize_key( $address['country'] ) . '_' . $address['postcode'];
 
 		return $cache_key;
 	}

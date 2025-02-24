@@ -1,10 +1,10 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\ShippingProvider;
+namespace Vendidero\Shiptastic\DHL\ShippingProvider;
 
 defined( 'ABSPATH' ) || exit;
 
-class PickupLocation extends \Vendidero\Germanized\Shipments\ShippingProvider\PickupLocation {
+class PickupLocation extends \Vendidero\Shiptastic\ShippingProvider\PickupLocation {
 
 	/**
 	 * @param $customer_number
@@ -39,9 +39,9 @@ class PickupLocation extends \Vendidero\Germanized\Shipments\ShippingProvider\Pi
 
 		if ( 'locker' === $this->get_type() ) {
 			$locker_max_supported_dimensions = array(
-				'length' => wc_get_dimension( 75.0, wc_gzd_get_packaging_dimension_unit(), 'cm' ),
-				'width'  => wc_get_dimension( 60.0, wc_gzd_get_packaging_dimension_unit(), 'cm' ),
-				'height' => wc_get_dimension( 40.0, wc_gzd_get_packaging_dimension_unit(), 'cm' ),
+				'length' => wc_get_dimension( 75.0, wc_stc_get_packaging_dimension_unit(), 'cm' ),
+				'width'  => wc_get_dimension( 60.0, wc_stc_get_packaging_dimension_unit(), 'cm' ),
+				'height' => wc_get_dimension( 40.0, wc_stc_get_packaging_dimension_unit(), 'cm' ),
 			);
 
 			foreach ( $dimensions as $dim => $dim_val ) {
@@ -56,12 +56,12 @@ class PickupLocation extends \Vendidero\Germanized\Shipments\ShippingProvider\Pi
 	}
 
 	public function supports_weight( $weight ) {
-		$weight = wc_get_weight( (float) $weight, 'kg', wc_gzd_get_packaging_weight_unit() );
+		$weight = wc_get_weight( (float) $weight, 'kg', wc_stc_get_packaging_weight_unit() );
 
 		return (float) $weight <= 31.5;
 	}
 
 	public function get_customer_number_field_label() {
-		return _x( 'Customer Number (Post Number)', 'dhl', 'woocommerce-germanized-dhl' );
+		return _x( 'Customer Number (Post Number)', 'dhl', 'dhl-for-shiptastic' );
 	}
 }

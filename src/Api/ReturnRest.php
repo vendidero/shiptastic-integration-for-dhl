@@ -1,12 +1,12 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
 use Exception;
-use Vendidero\Germanized\DHL\Label\ReturnLabel;
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\Shipments\API\Response;
-use Vendidero\Germanized\Shipments\ShipmentError;
+use Vendidero\Shiptastic\DHL\Label\ReturnLabel;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\API\Response;
+use Vendidero\Shiptastic\ShipmentError;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,7 +21,7 @@ class ReturnRest extends PaketRest {
 	}
 
 	/**
-	 * @param \Vendidero\Germanized\DHL\Label\ReturnLabel $label
+	 * @param \Vendidero\Shiptastic\DHL\Label\ReturnLabel $label
 	 *
 	 * @return mixed
 	 * @throws Exception
@@ -31,19 +31,19 @@ class ReturnRest extends PaketRest {
 	}
 
 	/**
-	 * @param \Vendidero\Germanized\DHL\Label\ReturnLabel $label
+	 * @param \Vendidero\Shiptastic\DHL\Label\ReturnLabel $label
 	 */
 	protected function get_request_args( $label ) {
 		$shipment = $label->get_shipment();
 		$currency = $shipment->get_order() ? $shipment->get_order()->get_currency() : 'EUR';
 
 		if ( ! $shipment ) {
-			throw new Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'woocommerce-germanized-dhl' ), $label->get_shipment_id() ) ) );
+			throw new Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'dhl-for-shiptastic' ), $label->get_shipment_id() ) ) );
 		}
 
 		$request_args = array(
 			'receiverId'        => $label->get_receiver_id(),
-			'customerReference' => wc_gzd_dhl_get_return_label_customer_reference( $label, $shipment ),
+			'customerReference' => wc_stc_dhl_get_return_label_customer_reference( $label, $shipment ),
 			'shipmentReference' => '',
 			'shipper'           => array(
 				'name1'         => $label->get_sender_company() ? $label->get_sender_company() : $label->get_sender_formatted_full_name(),
@@ -53,18 +53,18 @@ class ReturnRest extends PaketRest {
 				 * address field to the DHL API. You may adjust the field value by using this filter.
 				 *
 				 * @param string                                      $value The field value.
-				 * @param \Vendidero\Germanized\DHL\Label\ReturnLabel $label The label instance.
+				 * @param \Vendidero\Shiptastic\DHL\Label\ReturnLabel $label The label instance.
 				 *
 				 * @since 3.0.3
-				 * @package Vendidero/Germanized/DHL
+				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'name3'         => apply_filters( 'woocommerce_gzd_dhl_return_label_api_sender_name3', $label->get_sender_address_addition(), $label ),
+				'name3'         => apply_filters( 'woocommerce_stc_dhl_return_label_api_sender_name3', $label->get_sender_address_addition(), $label ),
 				'addressStreet' => $label->get_sender_street(),
-				'addressHouse'  => wc_gzd_dhl_get_return_label_sender_street_number( $label ),
+				'addressHouse'  => wc_stc_dhl_get_return_label_sender_street_number( $label ),
 				'postalCode'    => $label->get_sender_postcode(),
 				'city'          => $label->get_sender_city(),
 				'state'         => $label->get_sender_state(),
-				'country'       => wc_gzd_country_to_alpha3( $label->get_sender_country() ),
+				'country'       => wc_stc_country_to_alpha3( $label->get_sender_country() ),
 			),
 			'itemWeight'        => array(
 				'uom'   => 'kg',
@@ -78,11 +78,11 @@ class ReturnRest extends PaketRest {
 
 		if ( Package::is_crossborder_shipment( $label->get_sender_country(), $label->get_sender_postcode() ) ) {
 			$items        = array();
-			$customs_data = wc_gzd_dhl_get_shipment_customs_data( $label );
+			$customs_data = wc_stc_dhl_get_shipment_customs_data( $label );
 
 			foreach ( $customs_data['items'] as $customs_item ) {
 				$items[] = array(
-					'itemDescription'  => wc_gzd_shipments_substring( $customs_item['description'], 0, 50 ),
+					'itemDescription'  => wc_shiptastic_substring( $customs_item['description'], 0, 50 ),
 					'packagedQuantity' => $customs_item['quantity'],
 					/**
 					 * Total weight per row
@@ -91,7 +91,7 @@ class ReturnRest extends PaketRest {
 						'uom'   => 'kg',
 						'value' => $customs_item['weight_in_kg'],
 					),
-					'countryOfOrigin'  => wc_gzd_country_to_alpha3( $customs_item['origin_code'] ),
+					'countryOfOrigin'  => wc_stc_country_to_alpha3( $customs_item['origin_code'] ),
 					'hsCode'           => $customs_item['tariff_number'],
 					'itemValue'        => array(
 						'currency' => in_array( strtoupper( $customs_data['currency'] ), array( 'EUR', 'GBP', 'CHF', 'USD', 'CZK', 'SGD' ), true ) ? strtoupper( $customs_data['currency'] ) : 'EUR',
@@ -101,7 +101,7 @@ class ReturnRest extends PaketRest {
 			}
 
 			$request_args['customsDetails'] = apply_filters(
-				'woocommerce_gzd_dhl_retoure_customs_data',
+				'woocommerce_stc_dhl_retoure_customs_data',
 				array(
 					'items' => $items,
 				),
@@ -128,7 +128,7 @@ class ReturnRest extends PaketRest {
 					}
 
 					$receiver_id      = wc_clean( $receiver['receiverId'] ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-					$receiver_country = wc_gzd_country_to_alpha2( wc_clean( strtoupper( $receiver['shipperCountry'] ) ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					$receiver_country = wc_stc_country_to_alpha2( wc_clean( strtoupper( $receiver['shipperCountry'] ) ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					$slug             = sanitize_key( $receiver_id . '_' . $receiver_country );
 
 					$receiver_ids[ $slug ] = array(
@@ -181,7 +181,7 @@ class ReturnRest extends PaketRest {
 					// Delete the label dues to errors.
 					$label->delete();
 
-					throw new Exception( esc_html_x( 'Error while creating and uploading the label', 'dhl', 'woocommerce-germanized-dhl' ) );
+					throw new Exception( esc_html_x( 'Error while creating and uploading the label', 'dhl', 'dhl-for-shiptastic' ) );
 				}
 
 				return $label;

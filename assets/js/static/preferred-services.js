@@ -1,19 +1,19 @@
 
-window.germanized = window.germanized || {};
-window.germanized.dhl_preferred_services = window.germanized.dhl_preferred_services || {};
+window.shiptastic = window.shiptastic || {};
+window.shiptastic.dhl_preferred_services = window.shiptastic.dhl_preferred_services || {};
 
-( function( $, germanized ) {
+( function( $, shiptastic ) {
 
     /**
      * Core
      */
-    germanized.dhl_preferred_services = {
+    shiptastic.dhl_preferred_services = {
 
         params: {},
 
         init: function () {
-            var self     = germanized.dhl_preferred_services;
-            self.params  = wc_gzd_dhl_preferred_services_params;
+            var self     = shiptastic.dhl_preferred_services;
+            self.params  = wc_stc_dhl_preferred_services_params;
 
             $( document.body ).on( 'updated_checkout', self.afterRefreshCheckout );
 
@@ -36,14 +36,14 @@ window.germanized.dhl_preferred_services = window.germanized.dhl_preferred_servi
         },
 
         afterRefreshCheckout: function() {
-            var self = germanized.dhl_preferred_services;
+            var self = shiptastic.dhl_preferred_services;
 
             self.initTipTip();
             self.onChangeLocationType();
         },
 
         onChangeLocationType: function() {
-            var self = germanized.dhl_preferred_services,
+            var self = shiptastic.dhl_preferred_services,
                 $box = $( '.dhl-preferred-service-content .dhl-preferred-location-types input:checked' );
 
             $( '.dhl-preferred-service-content .dhl-preferred-service-location-data' ).hide();
@@ -73,7 +73,7 @@ window.germanized.dhl_preferred_services = window.germanized.dhl_preferred_servi
     };
 
     $( document ).ready( function() {
-        germanized.dhl_preferred_services.init();
+        shiptastic.dhl_preferred_services.init();
     });
 
-})( jQuery, window.germanized );
+})( jQuery, window.shiptastic );

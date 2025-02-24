@@ -1,9 +1,9 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\ShippingProvider\Services;
+namespace Vendidero\Shiptastic\DHL\ShippingProvider\Services;
 
-use Vendidero\Germanized\Shipments\ShipmentError;
-use Vendidero\Germanized\Shipments\ShippingProvider\Service;
+use Vendidero\Shiptastic\ShipmentError;
+use Vendidero\Shiptastic\ShippingProvider\Service;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -12,7 +12,7 @@ class CashOnDelivery extends Service {
 	public function __construct( $shipping_provider, $args = array() ) {
 		$args = array(
 			'id'                 => 'CashOnDelivery',
-			'label'              => _x( 'Cash on Delivery', 'dhl', 'woocommerce-germanized-dhl' ),
+			'label'              => _x( 'Cash on Delivery', 'dhl', 'dhl-for-shiptastic' ),
 			'products'           => array( 'V01PAK', 'V53WPAK' ),
 			'excluded_locations' => array( 'settings' ),
 		);
@@ -34,7 +34,7 @@ class CashOnDelivery extends Service {
 		$book_as_default = parent::book_as_default( $shipment );
 
 		if ( false === $book_as_default ) {
-			$dhl_order = wc_gzd_dhl_get_order( $shipment->get_order() );
+			$dhl_order = wc_stc_dhl_get_order( $shipment->get_order() );
 
 			if ( $dhl_order && $dhl_order->has_cod_payment() ) {
 				$book_as_default = true;
@@ -55,7 +55,7 @@ class CashOnDelivery extends Service {
 					'id'                => $this->get_label_field_id( 'cod_total' ),
 					'class'             => 'wc_input_decimal',
 					'data_type'         => 'price',
-					'label'             => _x( 'COD Amount', 'dhl', 'woocommerce-germanized-dhl' ),
+					'label'             => _x( 'COD Amount', 'dhl', 'dhl-for-shiptastic' ),
 					'placeholder'       => '',
 					'description'       => '',
 					'value'             => wc_format_localized_decimal( $value ),

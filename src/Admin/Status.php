@@ -1,8 +1,8 @@
 <?php
 
-namespace Vendidero\Germanized\DHL\Admin;
+namespace Vendidero\Shiptastic\DHL\Admin;
 
-use Vendidero\Germanized\DHL\Package;
+use Vendidero\Shiptastic\DHL\Package;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,7 +19,7 @@ class Status {
 			<thead>
 				<tr>
 					<th colspan="3" data-export-label="Post & DHL Ping status" style="">
-						<h2><?php echo esc_html_x( 'Ping Check', 'dhl', 'woocommerce-germanized-dhl' ); ?></h2>
+						<h2><?php echo esc_html_x( 'Ping Check', 'dhl', 'dhl-for-shiptastic' ); ?></h2>
 					</th>
 				</tr>
 			</thead>
@@ -35,7 +35,7 @@ class Status {
 						if ( $result ) {
 							echo '<mark class="yes"><span class="dashicons dashicons-yes"></span></mark>';
 						} else {
-							echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . esc_html_x( 'Unable to connect to the URL. Please make sure that your webhost allows outgoing connections to that specific URL.', 'dhl', 'woocommerce-germanized-dhl' ) . '</mark>';
+							echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . esc_html_x( 'Unable to connect to the URL. Please make sure that your webhost allows outgoing connections to that specific URL.', 'dhl', 'dhl-for-shiptastic' ) . '</mark>';
 						}
 						?>
 					</td>
@@ -48,13 +48,13 @@ class Status {
 			<thead>
 			<tr>
 				<th colspan="3" data-export-label="General" style="">
-					<h2><?php echo esc_html_x( 'General', 'dhl', 'woocommerce-germanized-dhl' ); ?></h2>
+					<h2><?php echo esc_html_x( 'General', 'dhl', 'dhl-for-shiptastic' ); ?></h2>
 				</th>
 			</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td data-export-label="REST API"><?php echo esc_html_x( 'Paket REST API', 'dhl', 'woocommerce-germanized-dhl' ); ?>:</td>
+					<td data-export-label="REST API"><?php echo esc_html_x( 'Paket REST API', 'dhl', 'dhl-for-shiptastic' ); ?>:</td>
 					<td class="help">&nbsp;</td>
 					<td><?php echo ( ! Package::use_legacy_soap_api() ? '<mark class="yes"><span class="dashicons dashicons-yes"></span></mark>' : '<mark class="no">&ndash;</mark>' ); ?></td>
 				</tr>
@@ -64,13 +64,13 @@ class Status {
 	}
 
 	public static function register_tab( $tabs ) {
-		$tabs['dhl'] = _x( 'DHL & Post', 'dhl', 'woocommerce-germanized-dhl' );
+		$tabs['dhl'] = _x( 'DHL & Post', 'dhl', 'dhl-for-shiptastic' );
 
 		return $tabs;
 	}
 
 	protected static function test_url( $url, $response_code = 200 ) {
-		$transient_name    = 'woocommerce_gzd_dhl_test_remote_get_' . $url;
+		$transient_name    = 'woocommerce_stc_dhl_test_remote_get_' . $url;
 		$get_response_code = get_transient( $transient_name );
 
 		if ( false === $get_response_code || is_wp_error( $get_response_code ) ) {

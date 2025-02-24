@@ -1,10 +1,10 @@
 <?php
-namespace Vendidero\Germanized\DHL;
+namespace Vendidero\Shiptastic\DHL;
 
-use Vendidero\Germanized\DHL\Admin\Admin;
-use Vendidero\Germanized\DHL\Blocks\Assets;
-use Vendidero\Germanized\DHL\Blocks\PreferredServices;
-use Vendidero\Germanized\Shipments\Registry\Container;
+use Vendidero\Shiptastic\DHL\Admin\Admin;
+use Vendidero\Shiptastic\DHL\Blocks\Assets;
+use Vendidero\Shiptastic\DHL\Blocks\PreferredServices;
+use Vendidero\Shiptastic\Registry\Container;
 
 /**
  * Takes care of bootstrapping the plugin.
@@ -29,7 +29,7 @@ class Bootstrap {
 		$this->container = $container;
 		$this->init();
 
-		do_action( 'woocommerce_gzd_dhl_loaded' );
+		do_action( 'woocommerce_stc_dhl_loaded' );
 	}
 
 	/**
@@ -49,7 +49,7 @@ class Bootstrap {
 		}
 
 		if ( Package::is_dhl_enabled() && $this->container->get( ParcelServices::class )::is_enabled() ) {
-			if ( \Vendidero\Germanized\Shipments\Package::load_blocks() ) {
+			if ( \Vendidero\Shiptastic\Package::load_blocks() ) {
 				$this->container->get( PreferredServices::class );
 			}
 
@@ -74,9 +74,9 @@ class Bootstrap {
 			}
 		);
 		$this->container->register(
-			\Vendidero\Germanized\DHL\Blocks\Integrations\PreferredServices::class,
+			\Vendidero\Shiptastic\DHL\Blocks\Integrations\PreferredServices::class,
 			function ( $container ) {
-				return new \Vendidero\Germanized\DHL\Blocks\Integrations\PreferredServices();
+				return new \Vendidero\Shiptastic\DHL\Blocks\Integrations\PreferredServices();
 			}
 		);
 		$this->container->register(

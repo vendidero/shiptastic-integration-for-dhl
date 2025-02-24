@@ -1,12 +1,12 @@
 <?php
-namespace Vendidero\Germanized\DHL\Blocks;
+namespace Vendidero\Shiptastic\DHL\Blocks;
 
 use Automattic\WooCommerce\StoreApi\Exceptions\RouteException;
 use Automattic\WooCommerce\StoreApi\Schemas\ExtendSchema;
 use Automattic\WooCommerce\StoreApi\Schemas\V1\CartSchema;
 use Automattic\WooCommerce\StoreApi\Schemas\V1\CheckoutSchema;
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\DHL\ParcelServices;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\DHL\ParcelServices;
 
 final class PreferredServices {
 
@@ -26,7 +26,7 @@ final class PreferredServices {
 				$request_data = $this->get_checkout_data_from_request( $request );
 
 				add_filter(
-					'woocommerce_gzd_dhl_checkout_get_current_payment_method',
+					'woocommerce_stc_dhl_checkout_get_current_payment_method',
 					function () use ( $request ) {
 						$payment_method = wc_clean( wp_unslash( $request['payment_method'] ? $request['payment_method'] : '' ) );
 
@@ -35,7 +35,7 @@ final class PreferredServices {
 				);
 
 				add_filter(
-					'woocommerce_gzd_dhl_checkout_parcel_services_data',
+					'woocommerce_stc_dhl_checkout_parcel_services_data',
 					function ( $data ) use ( $request_data, $customer ) {
 						$data['shipping_country'] = $customer->get_shipping_country();
 
@@ -61,7 +61,7 @@ final class PreferredServices {
 				$customer     = wc()->customer;
 
 				add_filter(
-					'woocommerce_gzd_dhl_checkout_get_current_payment_method',
+					'woocommerce_stc_dhl_checkout_get_current_payment_method',
 					function () use ( $request ) {
 						$payment_method = wc_clean( wp_unslash( $request['payment_method'] ? $request['payment_method'] : '' ) );
 
@@ -70,7 +70,7 @@ final class PreferredServices {
 				);
 
 				add_filter(
-					'woocommerce_gzd_dhl_checkout_parcel_services_data',
+					'woocommerce_stc_dhl_checkout_parcel_services_data',
 					function ( $data ) use ( $request_data, $customer ) {
 						$data['shipping_country'] = $customer->get_shipping_country();
 
@@ -85,7 +85,7 @@ final class PreferredServices {
 				$errors = new \WP_Error();
 				ParcelServices::validate( array(), $errors );
 
-				if ( wc_gzd_shipment_wp_error_has_errors( $errors ) ) {
+				if ( wc_stc_shipment_wp_error_has_errors( $errors ) ) {
 					foreach ( $errors->get_error_messages() as $error ) {
 						throw new RouteException( 'dhl_error', wp_kses_post( $error ), 400 );
 					}
@@ -102,14 +102,14 @@ final class PreferredServices {
 		add_action(
 			'woocommerce_blocks_checkout_block_registration',
 			function ( $integration_registry ) {
-				$integration_registry->register( Package::container()->get( \Vendidero\Germanized\DHL\Blocks\Integrations\PreferredServices::class ) );
+				$integration_registry->register( Package::container()->get( \Vendidero\Shiptastic\DHL\Blocks\Integrations\PreferredServices::class ) );
 			}
 		);
 	}
 
 	/**
 	 * Use woocommerce-gzd-dhl as namespace to not conflict with the
-	 * woocommerce-germanized-dhl textdomain which might get replaced within js files
+	 * dhl-for-shiptastic textdomain which might get replaced within js files
 	 * while bundling the package.
 	 *
 	 * @return void
@@ -160,55 +160,55 @@ final class PreferredServices {
 	private function get_cart_schema() {
 		return array(
 			'preferred_day_enabled'           => array(
-				'description' => _x( 'Preferred day enabled', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Preferred day enabled', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => 'boolean',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_day_cost'              => array(
-				'description' => _x( 'Preferred day costs', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Preferred day costs', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => 'string',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_day'                   => array(
-				'description' => _x( 'Preferred day', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Preferred day', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => 'string',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_home_delivery_cost'    => array(
-				'description' => _x( 'Preferred delivery costs', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Preferred delivery costs', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => 'string',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_delivery_type_enabled' => array(
-				'description' => _x( 'Preferred delivery type enabled', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Preferred delivery type enabled', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => 'boolean',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_delivery_type'         => array(
-				'description' => _x( 'Preferred delivery type', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Preferred delivery type', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => 'string',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_location_enabled'      => array(
-				'description' => _x( 'Preferred location enabled', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Preferred location enabled', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => 'boolean',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_neighbor_enabled'      => array(
-				'description' => _x( 'Preferred neighbor enabled', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Preferred neighbor enabled', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => 'boolean',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_days'                  => array(
-				'description' => _x( 'Available preferred days', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Available preferred days', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => 'array',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
@@ -216,19 +216,19 @@ final class PreferredServices {
 					'type'       => 'object',
 					'properties' => array(
 						'day'      => array(
-							'description' => _x( 'The preferred day.', 'dhl', 'woocommerce-germanized-dhl' ),
+							'description' => _x( 'The preferred day.', 'dhl', 'dhl-for-shiptastic' ),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 							'readonly'    => true,
 						),
 						'week_day' => array(
-							'description' => _x( 'The formatted week day.', 'dhl', 'woocommerce-germanized-dhl' ),
+							'description' => _x( 'The formatted week day.', 'dhl', 'dhl-for-shiptastic' ),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 							'readonly'    => true,
 						),
 						'date'     => array(
-							'description' => _x( 'The preferred day date.', 'dhl', 'woocommerce-germanized-dhl' ),
+							'description' => _x( 'The preferred day date.', 'dhl', 'dhl-for-shiptastic' ),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 							'readonly'    => true,
@@ -304,37 +304,37 @@ final class PreferredServices {
 	private function get_checkout_schema() {
 		return array(
 			'preferred_day'                       => array(
-				'description' => _x( 'Preferred day', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Preferred day', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => array( 'string', 'null' ),
 				'context'     => array( 'view', 'edit' ),
 				'default'     => '',
 			),
 			'preferred_location_type'             => array(
-				'description' => _x( 'Preferred location type', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Preferred location type', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => array( 'string', 'null' ),
 				'context'     => array( 'view', 'edit' ),
 				'default'     => '',
 			),
 			'preferred_location'                  => array(
-				'description' => _x( 'Preferred location', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Preferred location', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => array( 'string', 'null' ),
 				'context'     => array( 'view', 'edit' ),
 				'default'     => '',
 			),
 			'preferred_location_neighbor_name'    => array(
-				'description' => _x( 'Preferred neighbor name', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Preferred neighbor name', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => array( 'string', 'null' ),
 				'context'     => array( 'view', 'edit' ),
 				'default'     => '',
 			),
 			'preferred_location_neighbor_address' => array(
-				'description' => _x( 'Preferred neighbor name', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Preferred neighbor name', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => array( 'string', 'null' ),
 				'context'     => array( 'view', 'edit' ),
 				'default'     => '',
 			),
 			'preferred_delivery_type'             => array(
-				'description' => _x( 'Preferred delivery type', 'dhl', 'woocommerce-germanized-dhl' ),
+				'description' => _x( 'Preferred delivery type', 'dhl', 'dhl-for-shiptastic' ),
 				'type'        => array( 'string', 'null' ),
 				'context'     => array( 'view', 'edit' ),
 				'default'     => '',

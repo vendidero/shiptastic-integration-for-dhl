@@ -1,11 +1,11 @@
 <?php
-namespace Vendidero\Germanized\DHL\Api;
+namespace Vendidero\Shiptastic\DHL\Api;
 
-use Vendidero\Germanized\DHL\Package;
-use Vendidero\Germanized\Shipments\API\Auth\OAuth;
-use Vendidero\Germanized\Shipments\DataStores\Shipment;
-use Vendidero\Germanized\Shipments\SecretBox;
-use Vendidero\Germanized\Shipments\ShipmentError;
+use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\API\Auth\OAuth;
+use Vendidero\Shiptastic\DataStores\Shipment;
+use Vendidero\Shiptastic\SecretBox;
+use Vendidero\Shiptastic\ShipmentError;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -20,7 +20,7 @@ class OAuthPaket extends OAuth {
 	}
 
 	protected function get_access_token() {
-		$transient = get_transient( 'woocommerce_gzd_dhl_paket_api_access_token' );
+		$transient = get_transient( 'woocommerce_stc_dhl_paket_api_access_token' );
 
 		if ( $transient ) {
 			$decrypted = SecretBox::decrypt( $transient );
@@ -74,22 +74,22 @@ class OAuthPaket extends OAuth {
 					$access_token = $encrypted;
 				}
 
-				set_transient( 'woocommerce_gzd_dhl_paket_api_access_token', $access_token, $expires_in );
+				set_transient( 'woocommerce_stc_dhl_paket_api_access_token', $access_token, $expires_in );
 
 				return true;
 			}
 
-			$response->set_error( new ShipmentError( 'auth', _x( 'Error while authenticating with DHL.', 'dhl', 'woocommerce-germanized-dhl' ) ) );
+			$response->set_error( new ShipmentError( 'auth', _x( 'Error while authenticating with DHL.', 'dhl', 'dhl-for-shiptastic' ) ) );
 
 			return $response;
 		} else {
-			delete_transient( 'woocommerce_gzd_dhl_paket_api_access_token' );
+			delete_transient( 'woocommerce_stc_dhl_paket_api_access_token' );
 
 			return $response;
 		}
 	}
 
 	public function revoke() {
-		delete_transient( 'woocommerce_gzd_dhl_paket_api_access_token' );
+		delete_transient( 'woocommerce_stc_dhl_paket_api_access_token' );
 	}
 }

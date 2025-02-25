@@ -29,14 +29,6 @@ class DeutschePost extends Label {
 		'wp_int_barcode' => '',
 	);
 
-	public function __construct( $data = 0, $legacy = false ) {
-		if ( $legacy ) {
-			$this->extra_data['additional_services'] = array();
-		}
-
-		parent::__construct( $data, $legacy );
-	}
-
 	public function get_type() {
 		return 'simple';
 	}
@@ -69,38 +61,6 @@ class DeutschePost extends Label {
 
 	public function get_wp_int_barcode( $context = 'view' ) {
 		return $this->get_prop( 'wp_int_barcode', $context );
-	}
-
-	public function get_services( $context = 'view' ) {
-		if ( $this->legacy ) {
-			return $this->get_additional_services( $context );
-		}
-
-		return parent::get_services( $context );
-	}
-
-	public function set_services( $services ) {
-		if ( $this->legacy ) {
-			$this->set_additional_services( $services );
-		} else {
-			parent::set_services( $services );
-		}
-	}
-
-	public function get_additional_services( $context = 'view' ) {
-		if ( $this->legacy ) {
-			return $this->get_prop( 'additional_services', $context );
-		} else {
-			return $this->get_services( $context );
-		}
-	}
-
-	public function set_additional_services( $value ) {
-		if ( $this->legacy ) {
-			$this->set_prop( 'additional_services', (array) $value );
-		} else {
-			$this->set_services( $value );
-		}
 	}
 
 	public function set_page_format( $value ) {
@@ -174,7 +134,7 @@ class DeutschePost extends Label {
 	public function is_trackable() {
 		$voucher_id   = $this->get_voucher_id();
 		$is_trackable = false;
-		$services     = $this->get_additional_services();
+		$services     = $this->get_services();
 
 		if ( ! empty( $voucher_id ) && $voucher_id !== $this->get_number() ) {
 			$is_trackable = true;

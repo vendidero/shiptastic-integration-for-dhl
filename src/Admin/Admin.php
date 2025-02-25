@@ -5,8 +5,6 @@ namespace Vendidero\Shiptastic\DHL\Admin;
 use Vendidero\Shiptastic\DHL\Admin\Importer\DHL;
 use Vendidero\Shiptastic\DHL\Package;
 use Vendidero\Shiptastic\DHL\ParcelServices;
-use Vendidero\Shiptastic\Shipment;
-use Vendidero\Shiptastic\ReturnShipment;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -37,8 +35,6 @@ class Admin {
 
 		add_action( 'woocommerce_order_shipping_method', array( __CLASS__, 'preferred_delivery_notice' ), 10, 2 );
 		add_action( 'woocommerce_admin_order_data_after_shipping_address', array( __CLASS__, 'preferred_delivery_order' ), 5 );
-
-		Status::init();
 	}
 
 	/**
@@ -412,14 +408,11 @@ class Admin {
 	}
 
 	public static function admin_scripts() {
-		global $post;
-
 		$screen    = get_current_screen();
 		$screen_id = $screen ? $screen->id : '';
-		$suffix    = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		wp_register_script( 'wc-shiptastic-dhl-admin-internetmarke', Package::get_assets_build_url( 'static/admin-internetmarke.js' ), array( 'jquery' ), Package::get_version() ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
-		wp_register_script( 'wc-shiptastic-dhl-admin-deutsche-post-label', Package::get_assets_build_url( 'static/admin-deutsche-post-label.js' ), array( 'wc-stc-shipments-admin-shipment-modal' ), Package::get_version() ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
+		wp_register_script( 'wc-shiptastic-dhl-admin-deutsche-post-label', Package::get_assets_build_url( 'static/admin-deutsche-post-label.js' ), array( 'wc-shiptastic-admin-shipment-modal' ), Package::get_version() ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
 
 		if ( wp_script_is( 'wc-shiptastic-admin-shipment-modal', 'enqueued' ) ) {
 			wp_enqueue_script( 'wc-shiptastic-dhl-admin-deutsche-post-label' );
@@ -442,7 +435,6 @@ class Admin {
 	public static function admin_styles() {
 		$screen    = get_current_screen();
 		$screen_id = $screen ? $screen->id : '';
-		$suffix    = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		// Register admin styles.
 		wp_register_style( 'woocommerce_stc_dhl_admin', Package::get_assets_build_url( 'static/admin-styles.css' ), array( 'woocommerce_admin_styles' ), Package::get_version() );

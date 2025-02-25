@@ -6,6 +6,7 @@
  */
 namespace Vendidero\Shiptastic\DHL\Api;
 
+use Vendidero\Shiptastic\API\Helper;
 use Vendidero\Shiptastic\DHL\Package;
 use DateInterval;
 use DateTime;
@@ -17,154 +18,59 @@ defined( 'ABSPATH' ) || exit;
 
 class Paket {
 
-	/**
-	 * @var null|LabelSoap
-	 */
-	protected $label_api = null;
+	protected $is_debug_mode = false;
 
-	/**
-	 * @var null|LabelRest
-	 */
-	protected $label_rest_api = null;
+	public function __construct( $is_debug_mode = false ) {
+		$this->is_debug_mode = $is_debug_mode;
+	}
 
-	/**
-	 * @var null|LocationFinder
-	 */
-	protected $finder_api = null;
-
-	/**
-	 * @var null|ParcelRest
-	 */
-	protected $parcel_api = null;
-
-	/**
-	 * @var null|ReturnRest
-	 */
-	protected $return_api = null;
-
-	protected $country_code = '';
-
-	public function __construct( $country_code ) {
-		$this->country_code = $country_code;
+	protected function is_debug_mode() {
+		return $this->is_debug_mode;
 	}
 
 	/**
-	 * @return LabelSoap|null
+	 * @return LabelSoap|LabelRest|\Vendidero\Shiptastic\Interfaces\Api
 	 * @throws Exception
 	 */
 	public function get_label_api() {
-		$error_message = '';
-
-		if ( is_null( $this->label_api ) ) {
+		if ( Package::use_legacy_soap_api() ) {
 			try {
-				$this->label_api = new LabelSoap();
+				return Helper::get_api( 'dhl_paket_label_soap', $this->is_debug_mode() );
 			} catch ( Exception $e ) {
-				$error_message = $e->getMessage();
-
-				$this->label_api = null;
+				throw new Exception( esc_html( sprintf( _x( 'Label API not available: %s', 'dhl', 'dhl-for-shiptastic' ), $e->getMessage() ) ) );
 			}
+		} else {
+			return $this->get_label_rest_api();
 		}
-
-		if ( is_null( $this->label_api ) ) {
-			if ( ! empty( $error_message ) ) {
-				throw new Exception( esc_html( sprintf( _x( 'Label API not available: %s', 'dhl', 'dhl-for-shiptastic' ), $error_message ) ) );
-			} else {
-				throw new Exception( esc_html_x( 'Label API not available', 'dhl', 'dhl-for-shiptastic' ) );
-			}
-		}
-
-		return $this->label_api;
 	}
 
-	/**
-	 * @return LabelRest|null
-	 * @throws Exception
-	 */
 	public function get_label_rest_api() {
-		$error_message = '';
-
-		if ( is_null( $this->label_rest_api ) ) {
-			try {
-				$this->label_rest_api = new LabelRest();
-			} catch ( Exception $e ) {
-				$error_message        = $e->getMessage();
-				$this->label_rest_api = null;
-			}
-		}
-
-		if ( is_null( $this->label_rest_api ) ) {
-			if ( ! empty( $error_message ) ) {
-				throw new Exception( esc_html( sprintf( _x( 'Label API not available: %s', 'dhl', 'dhl-for-shiptastic' ), $error_message ) ) );
-			} else {
-				throw new Exception( esc_html_x( 'Label API not available', 'dhl', 'dhl-for-shiptastic' ) );
-			}
-		}
-
-		return $this->label_rest_api;
+		return Helper::get_api( 'dhl_paket_label_rest', $this->is_debug_mode() );
 	}
 
 	/**
-	 * @return LocationFinder|null
-	 * @throws Exception
+	 * @return LocationFinder|false
 	 */
 	public function get_finder_api() {
-		if ( is_null( $this->finder_api ) ) {
-			try {
-				$this->finder_api = new LocationFinder();
-			} catch ( Exception $e ) {
-				$this->finder_api = null;
-			}
-		}
-
-		if ( is_null( $this->finder_api ) ) {
-			throw new Exception( esc_html_x( 'Parcel Finder API not available', 'dhl', 'dhl-for-shiptastic' ) );
-		}
-
-		return $this->finder_api;
+		return Helper::get_api( 'dhl_location_finder', $this->is_debug_mode() );
 	}
 
 	/**
-	 * @return ReturnRest|null
-	 * @throws Exception
+	 * @return ReturnRest|\Vendidero\Shiptastic\Interfaces\Api
 	 */
 	public function get_return_api() {
-		if ( is_null( $this->return_api ) ) {
-			try {
-				$this->return_api = new ReturnRest();
-			} catch ( Exception $e ) {
-				$this->return_api = null;
-			}
-		}
+		return Helper::get_api( 'dhl_paket_label_rest', $this->is_debug_mode() );
+	}
 
-		if ( is_null( $this->return_api ) ) {
-			throw new Exception( esc_html_x( 'Return API not available', 'dhl', 'dhl-for-shiptastic' ) );
-		}
-
-		return $this->return_api;
+	public function get_parcel_api() {
+		return $this->get_parcel_services_api();
 	}
 
 	/**
-	 * @return ParcelRest|null
-	 * @throws Exception
+	 * @return \Vendidero\Shiptastic\DHL\Api\ParcelServices|\Vendidero\Shiptastic\Interfaces\Api
 	 */
-	public function get_parcel_api() {
-		if ( is_null( $this->parcel_api ) ) {
-			try {
-				$this->parcel_api = new ParcelRest();
-			} catch ( Exception $e ) {
-				$this->parcel_api = null;
-			}
-		}
-
-		if ( is_null( $this->parcel_api ) ) {
-			throw new Exception( esc_html_x( 'Parcel API not available', 'dhl', 'dhl-for-shiptastic' ) );
-		}
-
-		return $this->parcel_api;
-	}
-
-	public function get_country_code() {
-		return $this->country_code;
+	public function get_parcel_services_api() {
+		return Helper::get_api( 'dhl_paket_parcel_services', $this->is_debug_mode() );
 	}
 
 	/**
@@ -172,11 +78,7 @@ class Paket {
 	 */
 	public function test_connection() {
 		try {
-			if ( Package::use_legacy_soap_api() ) {
-				return $this->get_label_api()->test_connection();
-			} else {
-				return $this->get_label_rest_api()->test_connection();
-			}
+			return $this->get_label_api()->test_connection();
 		} catch ( \Exception $e ) {
 			$error = new \WP_Error();
 			$error->add( $e->getCode(), $e->getMessage() );
@@ -185,28 +87,16 @@ class Paket {
 		}
 	}
 
-	public function get_parcel_location( $address, $types = array(), $limit = false ) {
-		return $this->get_finder_api()->get_parcel_location( $address, $types, $limit );
-	}
-
 	public function get_return_label( &$label ) {
 		return $this->get_return_api()->get_return_label( $label );
 	}
 
 	public function get_label( &$label ) {
-		if ( Package::use_legacy_soap_api() ) {
-			return $this->get_label_api()->get_label( $label );
-		} else {
-			return $this->get_label_rest_api()->get_label( $label );
-		}
+		return $this->get_label_api()->get_label( $label );
 	}
 
 	public function delete_label( &$label ) {
-		if ( Package::use_legacy_soap_api() ) {
-			return $this->get_label_api()->delete_label( $label );
-		} else {
-			return $this->get_label_rest_api()->delete_label( $label );
-		}
+		return $this->get_label_api()->delete_label( $label );
 	}
 
 	protected function is_holiday( $datetime ) {
@@ -265,11 +155,9 @@ class Paket {
 
 		$preparation_days = ParcelServices::get_preferred_day_preparation_days();
 		$cutoff_time      = empty( $cutoff_time ) ? ParcelServices::get_preferred_day_cutoff_time() : $cutoff_time;
-		$account_num      = Package::get_setting( 'account_number' );
-
-		$tz_obj        = new DateTimeZone( 'Europe/Berlin' );
-		$starting_date = new DateTime( 'now', $tz_obj );
-		$days_added    = 0;
+		$tz_obj           = new DateTimeZone( 'Europe/Berlin' );
+		$starting_date    = new DateTime( 'now', $tz_obj );
+		$days_added       = 0;
 
 		// Add preparation days
 		if ( ! empty( $preparation_days ) ) {
@@ -297,14 +185,11 @@ class Paket {
 			++$days_added;
 		}
 
-		$args['postcode']    = $postcode;
-		$args['account_num'] = $account_num;
-		$args['start_date']  = $starting_date->format( 'Y-m-d' );
-
-		$preferred_days = array();
+		$args['postcode']   = $postcode;
+		$args['start_date'] = $starting_date->format( 'Y-m-d' );
 
 		try {
-			$preferred_services = $this->get_parcel_api()->get_services( $args );
+			$preferred_services = $this->get_parcel_services_api()->get_services( $args );
 			$preferred_days     = $this->get_preferred_days( $preferred_services );
 		} catch ( Exception $e ) {
 			throw $e;

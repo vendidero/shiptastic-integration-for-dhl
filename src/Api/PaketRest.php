@@ -30,16 +30,33 @@ abstract class PaketRest extends \Vendidero\Shiptastic\API\REST {
 	 * @return Response
 	 */
 	protected function parse_error( $response ) {
-		$response_code  = $response->get_code();
-		$response_body  = $response->get_body();
-		$error          = new ShipmentError();
-		$error_messages = array();
+		$response_code       = $response->get_code();
+		$response_body       = $response->get_body();
+		$error               = new ShipmentError();
+		$error_messages      = array();
+		$soft_error_messages = array();
 
-		if ( isset( $response_body['items'] ) && isset( $response_body['items'][0]['validationMessages'] ) ) {
+		if ( 401 === $response_code ) {
+			$error_messages[] = sprintf( _x( 'Your DHL <a href="%s">API credentials</a> seem to be invalid.', 'dhl', 'dhl-for-shiptastic' ), esc_url( Package::get_dhl_shipping_provider()->get_edit_link() ) );
+		} elseif ( isset( $response_body['items'] ) && isset( $response_body['items'][0]['validationMessages'] ) ) {
 			if ( ! empty( $response_body['items'][0]['validationMessages'] ) ) {
 				foreach ( $response_body['items'][0]['validationMessages'] as $message ) {
-					if ( ! in_array( $message['validationMessage'], $error_messages, true ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-						$error_messages[] = $message['validationMessage']; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					$message = wp_parse_args(
+						$message,
+						array(
+							'validationMessage' => '',
+							'validationState'   => 'Error',
+						)
+					);
+
+					if ( 'Error' === $message['validationState'] ) {
+						if ( ! in_array( $message['validationMessage'], $error_messages, true ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+							$error_messages[] = $message['validationMessage']; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+						}
+					} elseif ( ! in_array( $message['validationMessage'], $soft_error_messages, true ) ) {
+						// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+							$soft_error_messages[] = $message['validationMessage']; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+
 					}
 				}
 			} elseif ( ! empty( $response_body['items'][0]['sstatus'] ) ) {
@@ -76,6 +93,10 @@ abstract class PaketRest extends \Vendidero\Shiptastic\API\REST {
 
 		foreach ( $error_messages as $error_message ) {
 			$error->add( 'dhl-api-error', $error_message );
+		}
+
+		foreach ( $soft_error_messages as $error_message ) {
+			$error->add_soft_error( 'dhl-api-soft-error', $error_message );
 		}
 
 		$response->set_error( $error );

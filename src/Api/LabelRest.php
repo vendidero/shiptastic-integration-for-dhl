@@ -16,8 +16,20 @@ defined( 'ABSPATH' ) || exit;
 
 class LabelRest extends PaketRest {
 
+	public function get_title() {
+		return _x( 'DHL Paket Label REST', 'dhl', 'dhl-for-shiptastic' );
+	}
+
+	public function get_name() {
+		return 'dhl_paket_label_rest';
+	}
+
 	public function get_url() {
-		return Package::get_label_rest_api_url();
+		if ( $this->is_sandbox() ) {
+			return 'https://api-sandbox.dhl.com/parcel/de/shipping/v2/';
+		} else {
+			return 'https://api-eu.dhl.com/parcel/de/shipping/v2/';
+		}
 	}
 
 	/**
@@ -46,8 +58,9 @@ class LabelRest extends PaketRest {
 
 		$currency            = $shipment->get_order() ? $shipment->get_order()->get_currency() : 'EUR';
 		$billing_number_args = array(
-			'api_type' => 'dhl.com',
-			'services' => $label->get_services(),
+			'api_type'   => 'dhl.com',
+			'services'   => $label->get_services(),
+			'is_sandbox' => $this->is_sandbox(),
 		);
 
 		$account_number = wc_stc_dhl_get_billing_number( $label->get_product_id(), $billing_number_args );
@@ -659,7 +672,8 @@ class LabelRest extends PaketRest {
 						'billingNumber' => wc_stc_dhl_get_billing_number(
 							'V01PAK',
 							array(
-								'api_type' => 'dhl.com',
+								'api_type'   => 'dhl.com',
+								'is_sandbox' => $this->is_sandbox(),
 							)
 						),
 						'refNo'         => 'Order No. 1234',

@@ -3,17 +3,22 @@
 namespace Vendidero\Shiptastic\DHL\Api;
 
 use Exception;
-use Vendidero\Shiptastic\DHL\Label\ReturnLabel;
 use Vendidero\Shiptastic\DHL\Package;
-use Vendidero\Shiptastic\API\Response;
-use Vendidero\Shiptastic\ShipmentError;
 
 defined( 'ABSPATH' ) || exit;
 
 class ReturnRest extends PaketRest {
 
+	public function get_title() {
+		return _x( 'DHL Paket Return REST', 'dhl', 'dhl-for-shiptastic' );
+	}
+
+	public function get_name() {
+		return 'dhl_paket_return_rest';
+	}
+
 	public function get_url() {
-		if ( Package::is_debug_mode() ) {
+		if ( $this->is_sandbox() ) {
 			return 'https://api-sandbox.dhl.com/parcel/de/shipping/returns/v1/';
 		} else {
 			return 'https://api-eu.dhl.com/parcel/de/shipping/returns/v1/';

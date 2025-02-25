@@ -10,11 +10,11 @@ use Vendidero\Shiptastic\DHL\Package;
 use Exception;
 use SoapClient;
 use SoapHeader;
+use Vendidero\Shiptastic\Interfaces\ApiAuth;
 
 defined( 'ABSPATH' ) || exit;
 
-// Singleton API connection class
-class AuthSoap {
+class AuthSoap implements ApiAuth {
 
 	/**
 	 * define Auth API endpoint
@@ -26,25 +26,55 @@ class AuthSoap {
 	 */
 	private $wsdl_link;
 
+	protected $api = null;
+
 	/**
 	 * constructor.
 	 */
-	public function __construct( $wsdl_link ) {
+	public function __construct( $wsdl_link, $api ) {
 		$this->wsdl_link = Package::get_wsdl_file( $wsdl_link );
+		$this->api       = $api;
 	}
 
-	public function get_access_token( $client_id = '', $client_secret = '' ) {
+	/**
+	 * @return Soap
+	 */
+	public function get_api() {
+		return $this->api;
+	}
+
+	protected function get_cig_login() {
+		return Package::get_cig_user( $this->get_api()->is_sandbox() );
+	}
+
+	protected function get_cig_password() {
+		return Package::get_cig_password( $this->get_api()->is_sandbox() );
+	}
+
+	protected function get_cig_url() {
+		return $this->get_api()->is_sandbox() ? 'https://cig.dhl.de/services/sandbox/soap' : 'https://cig.dhl.de/services/production/soap';
+	}
+
+	protected function get_client_id() {
+		return Package::get_gk_api_user( $this->get_api()->is_sandbox() );
+	}
+
+	protected function get_client_password() {
+		return Package::get_gk_api_signature( $this->get_api()->is_sandbox() );
+	}
+
+	public function get_client() {
 		try {
 			$args = array(
-				'login'              => Package::get_cig_user(),
-				'password'           => Package::get_cig_password(),
-				'location'           => Package::get_cig_url(),
+				'login'              => $this->get_cig_login(),
+				'password'           => $this->get_cig_password(),
+				'location'           => $this->get_cig_url(),
 				'soap_version'       => SOAP_1_1,
 				'trace'              => true,
 				'connection_timeout' => 10,
 			);
 
-			if ( Package::is_debug_mode() ) {
+			if ( Package::is_debug_mode() || $this->get_api()->is_sandbox() ) {
 				$args['cache_wsdl'] = WSDL_CACHE_NONE;
 			}
 
@@ -56,10 +86,10 @@ class AuthSoap {
 			throw $e;
 		}
 
-		if ( ! empty( $client_id ) && ! empty( $client_secret ) ) {
+		if ( $this->get_client_id() && $this->get_client_password() ) {
 			$soap_authentication = array(
-				'user'      => $client_id,
-				'signature' => $client_secret,
+				'user'      => $this->get_client_id(),
+				'signature' => $this->get_client_password(),
 				'type'      => 0,
 			);
 
@@ -69,5 +99,9 @@ class AuthSoap {
 		}
 
 		return $soap_client;
+	}
+
+	public function get_type() {
+		return 'dhl_auth_soap';
 	}
 }

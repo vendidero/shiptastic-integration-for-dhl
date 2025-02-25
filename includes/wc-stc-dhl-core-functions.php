@@ -573,13 +573,13 @@ function wc_stc_dhl_get_billing_number( $product, $args = array() ) {
 	$args = wp_parse_args(
 		$args,
 		array(
-			'api_type' => 'default',
-			'services' => array(),
+			'api_type'   => 'default',
+			'services'   => array(),
+			'is_sandbox' => Package::is_debug_mode(),
 		)
 	);
 
-	$provider    = Package::get_dhl_shipping_provider();
-	$has_gogreen = in_array( 'GoGreen', $args['services'], true );
+	$provider = Package::get_dhl_shipping_provider();
 
 	if ( 'return' === $product ) {
 		$product_number = '07';
@@ -595,26 +595,7 @@ function wc_stc_dhl_get_billing_number( $product, $args = array() ) {
 
 	if ( $product_number ) {
 		$participation_number = Package::get_participation_number( $product, $args );
-		$account_base         = Package::get_setting( 'account_number' );
-
-		if ( Package::is_debug_mode() ) {
-			$account_base         = '3333333333';
-			$participation_number = '01';
-
-			if ( $has_gogreen ) {
-				$participation_number = '02';
-			}
-
-			if ( 'V01PAK' === $product ) {
-				$participation_number = '02';
-
-				if ( $has_gogreen ) {
-					$participation_number = '03';
-				}
-			} elseif ( 'V66WPI' === $product && $has_gogreen ) {
-				$participation_number = '04';
-			}
-		}
+		$account_base         = Package::get_account_number( $args['is_sandbox'] );
 
 		// Participation number may contain account number too
 		if ( strlen( $participation_number ) >= 12 ) {

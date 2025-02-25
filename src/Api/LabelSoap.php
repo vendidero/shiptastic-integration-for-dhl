@@ -9,7 +9,6 @@ use Vendidero\Shiptastic\Admin\Settings;
 use Vendidero\Shiptastic\Labels\Factory;
 use Vendidero\Shiptastic\PDFMerger;
 use Vendidero\Shiptastic\PDFSplitter;
-use Vendidero\Shiptastic\DHL\ParcelLocator;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,12 +18,16 @@ class LabelSoap extends Soap {
 
 	const DHL_RETURN_PRODUCT = '07';
 
-	public function __construct() {
-		try {
-			parent::__construct( Package::get_gk_api_url() );
-		} catch ( Exception $e ) {
-			throw $e;
-		}
+	public function get_url() {
+		return $this->is_sandbox() ? 'https://cig.dhl.de/cig-wsdls/com/dpdhl/wsdl/geschaeftskundenversand-api/3.5/geschaeftskundenversand-api-3.5.wsdl' : 'https://cig.dhl.de/cig-wsdls/com/dpdhl/wsdl/geschaeftskundenversand-api/3.5/geschaeftskundenversand-api-3.5.wsdl';
+	}
+
+	public function get_name() {
+		return 'dhl_paket_label_soap';
+	}
+
+	public function get_title() {
+		return _x( 'DHL Label SOAP', 'dhl', 'dhl-for-shiptastic' );
 	}
 
 	/**
@@ -45,15 +48,15 @@ class LabelSoap extends Soap {
 		}
 	}
 
-	public function get_access_token() {
-		return $this->get_auth_api()->get_access_token( Package::get_gk_api_user(), Package::get_gk_api_signature() );
+	public function get_client() {
+		return $this->get_auth_api()->get_client();
 	}
 
 	public function test_connection() {
 		$error = new \WP_Error();
 
 		try {
-			$soap_client = $this->get_access_token();
+			$soap_client = $this->get_client();
 			$response    = $soap_client->validateShipment(
 				array(
 					'Version'           => array(
@@ -139,7 +142,7 @@ class LabelSoap extends Soap {
 			);
 
 			try {
-				$soap_client = $this->get_access_token();
+				$soap_client = $this->get_client();
 				Package::log( '"getLabel" called with: ' . print_r( $soap_request, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 				$response_body = $soap_client->getLabel( $soap_request );
@@ -169,7 +172,7 @@ class LabelSoap extends Soap {
 	public function create_label( &$label ) {
 		try {
 			$soap_request = $this->get_create_label_request( $label );
-			$soap_client  = $this->get_access_token();
+			$soap_client  = $this->get_client();
 			Package::log( '"createShipmentOrder" called with: ' . print_r( $soap_request, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 			$response_body = $soap_client->createShipmentOrder( $soap_request );
@@ -318,7 +321,7 @@ class LabelSoap extends Soap {
 		try {
 			Package::log( '"deleteShipmentOrder" called with: ' . print_r( $soap_request, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
-			$soap_client   = $this->get_access_token();
+			$soap_client   = $this->get_client();
 			$response_body = $soap_client->deleteShipmentOrder( $soap_request );
 
 			Package::log( 'Response Body: ' . print_r( $response_body, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
@@ -454,7 +457,10 @@ class LabelSoap extends Soap {
 			}
 		}
 
-		$billing_number_args       = array( 'services' => $label->get_services() );
+		$billing_number_args       = array(
+			'services'   => $label->get_services(),
+			'is_sandbox' => $this->is_sandbox(),
+		);
 		$account_number            = wc_stc_dhl_get_billing_number( $label->get_product_id(), $billing_number_args );
 		$formatted_recipient_state = wc_stc_dhl_format_label_state( $shipment->get_state(), $shipment->get_country() );
 

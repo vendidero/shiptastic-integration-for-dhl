@@ -175,7 +175,7 @@ trait PickupDeliveryTrait {
 		}
 
 		try {
-			$location_data = Package::get_api()->get_parcel_location(
+			$location_data = Package::get_api()->get_finder_api()->get_parcel_location(
 				array(
 					'zip'     => $address['postcode'],
 					'country' => $address['country'],

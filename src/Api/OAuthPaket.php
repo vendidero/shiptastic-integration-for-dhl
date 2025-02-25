@@ -38,15 +38,19 @@ class OAuthPaket extends OAuth {
 	}
 
 	protected function get_client_secret() {
-		return Package::get_dhl_com_api_secret();
+		return 'Qe8ZTtQiOWaEcjad';
 	}
 
 	protected function get_username() {
-		return Package::get_gk_api_user();
+		return Package::get_gk_api_user( $this->get_api()->is_sandbox() );
 	}
 
 	protected function get_password() {
-		return Package::get_gk_api_signature();
+		return Package::get_gk_api_signature( $this->get_api()->is_sandbox() );
+	}
+
+	public function is_connected() {
+		return ! empty( $this->get_username() ) && ! empty( $this->get_password() );
 	}
 
 	public function auth() {

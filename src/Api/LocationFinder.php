@@ -3,44 +3,44 @@
 namespace Vendidero\Shiptastic\DHL\Api;
 
 use Exception;
-use Vendidero\Shiptastic\DHL\Package;
 use Vendidero\Shiptastic\DHL\ParcelLocator;
 
 defined( 'ABSPATH' ) || exit;
 
-class LocationFinder extends Rest {
+class LocationFinder extends \Vendidero\Shiptastic\API\REST {
 
-	protected function is_debug_mode() {
-		return Package::is_debug_mode();
+	public function get_title() {
+		return _x( 'DHL LocationFinder', 'dhl', 'dhl-for-shiptastic' );
 	}
 
-	public function get_base_url() {
-		if ( $this->is_debug_mode() ) {
+	public function get_name() {
+		return 'dhl_location_finder';
+	}
+
+	public function get_url() {
+		if ( $this->is_sandbox() ) {
 			return 'https://api-sandbox.dhl.com/location-finder/v1';
 		} else {
 			return 'https://api.dhl.com/location-finder/v1';
 		}
 	}
 
-	public function get_api_key() {
-		if ( $this->is_debug_mode() ) {
-			return 'demo-key';
-		} else {
-			return defined( 'WC_STC_DHL_LOCATION_FINDER_API_KEY' ) ? WC_STC_DHL_LOCATION_FINDER_API_KEY : Package::get_dhl_com_api_key();
-		}
+	protected function get_auth_instance() {
+		return new ApiKeyAuth( $this );
 	}
 
-	protected function set_header( $authorization = '', $request_type = 'GET', $endpoint = '' ) {
-		parent::set_header();
-		unset( $this->remote_header['Authorization'] );
-
-		$this->remote_header['DHL-API-Key'] = $this->get_api_key();
-	}
-
+	/**
+	 * @param $keyword
+	 * @param $country
+	 * @param $postcode
+	 *
+	 * @return mixed
+	 * @throws Exception
+	 */
 	public function find_by_id( $keyword, $country, $postcode ) {
 		$keyword_id = ParcelLocator::extract_pickup_keyword_id( $keyword );
 
-		$result = $this->get_request(
+		$response = $this->get(
 			'/find-by-keyword-id',
 			array(
 				'keywordId'   => $keyword_id,
@@ -49,13 +49,17 @@ class LocationFinder extends Rest {
 			)
 		);
 
-		if ( ! empty( $result->url ) ) {
-			$this->adjust_location_result( $result );
+		if ( ! $response->is_error() ) {
+			$result = $response->get_body( false );
 
-			return $result;
-		} else {
-			return false;
+			if ( ! empty( $result->url ) ) {
+				$this->adjust_location_result( $result );
+
+				return $result;
+			}
 		}
+
+		throw new Exception( $response->get_error()->get_error_message(), (int) $response->get_error()->get_error_code() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 	}
 
 	protected function adjust_location_result( $result ) {
@@ -154,24 +158,30 @@ class LocationFinder extends Rest {
 			}
 		}
 
-		$response = $this->get_request( '/find-by-address', $args );
+		$response = $this->get( '/find-by-address', $args );
 		$results  = array();
 
-		if ( isset( $response->locations ) ) {
-			foreach ( $response->locations as $result ) {
-				$this->adjust_location_result( $result );
+		if ( ! $response->is_error() ) {
+			$body = $response->get_body( false );
 
-				// Not supporting this type
-				if ( ! in_array( $result->internal_type, $types, true ) ) {
-					continue;
+			if ( isset( $body->locations ) ) {
+				foreach ( $body->locations as $result ) {
+					$this->adjust_location_result( $result );
+
+					// Not supporting this type
+					if ( ! in_array( $result->internal_type, $types, true ) ) {
+						continue;
+					}
+
+					if ( count( $results ) >= $limit ) {
+						break;
+					}
+
+					$results[] = $result;
 				}
-
-				if ( count( $results ) >= $limit ) {
-					break;
-				}
-
-				$results[] = $result;
 			}
+		} else {
+			throw new Exception( $response->get_error()->get_error_message(), (int) $response->get_error()->get_error_code() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		return $results;

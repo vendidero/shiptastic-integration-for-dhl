@@ -5,7 +5,11 @@ namespace Vendidero\Shiptastic\DHL;
 use DateTime;
 use DateTimeZone;
 use Exception;
+use Vendidero\Shiptastic\DHL\Api\LabelRest;
+use Vendidero\Shiptastic\DHL\Api\LabelSoap;
+use Vendidero\Shiptastic\DHL\Api\LocationFinder;
 use Vendidero\Shiptastic\DHL\Api\Paket;
+use Vendidero\Shiptastic\DHL\Api\ReturnRest;
 use Vendidero\Shiptastic\DHL\ShippingProvider\DeutschePost;
 use Vendidero\Shiptastic\DHL\ShippingProvider\DHL;
 use Vendidero\Shiptastic\DHL\Api\Internetmarke;
@@ -118,7 +122,7 @@ class Package {
 	}
 
 	public static function has_dependencies() {
-		return ( class_exists( 'WooCommerce' ) && class_exists( '\Vendidero\Shiptastic\Package' ) && \Vendidero\Shiptastic\Package::has_dependencies() && self::base_country_is_supported() && apply_filters( 'woocommerce_stc_dhl_enabled', true ) );
+		return ( class_exists( '\Vendidero\Shiptastic\Package' ) && \Vendidero\Shiptastic\Package::has_dependencies() && self::base_country_is_supported() && apply_filters( 'woocommerce_stc_dhl_enabled', true ) );
 	}
 
 	public static function has_load_dependencies() {
@@ -200,19 +204,6 @@ class Package {
 		}
 	}
 
-	public static function legacy_label_table_exists() {
-		global $wpdb;
-
-		$table_name = $wpdb->prefix . 'woocommerce_stc_dhl_labels';
-		$query      = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
-
-		if ( $table_name !== $wpdb->get_var( $query ) ) { // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-			return false;
-		}
-
-		return true;
-	}
-
 	public static function is_enabled() {
 		return ( self::is_dhl_enabled() || self::is_deutsche_post_enabled() );
 	}
@@ -223,10 +214,6 @@ class Package {
 
 	public static function is_rest_api_request() {
 		return defined( 'REST_REQUEST' ) && REST_REQUEST;
-	}
-
-	public static function get_country_iso_alpha3( $country_code ) {
-		return \Vendidero\Shiptastic\Package::get_country_iso_alpha3( $country_code );
 	}
 
 	private static function includes() {
@@ -266,8 +253,42 @@ class Package {
 	}
 
 	public static function init_hooks() {
-		// Register additional label types
 		add_filter( 'woocommerce_shiptastic_shipment_label_types', array( __CLASS__, 'register_label_types' ), 10 );
+
+		add_filter(
+			'shiptastic_register_api_instance_dhl_paket_label_rest',
+			function () {
+				return new LabelRest();
+			}
+		);
+
+		add_filter(
+			'shiptastic_register_api_instance_dhl_paket_return_rest',
+			function () {
+				return new ReturnRest();
+			}
+		);
+
+		add_filter(
+			'shiptastic_register_api_instance_dhl_location_finder',
+			function () {
+				return new LocationFinder();
+			}
+		);
+
+		add_filter(
+			'shiptastic_register_api_instance_dhl_paket_label_soap',
+			function () {
+				return new LabelSoap();
+			}
+		);
+
+		add_filter(
+			'shiptastic_register_api_instance_dhl_paket_parcel_services',
+			function () {
+				return new \Vendidero\Shiptastic\DHL\Api\ParcelServices();
+			}
+		);
 	}
 
 	public static function register_label_types( $types ) {
@@ -349,7 +370,7 @@ class Package {
 
 	public static function get_api() {
 		if ( is_null( self::$api ) ) {
-			self::$api = new Paket( self::get_base_country() );
+			self::$api = new Paket( self::is_debug_mode() );
 		}
 
 		return self::$api;
@@ -464,20 +485,6 @@ class Package {
 		return ( defined( 'WC_STC_DHL_LOG_ENABLE' ) && WC_STC_DHL_LOG_ENABLE ) || self::is_debug_mode();
 	}
 
-	private static function define_constant( $name, $value ) {
-		if ( ! defined( $name ) ) {
-			define( $name, $value );
-		}
-	}
-
-	public static function get_app_id() {
-		return 'woo_germanized_2';
-	}
-
-	public static function get_app_token() {
-		return '8KdXFjxwY0I1oOEo28Jk997tS5Rkky';
-	}
-
 	public static function get_geschaeftskunden_portal_url() {
 		return 'https://geschaeftskunden.dhl.de';
 	}
@@ -539,26 +546,32 @@ class Package {
 	}
 
 	/**
-	 * CIG Authentication (basic auth) user. In Sandbox mode use Developer ID and password of entwickler.dhl.de
+	 * CIG (SOAP) Authentication (basic auth) user. In Sandbox mode use Developer ID and password of entwickler.dhl.de
 	 *
 	 * @return mixed|string|void
 	 */
-	public static function get_cig_user() {
-		$debug_user = defined( 'WC_STC_DHL_SANDBOX_USER' ) ? WC_STC_DHL_SANDBOX_USER : self::get_setting( 'api_sandbox_username' );
-		$debug_user = strtolower( $debug_user );
+	public static function get_cig_user( $is_sandbox = false ) {
+		if ( $is_sandbox ) {
+			$debug_user = defined( 'WC_STC_DHL_SANDBOX_USER' ) ? WC_STC_DHL_SANDBOX_USER : self::get_setting( 'api_sandbox_username' );
+			$debug_user = strtolower( $debug_user );
 
-		return self::is_debug_mode() ? $debug_user : self::get_app_id();
+			return $debug_user;
+		} else {
+			return 'woo_germanized_2';
+		}
 	}
 
 	/**
-	 * CIG Authentication (basic auth) password. In Sandbox mode use Developer ID and password of entwickler.dhl.de
+	 * CIG (SOAP) Authentication (basic auth) password. In Sandbox mode use Developer ID and password of entwickler.dhl.de
 	 *
 	 * @return mixed|string|void
 	 */
-	public static function get_cig_password() {
-		$debug_pwd = defined( 'WC_STC_DHL_SANDBOX_PASSWORD' ) ? WC_STC_DHL_SANDBOX_PASSWORD : self::get_setting( 'api_sandbox_password' );
-
-		return self::is_debug_mode() ? $debug_pwd : self::get_app_token();
+	public static function get_cig_password( $is_sandbox = false ) {
+		if ( $is_sandbox ) {
+			return defined( 'WC_STC_DHL_SANDBOX_PASSWORD' ) ? WC_STC_DHL_SANDBOX_PASSWORD : self::get_setting( 'api_sandbox_password' );
+		} else {
+			return '8KdXFjxwY0I1oOEo28Jk997tS5Rkky';
+		}
 	}
 
 	/**
@@ -566,8 +579,12 @@ class Package {
 	 *
 	 * @return mixed|string|void
 	 */
-	public static function get_gk_api_user() {
-		$user = self::is_debug_mode() ? 'user-valid' : self::get_setting( 'api_username' );
+	public static function get_gk_api_user( $is_sandbox = false ) {
+		if ( $is_sandbox ) {
+			$user = 'user-valid';
+		} else {
+			$user = self::get_setting( 'api_username' );
+		}
 
 		return strtolower( $user );
 	}
@@ -577,19 +594,8 @@ class Package {
 	 *
 	 * @return mixed|string|void
 	 */
-	public static function get_gk_api_signature() {
-		return self::is_debug_mode() ? 'SandboxPasswort2023!' : self::get_setting( 'api_password' );
-	}
-
-	/**
-	 * Retoure Auth user
-	 *
-	 * @return mixed|string|void
-	 */
-	public static function get_retoure_api_user() {
-		$user = self::is_debug_mode() ? '2222222222_customer' : self::get_setting( 'api_username' );
-
-		return strtolower( $user );
+	public static function get_gk_api_signature( $is_sandbox = false ) {
+		return $is_sandbox ? 'SandboxPasswort2023!' : self::get_setting( 'api_password' );
 	}
 
 	public static function use_legacy_soap_api() {
@@ -616,14 +622,6 @@ class Package {
 		}
 
 		return apply_filters( 'woocommerce_stc_dhl_use_legacy_soap_api', $use_legacy_soap );
-	}
-
-	public static function get_label_rest_api_url() {
-		if ( self::is_debug_mode() ) {
-			return 'https://api-sandbox.dhl.com/parcel/de/shipping/v2/';
-		} else {
-			return 'https://api-eu.dhl.com/parcel/de/shipping/v2/';
-		}
 	}
 
 	public static function get_return_receivers() {
@@ -679,57 +677,8 @@ class Package {
 		return apply_filters( 'woocommerce_stc_dhl_retoure_receiver', $country_receiver, $country );
 	}
 
-	/**
-	 * Retoure Auth signature
-	 *
-	 * @return mixed|string|void
-	 */
-	public static function get_retoure_api_signature() {
-		return self::is_debug_mode() ? 'uBQbZ62!ZiBiVVbhc' : self::get_setting( 'api_password' );
-	}
-
-	public static function get_cig_url() {
-		return self::is_debug_mode() ? 'https://cig.dhl.de/services/sandbox/soap' : 'https://cig.dhl.de/services/production/soap';
-	}
-
-	public static function get_rest_url() {
-		return self::is_debug_mode() ? 'https://cig.dhl.de/services/sandbox/rest' : 'https://cig.dhl.de/services/production/rest';
-	}
-
-	public static function get_gk_api_url() {
-		return self::is_debug_mode() ? 'https://cig.dhl.de/cig-wsdls/com/dpdhl/wsdl/geschaeftskundenversand-api/3.5/geschaeftskundenversand-api-3.5.wsdl' : 'https://cig.dhl.de/cig-wsdls/com/dpdhl/wsdl/geschaeftskundenversand-api/3.5/geschaeftskundenversand-api-3.5.wsdl';
-	}
-
 	public static function get_dhl_com_api_key() {
 		return 'uwi1SH5bHDdMTdcWXB5JIsDCvBOyIawn';
-	}
-
-	public static function get_dhl_com_api_secret() {
-		return 'Qe8ZTtQiOWaEcjad';
-	}
-
-	public static function get_business_portal_url() {
-		return 'https://geschaeftskunden.dhl.de';
-	}
-
-	/**
-	 * Generate a unique key.
-	 *
-	 * @return string
-	 */
-	protected static function generate_key() {
-		$key       = array( ABSPATH, time() );
-		$constants = array( 'AUTH_KEY', 'SECURE_AUTH_KEY', 'LOGGED_IN_KEY', 'NONCE_KEY', 'AUTH_SALT', 'SECURE_AUTH_SALT', 'LOGGED_IN_SALT', 'NONCE_SALT', 'SECRET_KEY' );
-
-		foreach ( $constants as $constant ) {
-			if ( defined( $constant ) ) {
-				$key[] = constant( $constant );
-			}
-		}
-
-		shuffle( $key );
-
-		return md5( serialize( $key ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 	}
 
 	public static function get_core_wsdl_file( $file ) {
@@ -921,21 +870,54 @@ class Package {
 		return $wsdl_link;
 	}
 
+	public static function get_account_number( $is_sandbox = false ) {
+		$account_number = '';
+
+		if ( $is_sandbox ) {
+			$account_number = '3333333333';
+		} elseif ( $provider = self::get_dhl_shipping_provider() ) {
+			$account_number = $provider->get_setting( 'account_number' );
+		}
+
+		return $account_number;
+	}
+
 	public static function get_participation_number( $product, $args = array() ) {
 		$args = wp_parse_args(
 			$args,
 			array(
-				'gogreen' => false,
+				'services'   => array(),
+				'is_sandbox' => false,
 			)
 		);
 
-		$participation = self::get_setting( 'participation_' . $product );
+		$has_gogreen = in_array( 'GoGreen', $args['services'], true );
 
-		if ( $args['gogreen'] ) {
-			$participation_gogreen = self::get_setting( 'participation_gogreen_' . $product );
+		if ( $args['is_sandbox'] ) {
+			$participation = '01';
 
-			if ( ! empty( $participation_gogreen ) ) {
-				$participation = $participation_gogreen;
+			if ( $has_gogreen ) {
+				$participation = '02';
+			}
+
+			if ( 'V01PAK' === $product ) {
+				$participation = '02';
+
+				if ( $has_gogreen ) {
+					$participation = '03';
+				}
+			} elseif ( 'V66WPI' === $product && $has_gogreen ) {
+				$participation = '04';
+			}
+		} else {
+			$participation = self::get_setting( 'participation_' . $product );
+
+			if ( $has_gogreen ) {
+				$participation_gogreen = self::get_setting( 'participation_gogreen_' . $product );
+
+				if ( ! empty( $participation_gogreen ) ) {
+					$participation = $participation_gogreen;
+				}
 			}
 		}
 
@@ -958,22 +940,12 @@ class Package {
 			$is_dp = true;
 		}
 
-		if ( ! $is_dp && self::is_debug_mode() ) {
-			if ( 'api_username' === $name ) {
-				$name = 'api_sandbox_username';
-			} elseif ( 'api_password' === $name ) {
-				$name = 'api_sandbox_password';
-			} elseif ( 'account_number' === $name ) {
-				return '2222222222';
-			}
-		}
-
 		if ( ! $is_dp ) {
 			if ( $provider = self::get_dhl_shipping_provider() ) {
 				$value = $provider->get_setting( $name, $default_value );
 			}
 		} elseif ( $provider = self::get_deutsche_post_shipping_provider() ) {
-				$value = $provider->get_setting( $name, $default_value );
+			$value = $provider->get_setting( $name, $default_value );
 		}
 
 		return $value;

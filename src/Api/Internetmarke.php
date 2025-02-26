@@ -371,7 +371,7 @@ class Internetmarke {
 		$options = array();
 
 		foreach ( $formats as $format ) {
-			if ( apply_filters( 'woocommerce_stc_deutsche_post_exclude_page_format', ! $format->isIsAddressPossible(), $format ) ) {
+			if ( apply_filters( 'woocommerce_shiptastic_deutsche_post_exclude_page_format', ! $format->isIsAddressPossible(), $format ) ) {
 				continue;
 			}
 
@@ -522,7 +522,7 @@ class Internetmarke {
 			 * @since 3.2.0
 			 * @package Vendidero/Shiptastic/DHL
 			 */
-			do_action( 'woocommerce_stc_dhl_deutsche_post_label_api_before_delete', $label );
+			do_action( 'woocommerce_shiptastic_dhl_deutsche_post_label_api_before_delete', $label );
 
 			$label->set_number( '' );
 			$label->set_wp_int_awb( '' );
@@ -537,7 +537,7 @@ class Internetmarke {
 			 * @since 3.2.0
 			 * @package Vendidero/Shiptastic/DHL
 			 */
-			do_action( 'woocommerce_stc_dhl_deutsche_post_label_api_deleted', $label );
+			do_action( 'woocommerce_shiptastic_dhl_deutsche_post_label_api_deleted', $label );
 
 			return $label;
 		}
@@ -632,7 +632,7 @@ class Internetmarke {
 				 * @since 3.4.5
 				 * @package Vendidero/Shiptastic/DHL
 				 */
-				apply_filters( 'woocommerce_stc_deutsche_post_label_api_position_x', $label->get_position_x(), $label, $shipment ),
+				apply_filters( 'woocommerce_shiptastic_deutsche_post_label_api_position_x', $label->get_position_x(), $label, $shipment ),
 				/**
 				 * Adjust the Deutsche Post (Internetmarke) label print Y position.
 				 *
@@ -643,8 +643,8 @@ class Internetmarke {
 				 * @since 3.4.5
 				 * @package Vendidero/Shiptastic/DHL
 				 */
-				apply_filters( 'woocommerce_stc_deutsche_post_label_api_position_y', $label->get_position_y(), $label, $shipment ),
-				apply_filters( 'woocommerce_stc_deutsche_post_label_api_page_number', 1, $label, $shipment )
+				apply_filters( 'woocommerce_shiptastic_deutsche_post_label_api_position_y', $label->get_position_y(), $label, $shipment ),
+				apply_filters( 'woocommerce_shiptastic_deutsche_post_label_api_page_number', 1, $label, $shipment )
 			);
 
 			$order_item = new \baltpeter\Internetmarke\OrderItem( $label->get_product_id(), null, $address_binding, $position, 'AddressZone' );

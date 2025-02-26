@@ -29,7 +29,7 @@ class Bootstrap {
 		$this->container = $container;
 		$this->init();
 
-		do_action( 'woocommerce_stc_dhl_loaded' );
+		do_action( 'woocommerce_shiptastic_dhl_loaded' );
 	}
 
 	/**

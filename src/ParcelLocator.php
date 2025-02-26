@@ -152,7 +152,7 @@ class ParcelLocator {
 		 *
 		 * @package Vendidero/Shiptastic/DHL
 		 */
-		$codes = apply_filters( 'woocommerce_stc_dhl_parcel_locator_countries', $countries );
+		$codes = apply_filters( 'woocommerce_shiptastic_dhl_parcel_locator_countries', $countries );
 
 		return $codes;
 	}
@@ -165,7 +165,7 @@ class ParcelLocator {
 		 *
 		 * @package Vendidero/Shiptastic/DHL
 		 */
-		$codes = apply_filters( 'woocommerce_stc_dhl_parcel_locator_excluded_gateways', PickupDelivery::get_excluded_gateways() );
+		$codes = apply_filters( 'woocommerce_shiptastic_dhl_parcel_locator_excluded_gateways', PickupDelivery::get_excluded_gateways() );
 
 		return $codes;
 	}
@@ -192,7 +192,7 @@ class ParcelLocator {
 		 * @since 3.0.0
 		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_stc_dhl_order_postnumber', $post_number, $order );
+		return apply_filters( 'woocommerce_shiptastic_dhl_order_postnumber', $post_number, $order );
 	}
 
 	public static function get_shipping_address_type_by_order( $order ) {
@@ -277,7 +277,7 @@ class ParcelLocator {
 		 * @since 3.0.0
 		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_stc_dhl_user_postnumber', $post_number, $user );
+		return apply_filters( 'woocommerce_shiptastic_dhl_user_postnumber', $post_number, $user );
 	}
 
 	protected static function remove_whitespace( $str ) {
@@ -317,7 +317,7 @@ class ParcelLocator {
 			$is_supported = in_array( $provider, array( 'dhl' ), true );
 		}
 
-		return apply_filters( 'woocommerce_stc_dhl_provider_supports_pickup_location', $is_supported, $provider, $location_type );
+		return apply_filters( 'woocommerce_shiptastic_dhl_provider_supports_pickup_location', $is_supported, $provider, $location_type );
 	}
 
 	public static function is_postoffice_enabled( $provider = false ) {

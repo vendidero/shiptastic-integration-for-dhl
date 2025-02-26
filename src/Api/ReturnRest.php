@@ -63,7 +63,7 @@ class ReturnRest extends PaketRest {
 				 * @since 3.0.3
 				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'name3'         => apply_filters( 'woocommerce_stc_dhl_return_label_api_sender_name3', $label->get_sender_address_addition(), $label ),
+				'name3'         => apply_filters( 'woocommerce_shiptastic_dhl_return_label_api_sender_name3', $label->get_sender_address_addition(), $label ),
 				'addressStreet' => $label->get_sender_street(),
 				'addressHouse'  => wc_stc_dhl_get_return_label_sender_street_number( $label ),
 				'postalCode'    => $label->get_sender_postcode(),

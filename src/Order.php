@@ -169,11 +169,11 @@ class Order {
 		 * @since 3.1.6
 		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_stc_dhl_order_supports_email_notification', wc_stc_get_shipment_order( $this->get_order() )->supports_third_party_email_transmission(), $this );
+		return apply_filters( 'woocommerce_shiptastic_dhl_order_supports_email_notification', wc_stc_get_shipment_order( $this->get_order() )->supports_third_party_email_transmission(), $this );
 	}
 
 	public function get_min_age() {
-		$min_age = apply_filters( 'woocommerce_stc_dhl_order_min_age', '', $this->get_order() );
+		$min_age = wc_stc_get_shipment_order( $this->get_order() )->get_min_age();
 		$ages    = wc_stc_dhl_get_visual_min_ages();
 
 		if ( empty( $min_age ) || ! array_key_exists( 'A' . $min_age, $ages ) ) {
@@ -202,7 +202,7 @@ class Order {
 		 * @since 3.0.0
 		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_stc_dhl_order_needs_age_verificaton', $needs_verification, $this );
+		return apply_filters( 'woocommerce_shiptastic_dhl_order_needs_age_verificaton', $needs_verification, $this );
 	}
 
 	public function has_cod_payment() {
@@ -221,7 +221,7 @@ class Order {
 		 * @since 3.0.0
 		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_stc_dhl_order_has_cod_payment', $result, $this );
+		return apply_filters( 'woocommerce_shiptastic_dhl_order_has_cod_payment', $result, $this );
 	}
 
 	public function get_date_of_birth() {

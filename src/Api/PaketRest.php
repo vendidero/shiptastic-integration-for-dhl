@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 abstract class PaketRest extends \Vendidero\Shiptastic\API\REST {
 
 	protected function get_auth_instance() {
-		if ( apply_filters( 'woocommerce_stc_dhl_paket_rest_api_use_oauth', true ) ) {
+		if ( apply_filters( 'woocommerce_shiptastic_dhl_paket_rest_api_use_oauth', true ) ) {
 			return new OAuthPaket( $this );
 		} else {
 			return new BasicAuthPaket( $this );

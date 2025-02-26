@@ -30,14 +30,14 @@ function wc_stc_dhl_get_shipment_customs_data( $label, $max_desc_length = 255 ) 
 			/**
 			 * Apply legacy filters
 			 */
-			$item['description'] = apply_filters( 'woocommerce_stc_dhl_customs_item_description', $item['description'], $shipment_item, $label, $shipment );
-			$item['category']    = apply_filters( 'woocommerce_stc_dhl_customs_item_category', $item['category'], $shipment_item, $label, $shipment );
+			$item['description'] = apply_filters( 'woocommerce_shiptastic_dhl_customs_item_description', $item['description'], $shipment_item, $label, $shipment );
+			$item['category']    = apply_filters( 'woocommerce_shiptastic_dhl_customs_item_category', $item['category'], $shipment_item, $label, $shipment );
 
-			$customs_data['items'][ $key ] = apply_filters( 'woocommerce_stc_dhl_customs_item', $item, $shipment_item, $shipment, $label );
+			$customs_data['items'][ $key ] = apply_filters( 'woocommerce_shiptastic_dhl_customs_item', $item, $shipment_item, $shipment, $label );
 		}
 	}
 
-	return apply_filters( 'woocommerce_stc_dhl_customs_data', $customs_data, $label, $shipment );
+	return apply_filters( 'woocommerce_shiptastic_dhl_customs_data', $customs_data, $label, $shipment );
 }
 
 /**
@@ -191,7 +191,7 @@ function wc_stc_dhl_get_label_endorsement_type( $label, $shipment, $api_type = '
 	 * @since 3.0.0
 	 * @package Vendidero/Shiptastic/DHL
 	 */
-	$type = strtolower( apply_filters( 'woocommerce_stc_dhl_label_endorsement_type', $type, $label, $shipment ) );
+	$type = strtolower( apply_filters( 'woocommerce_shiptastic_dhl_label_endorsement_type', $type, $label, $shipment ) );
 
 	/**
 	 * SOAP Label API was using IMMEDIATE instead of RETURN
@@ -432,7 +432,7 @@ function wc_stc_dhl_get_parcel_outlet_routing_email_address( $shipment ) {
 		$email = $shipment->get_sender_email();
 	}
 
-	return apply_filters( 'woocommerce_stc_dhl_parcel_outlet_routing_email_address', $email, $shipment );
+	return apply_filters( 'woocommerce_shiptastic_dhl_parcel_outlet_routing_email_address', $email, $shipment );
 }
 
 /**
@@ -471,7 +471,7 @@ function wc_stc_dhl_get_label_shipment_street_number( $shipment ) {
 			 * @since 3.1.0
 			 * @package Vendidero/Shiptastic/DHL
 			 */
-			$street_number = apply_filters( 'woocommerce_stc_dhl_label_shipment_street_number_placeholder', '0' );
+			$street_number = apply_filters( 'woocommerce_shiptastic_dhl_label_shipment_street_number_placeholder', '0' );
 		}
 	}
 
@@ -489,7 +489,7 @@ function wc_stc_dhl_get_return_label_sender_street_number( $label ) {
 			/**
 			 * This filter is documented in includes/wc-stc-dhl-core-functions.php
 			 */
-			$street_number = apply_filters( 'woocommerce_stc_dhl_label_shipment_street_number_placeholder', '0' );
+			$street_number = apply_filters( 'woocommerce_shiptastic_dhl_label_shipment_street_number_placeholder', '0' );
 		}
 	}
 
@@ -533,7 +533,7 @@ function wc_stc_dhl_get_custom_label_format( $label, $type = '' ) {
 	 * @since 3.0.5
 	 * @package Vendidero/Shiptastic/DHL
 	 */
-	$format = apply_filters( 'woocommerce_stc_dhl_label_custom_format', $label_format, $label, $type );
+	$format = apply_filters( 'woocommerce_shiptastic_dhl_label_custom_format', $label_format, $label, $type );
 
 	/**
 	 * Do not allow Warenpost label format for inlay returns

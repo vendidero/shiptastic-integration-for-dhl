@@ -78,7 +78,7 @@ class LabelRest extends PaketRest {
 				case 'AdditionalInsurance':
 					$services[ $service_name ] = array(
 						'currency' => $currency,
-						'value'    => apply_filters( 'woocommerce_stc_dhl_label_api_insurance_amount', $label->get_insurance_amount(), $shipment, $label ),
+						'value'    => apply_filters( 'woocommerce_shiptastic_dhl_label_api_insurance_amount', $label->get_insurance_amount(), $shipment, $label ),
 					);
 					break;
 				case 'IdentCheck':
@@ -228,19 +228,19 @@ class LabelRest extends PaketRest {
 		 * @since 3.0.5
 		 * @package Vendidero/Shiptastic/DHL
 		 */
-		$shipper_reference = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_reference', $dhl_provider->has_custom_shipper_reference() ? $dhl_provider->get_label_custom_shipper_reference() : '', $label );
+		$shipper_reference = apply_filters( 'woocommerce_shiptastic_dhl_label_api_shipper_reference', $dhl_provider->has_custom_shipper_reference() ? $dhl_provider->get_label_custom_shipper_reference() : '', $label );
 
 		if ( ! empty( $shipper_reference ) ) {
 			$shipment_request['shipper']['shipperRef'] = $shipper_reference;
 		} else {
-			$name1   = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_name1', trim( $shipment->get_sender_company() ? $shipment->get_sender_company() : $shipment->get_formatted_sender_full_name() ), $label );
-			$name2   = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_name2', trim( $shipment->get_sender_company() ? $shipment->get_formatted_sender_full_name() : '' ), $label );
-			$name3   = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_name3', trim( $shipment->get_sender_address_2() ), $label );
-			$street  = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_street', $shipment->get_sender_address_1(), $label );
-			$zip     = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_zip', $shipment->get_sender_postcode(), $label );
-			$city    = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_city', $shipment->get_sender_city(), $label );
-			$email   = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_email', $shipment->get_sender_email(), $label );
-			$country = apply_filters( 'woocommerce_stc_dhl_label_api_shipper_country', $shipment->get_sender_country(), $label );
+			$name1   = apply_filters( 'woocommerce_shiptastic_dhl_label_api_shipper_name1', trim( $shipment->get_sender_company() ? $shipment->get_sender_company() : $shipment->get_formatted_sender_full_name() ), $label );
+			$name2   = apply_filters( 'woocommerce_shiptastic_dhl_label_api_shipper_name2', trim( $shipment->get_sender_company() ? $shipment->get_formatted_sender_full_name() : '' ), $label );
+			$name3   = apply_filters( 'woocommerce_shiptastic_dhl_label_api_shipper_name3', trim( $shipment->get_sender_address_2() ), $label );
+			$street  = apply_filters( 'woocommerce_shiptastic_dhl_label_api_shipper_street', $shipment->get_sender_address_1(), $label );
+			$zip     = apply_filters( 'woocommerce_shiptastic_dhl_label_api_shipper_zip', $shipment->get_sender_postcode(), $label );
+			$city    = apply_filters( 'woocommerce_shiptastic_dhl_label_api_shipper_city', $shipment->get_sender_city(), $label );
+			$email   = apply_filters( 'woocommerce_shiptastic_dhl_label_api_shipper_email', $shipment->get_sender_email(), $label );
+			$country = apply_filters( 'woocommerce_shiptastic_dhl_label_api_shipper_country', $shipment->get_sender_country(), $label );
 
 			$fields_necessary = array(
 				'street'    => $street,
@@ -326,7 +326,7 @@ class LabelRest extends PaketRest {
 				 * @since 3.0.3
 				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'name3'                         => apply_filters( 'woocommerce_stc_dhl_label_api_receiver_name3', $address_2, $label ),
+				'name3'                         => apply_filters( 'woocommerce_shiptastic_dhl_label_api_receiver_name3', $address_2, $label ),
 				'addressStreet'                 => $address_1,
 				'additionalAddressInformation1' => $street_addition,
 				'postalCode'                    => $shipment->get_postcode(),
@@ -343,7 +343,7 @@ class LabelRest extends PaketRest {
 				 * @since 3.0.5
 				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'contactName'                   => apply_filters( 'woocommerce_stc_dhl_label_api_communication_contact_person', $shipment->get_formatted_full_name(), $label ),
+				'contactName'                   => apply_filters( 'woocommerce_shiptastic_dhl_label_api_communication_contact_person', $shipment->get_formatted_full_name(), $label ),
 				/**
 				 * Choose whether to transfer the phone number to DHL on creating a label.
 				 * By default the phone number is not transmitted.
@@ -354,7 +354,7 @@ class LabelRest extends PaketRest {
 				 * @since 3.0.3
 				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'phone'                         => apply_filters( 'woocommerce_stc_dhl_label_api_communication_phone', '', $label ),
+				'phone'                         => apply_filters( 'woocommerce_shiptastic_dhl_label_api_communication_phone', '', $label ),
 				/**
 				 * Choose whether to transfer the email to DHL on creating a label.
 				 * By default the email is only transmitted if the customer opted in.
@@ -368,7 +368,7 @@ class LabelRest extends PaketRest {
 				 * @since 3.0.3
 				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'email'                         => apply_filters( 'woocommerce_stc_dhl_label_api_communication_email', $label->has_email_notification() || isset( $services['closestDropPoint'] ) ? $shipment->get_email() : '', $label ),
+				'email'                         => apply_filters( 'woocommerce_shiptastic_dhl_label_api_communication_email', $label->has_email_notification() || isset( $services['closestDropPoint'] ) ? $shipment->get_email() : '', $label ),
 			);
 
 			/**
@@ -432,7 +432,7 @@ class LabelRest extends PaketRest {
 				 * @since 3.3.4
 				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'invoiceNo'          => apply_filters( 'woocommerce_stc_dhl_label_api_export_invoice_number', $customs_label_data['invoice_number'], $label ),
+				'invoiceNo'          => apply_filters( 'woocommerce_shiptastic_dhl_label_api_export_invoice_number', $customs_label_data['invoice_number'], $label ),
 			);
 
 			if ( ! empty( $customs_label_data['export_reference_number'] ) ) {
@@ -440,10 +440,10 @@ class LabelRest extends PaketRest {
 				$customs_data['MRN']                             = wc_shiptastic_substring( preg_replace( '/[^A-Za-z0-9]/', '', $customs_label_data['export_reference_number'] ), 0, 18 );
 			}
 
-			$shipment_request['customs'] = apply_filters( 'woocommerce_stc_dhl_label_rest_api_customs_data', $customs_data, $label );
+			$shipment_request['customs'] = apply_filters( 'woocommerce_shiptastic_dhl_label_rest_api_customs_data', $customs_data, $label );
 		}
 
-		$shipment_request = apply_filters( 'woocommerce_stc_dhl_label_rest_api_create_label_request', $shipment_request, $label, $shipment, $this );
+		$shipment_request = apply_filters( 'woocommerce_shiptastic_dhl_label_rest_api_create_label_request', $shipment_request, $label, $shipment, $this );
 		$shipment_request = $this->walk_recursive_remove( $shipment_request );
 
 		$request = array(
@@ -657,7 +657,7 @@ class LabelRest extends PaketRest {
 		 * @since 3.3.0
 		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_stc_dhl_label_api_export_type', strtoupper( $export_type ), $label );
+		return apply_filters( 'woocommerce_shiptastic_dhl_label_api_export_type', strtoupper( $export_type ), $label );
 	}
 
 	public function test_connection() {

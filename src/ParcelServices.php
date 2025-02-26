@@ -42,10 +42,10 @@ class ParcelServices {
 
 	public static function maybe_output_fields() {
 		$current               = current_action();
-		$preferred_fields_hook = apply_filters( 'woocommerce_stc_dhl_preferred_fields_output_hook', 'woocommerce_review_order_before_payment' );
+		$preferred_fields_hook = apply_filters( 'woocommerce_shiptastic_dhl_preferred_fields_output_hook', 'woocommerce_review_order_before_payment' );
 
 		if ( $current === $preferred_fields_hook ) {
-			do_action( 'woocommerce_stc_dhl_preferred_service_fields' );
+			do_action( 'woocommerce_shiptastic_dhl_preferred_service_fields' );
 		}
 	}
 
@@ -173,7 +173,7 @@ class ParcelServices {
 			$_POST = $original_post_data;
 		}
 
-		return apply_filters( 'woocommerce_stc_dhl_checkout_parcel_services_data', $posted_data );
+		return apply_filters( 'woocommerce_shiptastic_dhl_checkout_parcel_services_data', $posted_data );
 	}
 
 	public static function validate( $data, $errors ) {
@@ -357,7 +357,7 @@ class ParcelServices {
 			$method = '';
 		}
 
-		return apply_filters( 'woocommerce_stc_dhl_checkout_get_current_payment_method', $method );
+		return apply_filters( 'woocommerce_shiptastic_dhl_checkout_get_current_payment_method', $method );
 	}
 
 	protected static function is_preferred_option_available() {

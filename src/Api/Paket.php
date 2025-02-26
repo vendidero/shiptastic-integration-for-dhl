@@ -116,7 +116,7 @@ class Paket {
 			 * @since 3.0.0
 			 * @package Vendidero/Shiptastic/DHL
 			 */
-			if ( apply_filters( 'woocommerce_stc_dhl_consider_saturday_as_working_day', true ) ) {
+			if ( apply_filters( 'woocommerce_shiptastic_dhl_consider_saturday_as_working_day', true ) ) {
 				$is_working_day = $datetime->format( 'N' ) > 6 ? false : true;
 			} else {
 				$is_working_day = $datetime->format( 'N' ) > 5 ? false : true;

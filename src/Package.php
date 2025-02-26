@@ -122,7 +122,7 @@ class Package {
 	}
 
 	public static function has_dependencies() {
-		return ( class_exists( '\Vendidero\Shiptastic\Package' ) && \Vendidero\Shiptastic\Package::has_dependencies() && self::base_country_is_supported() && apply_filters( 'woocommerce_stc_dhl_enabled', true ) );
+		return ( class_exists( '\Vendidero\Shiptastic\Package' ) && \Vendidero\Shiptastic\Package::has_dependencies() && self::base_country_is_supported() && apply_filters( 'woocommerce_shiptastic_dhl_enabled', true ) );
 	}
 
 	public static function has_load_dependencies() {
@@ -183,7 +183,7 @@ class Package {
 		 * @since 3.0.0
 		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_stc_dhl_holidays', $holidays, $country );
+		return apply_filters( 'woocommerce_shiptastic_dhl_holidays', $holidays, $country );
 	}
 
 	/**
@@ -614,14 +614,14 @@ class Package {
 		}
 
 		if ( ! $has_custom_setting ) {
-			$use_legacy_soap = ( defined( 'WC_STC_DHL_LEGACY_SOAP' ) ? WC_STC_DHL_LEGACY_SOAP : ( 'yes' === get_option( 'woocommerce_stc_dhl_enable_legacy_soap' ) ) );
+			$use_legacy_soap = ( defined( 'WC_STC_DHL_LEGACY_SOAP' ) ? WC_STC_DHL_LEGACY_SOAP : ( 'yes' === get_option( 'woocommerce_shiptastic_dhl_enable_legacy_soap' ) ) );
 		}
 
 		if ( ! self::supports_soap() ) {
 			$use_legacy_soap = false;
 		}
 
-		return apply_filters( 'woocommerce_stc_dhl_use_legacy_soap_api', $use_legacy_soap );
+		return apply_filters( 'woocommerce_shiptastic_dhl_use_legacy_soap_api', $use_legacy_soap );
 	}
 
 	public static function get_return_receivers() {
@@ -674,7 +674,7 @@ class Package {
 		 * @since 3.0.0
 		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_stc_dhl_retoure_receiver', $country_receiver, $country );
+		return apply_filters( 'woocommerce_shiptastic_dhl_retoure_receiver', $country_receiver, $country );
 	}
 
 	public static function get_dhl_com_api_key() {
@@ -778,7 +778,7 @@ class Package {
 		 * @since 3.1.2
 		 * @package Vendidero/Shiptastic/DHL
 		 */
-		$alternate_file = apply_filters( 'woocommerce_stc_dhl_alternate_wsdl_file', false, $wsdl_link );
+		$alternate_file = apply_filters( 'woocommerce_shiptastic_dhl_alternate_wsdl_file', false, $wsdl_link );
 
 		if ( ( $files_exist && $file_path ) || $alternate_file ) {
 			if ( $is_core_file ) {
@@ -952,30 +952,7 @@ class Package {
 	}
 
 	public static function log( $message, $type = 'info' ) {
-		$logger         = wc_get_logger();
-		$enable_logging = self::enable_logging() ? true : false;
-
-		if ( ! $logger ) {
-			return false;
-		}
-
-		/**
-		 * Filter that allows adjusting whether to enable or disable
-		 * logging for the DHL package (e.g. API requests).
-		 *
-		 * @param boolean $enable_logging True if logging should be enabled. False otherwise.
-		 *
-		 * @package Vendidero/Shiptastic/DHL
-		 */
-		if ( ! apply_filters( 'woocommerce_stc_dhl_enable_logging', $enable_logging ) ) {
-			return false;
-		}
-
-		if ( ! is_callable( array( $logger, $type ) ) ) {
-			$type = 'info';
-		}
-
-		$logger->{$type}( $message, array( 'source' => 'dhl-for-shiptastic' ) );
+		\Vendidero\Shiptastic\Package::log( $message, $type, 'dhl' );
 	}
 
 	public static function get_available_countries() {
@@ -991,7 +968,7 @@ class Package {
 		 * @since 3.0.0
 		 * @package Vendidero/Shiptastic/DHL
 		 */
-		return apply_filters( 'woocommerce_stc_dhl_base_country', \Vendidero\Shiptastic\Package::get_base_country() );
+		return apply_filters( 'woocommerce_shiptastic_dhl_base_country', \Vendidero\Shiptastic\Package::get_base_country() );
 	}
 
 	public static function get_us_territories() {
@@ -1019,16 +996,6 @@ class Package {
 	 */
 	public static function is_eu_shipment( $country_receiver, $postcode = '' ) {
 		return \Vendidero\Shiptastic\Package::is_shipping_inner_eu_country( $country_receiver, array( 'postcode' => $postcode ) );
-	}
-
-	protected static function get_eu_countries() {
-		$countries = WC()->countries->get_european_union_countries();
-
-		if ( in_array( 'GB', $countries, true ) ) {
-			$countries = array_diff( $countries, array( 'GB' ) );
-		}
-
-		return $countries;
 	}
 
 	/**

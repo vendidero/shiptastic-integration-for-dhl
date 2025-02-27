@@ -6,15 +6,15 @@
  */
 namespace Vendidero\Shiptastic\DHL\Api;
 
+use Vendidero\Shiptastic\API\Auth\Auth;
 use Vendidero\Shiptastic\DHL\Package;
 use Exception;
 use SoapClient;
 use SoapHeader;
-use Vendidero\Shiptastic\Interfaces\ApiAuth;
 
 defined( 'ABSPATH' ) || exit;
 
-class AuthSoap implements ApiAuth {
+class AuthSoap extends Auth {
 
 	/**
 	 * define Auth API endpoint
@@ -26,21 +26,13 @@ class AuthSoap implements ApiAuth {
 	 */
 	private $wsdl_link;
 
-	protected $api = null;
-
 	/**
 	 * constructor.
 	 */
 	public function __construct( $wsdl_link, $api ) {
-		$this->wsdl_link = Package::get_wsdl_file( $wsdl_link );
-		$this->api       = $api;
-	}
+		parent::__construct( $api );
 
-	/**
-	 * @return Soap
-	 */
-	public function get_api() {
-		return $this->api;
+		$this->wsdl_link = Package::get_wsdl_file( $wsdl_link );
 	}
 
 	protected function get_cig_login() {
@@ -49,10 +41,6 @@ class AuthSoap implements ApiAuth {
 
 	protected function get_cig_password() {
 		return Package::get_cig_password( $this->get_api()->is_sandbox() );
-	}
-
-	protected function get_cig_url() {
-		return $this->get_api()->is_sandbox() ? 'https://cig.dhl.de/services/sandbox/soap' : 'https://cig.dhl.de/services/production/soap';
 	}
 
 	protected function get_client_id() {
@@ -68,7 +56,7 @@ class AuthSoap implements ApiAuth {
 			$args = array(
 				'login'              => $this->get_cig_login(),
 				'password'           => $this->get_cig_password(),
-				'location'           => $this->get_cig_url(),
+				'location'           => $this->get_url(),
 				'soap_version'       => SOAP_1_1,
 				'trace'              => true,
 				'connection_timeout' => 10,
@@ -103,5 +91,19 @@ class AuthSoap implements ApiAuth {
 
 	public function get_type() {
 		return 'dhl_auth_soap';
+	}
+
+	public function get_url() {
+		return $this->get_api()->is_sandbox() ? 'https://cig.dhl.de/services/sandbox/soap' : 'https://cig.dhl.de/services/production/soap';
+	}
+
+	public function auth() {}
+
+	public function has_auth() {
+		return true;
+	}
+
+	public function is_connected() {
+		return ! empty( $this->get_client_id() ) && ! empty( $this->get_client_password() );
 	}
 }

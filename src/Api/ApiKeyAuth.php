@@ -1,12 +1,12 @@
 <?php
 namespace Vendidero\Shiptastic\DHL\Api;
 
-use Vendidero\Shiptastic\API\Auth\Auth;
+use Vendidero\Shiptastic\API\Auth\RESTAuth;
 use Vendidero\Shiptastic\DHL\Package;
 
 defined( 'ABSPATH' ) || exit;
 
-class ApiKeyAuth extends Auth {
+class ApiKeyAuth extends RESTAuth {
 
 	public function get_api_key() {
 		if ( $this->get_api()->is_sandbox() ) {
@@ -39,6 +39,10 @@ class ApiKeyAuth extends Auth {
 	}
 
 	public function revoke() {
+		return true;
+	}
+
+	public function is_connected() {
 		return true;
 	}
 }

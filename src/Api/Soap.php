@@ -12,9 +12,7 @@ use Vendidero\Shiptastic\Interfaces\Api;
 
 defined( 'ABSPATH' ) || exit;
 
-abstract class Soap implements Api {
-
-	protected $is_sandbox = false;
+abstract class Soap extends \Vendidero\Shiptastic\API\Api {
 
 	/**
 	 * Passed arguments to the API
@@ -37,11 +35,6 @@ abstract class Soap implements Api {
 	protected $response = null;
 
 	/**
-	 * @var
-	 */
-	protected $soap_auth = null;
-
-	/**
 	 * @var array
 	 */
 	protected $body_request = array();
@@ -49,17 +42,7 @@ abstract class Soap implements Api {
 	/**
 	 * DHL_Api constructor.
 	 */
-	public function __construct() {
-		try {
-			if ( ! Package::supports_soap() ) {
-				throw new Exception( wp_kses_post( sprintf( _x( 'To enable communication between your shop and DHL, the PHP <a href="%1$s">SOAPClient</a> is required. Please contact your host and make sure that SOAPClient is <a href="%2$s">installed</a>.', 'dhl', 'dhl-for-shiptastic' ), 'https://www.php.net/manual/class.soapclient.php', esc_url( admin_url( 'admin.php?page=wc-status' ) ) ) ) );
-			}
-
-			$this->soap_auth = new AuthSoap( $this->get_wsdl_file( $this->get_url() ), $this );
-		} catch ( Exception $e ) {
-			throw $e;
-		}
-	}
+	public function __construct() {}
 
 	abstract public function get_url();
 
@@ -67,8 +50,8 @@ abstract class Soap implements Api {
 		return $wsdl_link;
 	}
 
-	public function get_auth_api() {
-		return $this->soap_auth;
+	protected function get_auth_instance() {
+		return new AuthSoap( $this->get_wsdl_file( $this->get_url() ), $this );
 	}
 
 	abstract public function get_client();
@@ -86,17 +69,5 @@ abstract class Soap implements Api {
 		}
 
 		return $the_array;
-	}
-
-	public function get_setting_name() {
-		return $this->get_name() . ( $this->is_sandbox() ? '_sandbox' : '' );
-	}
-
-	public function is_sandbox() {
-		return $this->is_sandbox;
-	}
-
-	public function set_is_sandbox( $is_sandbox ) {
-		$this->is_sandbox = $is_sandbox;
 	}
 }

@@ -5,7 +5,7 @@
  * Description: Create DHL and Deutsche Post labels for Shiptastic.
  * Author: vendidero
  * Author URI: https://vendidero.de
- * Version: 3.5.0
+ * Version: 3.6.0
  * Requires PHP: 5.6
  * License: GPLv3
  */

@@ -29,7 +29,7 @@ class Package {
 	 *
 	 * @var string
 	 */
-	const VERSION = '3.5.0';
+	const VERSION = '3.6.0';
 
 	// These are all considered domestic by DHL
 	protected static $us_territories = array( 'US', 'GU', 'AS', 'PR', 'UM', 'VI' );
@@ -52,7 +52,7 @@ class Package {
 		}
 
 		/**
-		 * Make sure provider is loaded after main shipments module.
+		 * Make sure provider is loaded after main module.
 		 */
 		if ( ! did_action( 'woocommerce_shiptastic_init' ) ) {
 			add_action( 'woocommerce_shiptastic_init', array( __CLASS__, 'on_shipments_init' ) );

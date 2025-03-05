@@ -47,24 +47,22 @@ class Package {
 	 */
 	public static function init() {
 		if ( self::has_dependencies() ) {
-			// Add shipping provider
 			add_filter( 'woocommerce_shiptastic_shipping_provider_class_names', array( __CLASS__, 'add_shipping_provider_class_name' ), 10, 1 );
-		}
 
-		/**
-		 * Make sure provider is loaded after main module.
-		 */
-		if ( ! did_action( 'woocommerce_shiptastic_init' ) ) {
-			add_action( 'woocommerce_shiptastic_init', array( __CLASS__, 'on_shipments_init' ) );
-		} else {
-			self::on_shipments_init();
+			/**
+			 * Make sure provider is loaded after main module.
+			 */
+			if ( ! did_action( 'woocommerce_shiptastic_init' ) ) {
+				add_action( 'woocommerce_shiptastic_init', array( __CLASS__, 'on_init' ) );
+			} else {
+				self::on_init();
+			}
 		}
 	}
 
-	public static function on_shipments_init() {
-		if ( ! self::has_dependencies() ) {
-			return;
-		}
+	public static function on_init() {
+		add_action( 'init', array( __CLASS__, 'load_plugin_textdomain' ) );
+		add_action( 'init', array( __CLASS__, 'check_version' ), 10 );
 
 		add_filter( 'woocommerce_shiptastic_shipment_is_shipping_domestic', array( __CLASS__, 'shipping_domestic' ), 10, 2 );
 		add_filter( 'woocommerce_shiptastic_shipment_is_shipping_inner_eu', array( __CLASS__, 'shipping_inner_eu' ), 10, 2 );
@@ -75,6 +73,63 @@ class Package {
 		if ( self::is_enabled() ) {
 			self::init_hooks();
 		}
+	}
+
+	public static function check_version() {
+		if ( self::is_standalone() && self::has_dependencies() && ! defined( 'IFRAME_REQUEST' ) && ( get_option( 'woocommerce_shiptastic_dhl_version' ) !== self::get_version() ) ) {
+			Install::install();
+		}
+	}
+
+	public static function load_plugin_textdomain() {
+		if ( ! self::is_standalone() ) {
+			return;
+		}
+
+		add_filter( 'plugin_locale', array( __CLASS__, 'support_german_language_variants' ), 10, 2 );
+		add_filter( 'load_translation_file', array( __CLASS__, 'force_load_german_language_variant' ), 10, 2 );
+
+		if ( function_exists( 'determine_locale' ) ) {
+			$locale = determine_locale();
+		} else {
+			// @todo Remove when start supporting WP 5.0 or later.
+			$locale = is_admin() ? get_user_locale() : get_locale();
+		}
+
+		$locale = apply_filters( 'plugin_locale', $locale, 'dhl-for-shiptastic' );
+
+		load_textdomain( 'dhl-for-shiptastic', trailingslashit( WP_LANG_DIR ) . 'dhl-for-shiptastic/dhl-for-shiptastic-' . $locale . '.mo' );
+		load_plugin_textdomain( 'dhl-for-shiptastic', false, plugin_basename( self::get_path() ) . '/i18n/languages/' );
+	}
+
+	public static function force_load_german_language_variant( $file, $domain ) {
+		if ( 'dhl-for-shiptastic' === $domain && function_exists( 'determine_locale' ) && class_exists( 'WP_Translation_Controller' ) ) {
+			$locale     = determine_locale();
+			$new_locale = self::get_german_language_variant( $locale );
+
+			if ( $new_locale !== $locale ) {
+				$i18n_controller = \WP_Translation_Controller::get_instance();
+				$i18n_controller->load_file( $file, $domain, $locale ); // Force loading the determined file in the original locale.
+			}
+		}
+
+		return $file;
+	}
+
+	protected static function get_german_language_variant( $locale ) {
+		if ( apply_filters( 'woocommerce_shiptastic_force_de_language', in_array( $locale, array( 'de_CH', 'de_CH_informal', 'de_AT' ), true ) ) ) {
+			$locale = apply_filters( 'woocommerce_shiptastic_german_language_variant_locale', 'de_DE' );
+		}
+
+		return $locale;
+	}
+
+	public static function support_german_language_variants( $locale, $domain ) {
+		if ( 'dhl-for-shiptastic' === $domain ) {
+			$locale = self::get_german_language_variant( $locale );
+		}
+
+		return $locale;
 	}
 
 	/**
@@ -123,10 +178,6 @@ class Package {
 
 	public static function has_dependencies() {
 		return ( class_exists( '\Vendidero\Shiptastic\Package' ) && \Vendidero\Shiptastic\Package::has_dependencies() && self::base_country_is_supported() && apply_filters( 'woocommerce_shiptastic_dhl_enabled', true ) );
-	}
-
-	public static function has_load_dependencies() {
-		return true;
 	}
 
 	public static function supports_soap() {
@@ -355,9 +406,10 @@ class Package {
 	}
 
 	public static function install() {
-		self::on_shipments_init();
-
-		Install::install();
+		if ( self::has_dependencies() ) {
+			self::init();
+			Install::install();
+		}
 	}
 
 	public static function install_integration() {
@@ -366,6 +418,10 @@ class Package {
 
 	public static function is_integration() {
 		return \Vendidero\Shiptastic\Package::is_integration() ? true : false;
+	}
+
+	public static function is_standalone() {
+		return defined( 'WC_DHL_FOR_STC_IS_STANDALONE_PLUGIN' ) && WC_DHL_FOR_STC_IS_STANDALONE_PLUGIN;
 	}
 
 	public static function get_api() {

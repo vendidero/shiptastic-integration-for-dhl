@@ -8,9 +8,14 @@
  * Version: 3.6.0
  * Requires PHP: 5.6
  * License: GPLv3
+ * Requires Plugins: shiptastic-for-woocommerce
  */
 
 defined( 'ABSPATH' ) || exit;
+
+if ( ! defined( 'WC_DHL_FOR_STC_IS_STANDALONE_PLUGIN' ) ) {
+	define( 'WC_DHL_FOR_STC_IS_STANDALONE_PLUGIN', true );
+}
 
 if ( version_compare( PHP_VERSION, '5.6.0', '<' ) ) {
 	return;

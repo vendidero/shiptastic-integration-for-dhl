@@ -1,4 +1,4 @@
-DHL Germany for Shiptastic
+DHL for Shiptastic
 
 Copyright 2011 by the contributors
 

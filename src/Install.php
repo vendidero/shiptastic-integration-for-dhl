@@ -13,18 +13,17 @@ defined( 'ABSPATH' ) || exit;
 class Install {
 
 	public static function install() {
-		$current_version       = get_option( 'woocommerce_shiptastic_dhl_version', null );
-		$needs_settings_update = false;
+		$current_version = get_option( 'woocommerce_shiptastic_dhl_version', null );
 
 		self::create_db();
 
 		if ( ! is_null( $current_version ) ) {
 			self::update( $current_version );
+		} elseif ( $dhl = Package::get_dhl_shipping_provider() ) {
+				$dhl->activate(); // Activate on new install
+
 		}
 
-		/**
-		 * Older versions did not support custom versioning
-		 */
 		update_option( 'woocommerce_shiptastic_dhl_version', Package::get_version() );
 	}
 

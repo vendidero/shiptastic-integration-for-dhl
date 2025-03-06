@@ -223,7 +223,7 @@ class ParcelLocator {
 			$address_field_getter = 'get_shipping_' . $address_field;
 
 			if ( is_callable( array( $order, $address_field_getter ) ) ) {
-				$address = $order->{$address_field_getter}();
+				$address = $order->{$address_field_getter}( 'edit' );
 			}
 		}
 
@@ -239,11 +239,14 @@ class ParcelLocator {
 
 		if ( $order ) {
 			$address_type = self::get_shipping_address_type_by_order( $order );
-			$keyword_id   = self::extract_pickup_keyword_id( self::get_pickup_address_by_order( $order ) );
 			$country      = $order->get_shipping_country();
 
-			if ( ! empty( $country ) && in_array( $country, self::get_supported_countries(), true ) && 'dhl' === $address_type && ! empty( $keyword_id ) ) {
-				$has_pickup = true;
+			if ( ! empty( $country ) && in_array( $country, self::get_supported_countries(), true ) && 'dhl' === $address_type ) {
+				$keyword_id = self::extract_pickup_keyword_id( self::get_pickup_address_by_order( $order ) );
+
+				if ( ! empty( $keyword_id ) ) {
+					$has_pickup = true;
+				}
 			}
 		}
 

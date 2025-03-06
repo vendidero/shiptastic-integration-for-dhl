@@ -39,9 +39,9 @@ trait PickupDeliveryTrait {
 		return $query_args;
 	}
 
-	protected function fetch_pickup_location( $location_code, $address ) {
+	protected function fetch_pickup_location( $location_code, $address = array() ) {
+		$address       = $this->get_address_by_pickup_location_code( $location_code, $address );
 		$location_code = $this->parse_pickup_location_code( $location_code );
-		$address       = $this->parse_pickup_location_address_args( $address );
 
 		if ( empty( $location_code ) ) {
 			return false;
@@ -62,7 +62,9 @@ trait PickupDeliveryTrait {
 	}
 
 	protected function parse_pickup_location_code( $location_code ) {
-		$keyword_id = '';
+		$location_code = wc_stc_parse_pickup_location_code( $location_code );
+		$keyword_id    = '';
+
 		preg_match_all( '/([A-Z]{2}-)?[0-9]+/', $location_code, $matches );
 
 		if ( $matches && count( $matches ) > 0 ) {
@@ -196,13 +198,5 @@ trait PickupDeliveryTrait {
 		}
 
 		return $locations;
-	}
-
-	protected function get_pickup_location_cache_key( $location_code, $address ) {
-		$address       = $this->parse_pickup_location_address_args( $address );
-		$location_code = $this->parse_pickup_location_code( $location_code );
-		$cache_key     = 'woocommerce_shiptastic_dhl_pickup_location_' . sanitize_key( $location_code ) . '_' . sanitize_key( $address['country'] ) . '_' . $address['postcode'];
-
-		return $cache_key;
 	}
 }

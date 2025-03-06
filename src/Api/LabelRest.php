@@ -279,7 +279,7 @@ class LabelRest extends PaketRest {
 			if ( $shipment->send_to_external_pickup( 'locker' ) ) {
 				$shipment_request['consignee'] = array(
 					'name'       => $shipment->get_formatted_full_name(),
-					'lockerID'   => (int) $shipment->get_pickup_location_code(),
+					'lockerID'   => (int) wc_stc_parse_pickup_location_code( $shipment->get_pickup_location_code() ),
 					'postNumber' => $shipment->get_pickup_location_customer_number(),
 					'city'       => $shipment->get_city(),
 					'postalCode' => $shipment->get_postcode(),

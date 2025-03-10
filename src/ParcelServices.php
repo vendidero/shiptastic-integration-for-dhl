@@ -22,7 +22,7 @@ class ParcelServices {
 		add_action( 'woocommerce_review_order_after_payment', array( __CLASS__, 'maybe_output_fields' ), 500 );
 		add_action( 'woocommerce_review_order_before_payment', array( __CLASS__, 'maybe_output_fields' ), 500 );
 
-		add_action( 'woocommerce_stc_dhl_preferred_service_fields', array( __CLASS__, 'add_fields' ) );
+		add_action( 'woocommerce_shiptastic_dhl_preferred_service_fields', array( __CLASS__, 'add_fields' ) );
 		add_filter( 'woocommerce_update_order_review_fragments', array( __CLASS__, 'fragments' ), 10 );
 	}
 

@@ -1174,7 +1174,7 @@ class DHL extends Auto {
 
 			array(
 				'title'   => _x( 'Delivery Type (CDP)', 'dhl', 'dhl-for-shiptastic' ),
-				'desc'    => _x( 'Allow your international customers to choose between home and closest droppoint delivery. ', 'dhl', 'dhl-for-shiptastic' ) . '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Display options for the user to select their preferred delivery type during checkout. Currently available for <a href="%s">certain countries only</a>.', 'dhl', 'dhl-for-shiptastic' ), esc_url( 'https://www.dhl.de/de/geschaeftskunden/paket/leistungen-und-services/internationaler-versand/paket-international.html' ) ) . '</div>',
+				'desc'    => _x( 'Allow your international customers to choose between home and closest droppoint delivery.', 'dhl', 'dhl-for-shiptastic' ) . '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Display options for the user to select their preferred delivery type during checkout. Currently available for <a href="%s">certain countries only</a>.', 'dhl', 'dhl-for-shiptastic' ), esc_url( 'https://www.dhl.de/de/geschaeftskunden/paket/leistungen-und-services/internationaler-versand/paket-international.html' ) ) . '</div>',
 				'id'      => 'PreferredDeliveryType_enable',
 				'value'   => wc_bool_to_string( $this->get_setting( 'PreferredDeliveryType_enable' ) ),
 				'default' => 'no',

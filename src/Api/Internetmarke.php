@@ -652,6 +652,8 @@ class Internetmarke {
 
 			return $this->update_default_label( $label, $stamp );
 		} catch ( \Exception $e ) {
+			Package::log( 'Error while purchasing the stamp: ' . $e->getMessage() );
+
 			throw new \Exception( wp_kses_post( sprintf( _x( 'Error while trying to purchase the stamp. Please manually <a href="%s">refresh</a> your product database and try again.', 'dhl', 'dhl-for-shiptastic' ), esc_url( Package::get_deutsche_post_shipping_provider()->get_edit_link( 'label' ) ) ) ) );
 		}
 	}

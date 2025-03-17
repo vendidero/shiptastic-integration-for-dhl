@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 class OAuthPaket extends OAuth {
 
 	public function get_url() {
-		if ( Package::is_debug_mode() ) {
+		if ( $this->get_api()->is_sandbox() ) {
 			return 'https://api-sandbox.dhl.com/parcel/de/account/auth/ropc/v1/';
 		} else {
 			return 'https://api-eu.dhl.com/parcel/de/account/auth/ropc/v1/';
@@ -23,11 +23,7 @@ class OAuthPaket extends OAuth {
 		$transient = get_transient( 'woocommerce_stc_dhl_paket_api_access_token' );
 
 		if ( $transient ) {
-			$decrypted = SecretBox::decrypt( $transient );
-
-			if ( ! is_wp_error( $decrypted ) ) {
-				$transient = $decrypted;
-			}
+			$transient = SecretBox::maybe_decrypt( $transient );
 		}
 
 		return $transient;
@@ -72,13 +68,7 @@ class OAuthPaket extends OAuth {
 			$expires_in   = absint( isset( $body['expires_in'] ) ? $body['expires_in'] : 1799 );
 
 			if ( ! empty( $access_token ) ) {
-				$encrypted = SecretBox::encrypt( $access_token );
-
-				if ( ! is_wp_error( $encrypted ) ) {
-					$access_token = $encrypted;
-				}
-
-				set_transient( 'woocommerce_stc_dhl_paket_api_access_token', $access_token, $expires_in );
+				set_transient( 'woocommerce_stc_dhl_paket_api_access_token', SecretBox::maybe_encrypt( $access_token ), $expires_in );
 
 				return true;
 			}

@@ -96,7 +96,11 @@ class Paket {
 	}
 
 	public function delete_label( &$label ) {
-		return $this->get_label_api()->delete_label( $label );
+		if ( $api = $this->get_label_api() ) {
+			return $api->delete_label( $label );
+		}
+
+		return false;
 	}
 
 	protected function is_holiday( $datetime ) {

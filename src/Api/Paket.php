@@ -59,7 +59,7 @@ class Paket {
 	 * @return ReturnRest|\Vendidero\Shiptastic\Interfaces\Api
 	 */
 	public function get_return_api() {
-		return Helper::get_api( 'dhl_paket_label_rest', $this->is_debug_mode() );
+		return Helper::get_api( 'dhl_paket_return_rest', $this->is_debug_mode() );
 	}
 
 	public function get_parcel_api() {

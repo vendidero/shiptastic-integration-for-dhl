@@ -29,7 +29,7 @@ class Package {
 	 *
 	 * @var string
 	 */
-	const VERSION = '3.6.1';
+	const VERSION = '3.6.2';
 
 	// These are all considered domestic by DHL
 	protected static $us_territories = array( 'US', 'GU', 'AS', 'PR', 'UM', 'VI' );
@@ -69,6 +69,41 @@ class Package {
 
 		self::includes();
 		self::define_tables();
+
+		add_filter(
+			'shiptastic_register_api_instance_dhl_paket_label_rest',
+			function () {
+				return new LabelRest();
+			}
+		);
+
+		add_filter(
+			'shiptastic_register_api_instance_dhl_paket_return_rest',
+			function () {
+				return new ReturnRest();
+			}
+		);
+
+		add_filter(
+			'shiptastic_register_api_instance_dhl_location_finder',
+			function () {
+				return new LocationFinder();
+			}
+		);
+
+		add_filter(
+			'shiptastic_register_api_instance_dhl_paket_label_soap',
+			function () {
+				return new LabelSoap();
+			}
+		);
+
+		add_filter(
+			'shiptastic_register_api_instance_dhl_paket_parcel_services',
+			function () {
+				return new \Vendidero\Shiptastic\DHL\Api\ParcelServices();
+			}
+		);
 
 		if ( self::is_enabled() ) {
 			self::init_hooks();
@@ -305,41 +340,6 @@ class Package {
 
 	public static function init_hooks() {
 		add_filter( 'woocommerce_shiptastic_shipment_label_types', array( __CLASS__, 'register_label_types' ), 10 );
-
-		add_filter(
-			'shiptastic_register_api_instance_dhl_paket_label_rest',
-			function () {
-				return new LabelRest();
-			}
-		);
-
-		add_filter(
-			'shiptastic_register_api_instance_dhl_paket_return_rest',
-			function () {
-				return new ReturnRest();
-			}
-		);
-
-		add_filter(
-			'shiptastic_register_api_instance_dhl_location_finder',
-			function () {
-				return new LocationFinder();
-			}
-		);
-
-		add_filter(
-			'shiptastic_register_api_instance_dhl_paket_label_soap',
-			function () {
-				return new LabelSoap();
-			}
-		);
-
-		add_filter(
-			'shiptastic_register_api_instance_dhl_paket_parcel_services',
-			function () {
-				return new \Vendidero\Shiptastic\DHL\Api\ParcelServices();
-			}
-		);
 	}
 
 	public static function register_label_types( $types ) {

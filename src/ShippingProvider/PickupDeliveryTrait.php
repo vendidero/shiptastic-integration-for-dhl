@@ -76,6 +76,20 @@ trait PickupDeliveryTrait {
 		return $keyword_id;
 	}
 
+	/**
+	 * @param $data
+	 *
+	 * @return PickupLocation|false
+	 */
+	protected function get_pickup_location_instance( $data ) {
+		try {
+			return new PickupLocation( (array) $data );
+		} catch ( \Exception $e ) {
+			Package::log( $e, 'error' );
+			return false;
+		}
+	}
+
 	protected function get_pickup_location_from_api_response( $location ) {
 		$address = array(
 			'company'   => $location->name,
@@ -85,48 +99,42 @@ trait PickupDeliveryTrait {
 			'city'      => $location->place->address->addressLocality,
 		);
 
-		try {
-			$supports_customer_number     = true;
-			$customer_number_is_mandatory = 'locker' === $location->location->type ? true : false;
+		$supports_customer_number     = true;
+		$customer_number_is_mandatory = 'locker' === $location->location->type ? true : false;
 
+		$replacement_map = array(
+			'address_1' => 'label',
+			'country'   => 'country',
+			'postcode'  => 'postcode',
+			'city'      => 'city',
+		);
+
+		if ( 'DE' !== $address['country'] ) {
 			$replacement_map = array(
-				'address_1' => 'label',
+				'address_2' => 'label',
+				'address_1' => 'address_1',
 				'country'   => 'country',
 				'postcode'  => 'postcode',
 				'city'      => 'city',
 			);
 
-			if ( 'DE' !== $address['country'] ) {
-				$replacement_map = array(
-					'address_2' => 'label',
-					'address_1' => 'address_1',
-					'country'   => 'country',
-					'postcode'  => 'postcode',
-					'city'      => 'city',
-				);
-
-				$supports_customer_number     = false;
-				$customer_number_is_mandatory = false;
-			}
-
-			return new PickupLocation(
-				array(
-					'code'                         => $location->internal_id,
-					'type'                         => $location->location->type,
-					'label'                        => $location->internal_name,
-					'latitude'                     => $location->place->geo->latitude,
-					'longitude'                    => $location->place->geo->longitude,
-					'supports_customer_number'     => $supports_customer_number,
-					'customer_number_is_mandatory' => $customer_number_is_mandatory,
-					'address'                      => $address,
-					'address_replacement_map'      => $replacement_map,
-				)
-			);
-		} catch ( \Exception $e ) {
-			Package::log( $e, 'error' );
-
-			return false;
+			$supports_customer_number     = false;
+			$customer_number_is_mandatory = false;
 		}
+
+		return $this->get_pickup_location_instance(
+			array(
+				'code'                         => $location->internal_id,
+				'type'                         => $location->location->type,
+				'label'                        => $location->internal_name,
+				'latitude'                     => $location->place->geo->latitude,
+				'longitude'                    => $location->place->geo->longitude,
+				'supports_customer_number'     => $supports_customer_number,
+				'customer_number_is_mandatory' => $customer_number_is_mandatory,
+				'address'                      => $address,
+				'address_replacement_map'      => $replacement_map,
+			)
+		);
 	}
 
 	protected function get_pickup_location_types() {

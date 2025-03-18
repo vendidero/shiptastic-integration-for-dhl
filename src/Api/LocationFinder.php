@@ -41,7 +41,7 @@ class LocationFinder extends \Vendidero\Shiptastic\API\REST {
 		$keyword_id = ParcelLocator::extract_pickup_keyword_id( $keyword );
 
 		$response = $this->get(
-			'/find-by-keyword-id',
+			'find-by-keyword-id',
 			array(
 				'keywordId'   => $keyword_id,
 				'countryCode' => $country,
@@ -78,7 +78,22 @@ class LocationFinder extends \Vendidero\Shiptastic\API\REST {
 			$result->internal_type = $api_types[ $result->location->type ];
 		}
 
-		$result->internal_name = sprintf( _x( '%1$s %2$s', 'dhl location name', 'dhl-for-shiptastic' ), wc_clean( $result->location->keyword ), wc_clean( $result->location->keywordId ) );
+		$result->internal_name = sprintf( _x( '%1$s %2$s', 'dhl location name', 'dhl-for-shiptastic' ), wc_clean( $result->location->keyword ), $result->internal_id );
+	}
+
+	/**
+	 * Prevent arrays from being passed as array but use same keys instead as expected by the API endpoint.
+	 *
+	 * @see https://developer.dhl.com/api-reference/location-finder-unified#reference-docs-section/
+	 *
+	 * @param $endpoint
+	 * @param $query_args
+	 */
+	protected function get_request_url( $endpoint = '', $query_args = array() ) {
+		$request_url = parent::get_request_url( $endpoint, $query_args );
+		$request_url = preg_replace( '/\%5B\d+\%5D/', '', $request_url );
+
+		return $request_url;
 	}
 
 	/**
@@ -158,7 +173,7 @@ class LocationFinder extends \Vendidero\Shiptastic\API\REST {
 			}
 		}
 
-		$response = $this->get( '/find-by-address', $args );
+		$response = $this->get( 'find-by-address', $args );
 		$results  = array();
 
 		if ( ! $response->is_error() ) {
@@ -166,6 +181,20 @@ class LocationFinder extends \Vendidero\Shiptastic\API\REST {
 
 			if ( isset( $body->locations ) ) {
 				foreach ( $body->locations as $result ) {
+					/**
+					 * Exclude certain types, e.g. postbox
+					 */
+					if ( isset( $result->location->type ) && ! in_array( $result->location->type, $args['locationType'], true ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+						continue;
+					}
+
+					/**
+					 * Some Postfiliale seem to miss a keywordId?
+					 */
+					if ( ! isset( $result->location->keywordId ) || empty( $result->location->keywordId ) ) {
+						continue;
+					}
+
 					$this->adjust_location_result( $result );
 
 					// Not supporting this type

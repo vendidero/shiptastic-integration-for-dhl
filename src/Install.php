@@ -19,9 +19,8 @@ class Install {
 
 		if ( ! is_null( $current_version ) ) {
 			self::update( $current_version );
-		} elseif ( $dhl = Package::get_dhl_shipping_provider() ) {
-				$dhl->activate(); // Activate on new install
-
+		} elseif ( Package::is_standalone() && ( $dhl = Package::get_dhl_shipping_provider() ) ) {
+			$dhl->activate(); // Activate on new install
 		}
 
 		update_option( 'woocommerce_shiptastic_dhl_version', Package::get_version() );

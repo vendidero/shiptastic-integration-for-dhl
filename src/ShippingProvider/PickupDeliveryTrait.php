@@ -26,19 +26,6 @@ trait PickupDeliveryTrait {
 		return $supports;
 	}
 
-	protected function parse_pickup_location_query_args( $query_args ) {
-		$query_args = wp_parse_args(
-			$query_args,
-			array(
-				'limit' => min( absint( Package::get_setting( 'parcel_pickup_max_results', false, 20 ) ), 50 ),
-			)
-		);
-
-		$query_args = parent::parse_pickup_location_query_args( $query_args );
-
-		return $query_args;
-	}
-
 	protected function fetch_single_pickup_location( $location_code, $address = array() ) {
 		$address       = $this->get_address_by_pickup_location_code( $location_code, $address );
 		$location_code = $this->parse_pickup_location_code( $location_code );

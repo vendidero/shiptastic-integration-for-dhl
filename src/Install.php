@@ -135,8 +135,8 @@ CREATE TABLE {$wpdb->prefix}woocommerce_stc_dhl_im_products (
   product_slug varchar(150) NOT NULL DEFAULT '',
   product_version int(5) NOT NULL DEFAULT 1,
   product_annotation varchar(500) NOT NULL DEFAULT '',
-  product_description varchar(500) NOT NULL DEFAULT '',
-  product_information_text text NOT NULL DEFAULT '',
+  product_description varchar(500) NOT NULL DEFAULT '',c
+  product_information_text text NULL,
   product_type varchar(50) NOT NULL DEFAULT 'sales',
   product_destination varchar(20) NOT NULL DEFAULT 'national',
   product_price int(8) NOT NULL,

@@ -94,6 +94,7 @@ trait PickupDeliveryTrait {
 			'country'   => 'country',
 			'postcode'  => 'postcode',
 			'city'      => 'city',
+			'company'   => '',
 		);
 
 		if ( 'DE' !== $address['country'] ) {
@@ -103,6 +104,7 @@ trait PickupDeliveryTrait {
 				'country'   => 'country',
 				'postcode'  => 'postcode',
 				'city'      => 'city',
+				'company'   => '',
 			);
 
 			$supports_customer_number     = false;

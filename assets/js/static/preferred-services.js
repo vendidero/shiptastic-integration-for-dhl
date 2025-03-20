@@ -17,6 +17,14 @@ window.shiptastic.dhl_preferred_services = window.shiptastic.dhl_preferred_servi
 
             $( document.body ).on( 'updated_checkout', self.afterRefreshCheckout );
 
+            $( document.body ).on( 'shiptastic_current_pickup_location', function( e, currentPickupLocation ) {
+                if ( currentPickupLocation ) {
+                    $( '.dhl-preferred-service-content' ).hide();
+                } else {
+                    $( '.dhl-preferred-service-content' ).show();
+                }
+            } );
+
             $( document )
                 .on( 'change', '.dhl-preferred-service-content .dhl-preferred-location-types input', self.onChangeLocationType )
                 .on( 'change', '.woocommerce-checkout #billing_postcode', self.triggerCheckoutRefresh )
@@ -40,6 +48,12 @@ window.shiptastic.dhl_preferred_services = window.shiptastic.dhl_preferred_servi
 
             self.initTipTip();
             self.onChangeLocationType();
+
+            if ( window.hasOwnProperty( 'shiptastic' ) && window.shiptastic.hasOwnProperty( 'shipments_pickup_locations' ) ) {
+                if ( window.shiptastic.shipments_pickup_locations.hasPickupLocationDelivery() ) {
+                    $( '.dhl-preferred-service-content' ).hide();
+                }
+            }
         },
 
         onChangeLocationType: function() {
@@ -58,7 +72,6 @@ window.shiptastic.dhl_preferred_services = window.shiptastic.dhl_preferred_servi
         },
 
         initTipTip: function() {
-
             // Remove any lingering tooltips
             $( '#tiptip_holder' ).removeAttr( 'style' );
             $( '#tiptip_arrow' ).removeAttr( 'style' );

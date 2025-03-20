@@ -152,6 +152,8 @@ class ParcelServices {
 				if ( WC()->session->get( 'dhl_preferred_delivery_type' ) ) {
 					$posted_data['dhl_preferred_delivery_type'] = WC()->session->get( 'dhl_preferred_delivery_type' );
 				}
+
+				$posted_data['current_pickup_location'] = wc()->customer->get_meta( 'pickup_location_code' );
 			}
 		} else {
 			$original_post_data = isset( $_POST ) ? $_POST : array(); // phpcs:ignore WordPress.Security.NonceVerification.Missing
@@ -362,9 +364,11 @@ class ParcelServices {
 
 	protected static function is_preferred_option_available() {
 		$chosen_payment_method = self::get_current_payment_method();
+		$post_data             = self::get_posted_data();
+		$pickup_location       = isset( $post_data['current_pickup_location'] ) ? wc_clean( wp_unslash( $post_data['current_pickup_location'] ) ) : '';
 		$display_preferred     = false;
 
-		if ( self::is_enabled() ) {
+		if ( self::is_enabled() && empty( $pickup_location ) ) {
 			if ( self::preferred_services_available() && self::is_preferred_enabled() ) {
 				$display_preferred = true;
 			} elseif ( self::is_cdp_available() && self::is_preferred_delivery_type_enabled() ) {

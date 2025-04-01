@@ -14,7 +14,7 @@ final class Assets {
 	}
 
 	public function register_assets() {
-		$this->register_script( 'wc-stc-shipments-blocks-dhl', $this->get_block_asset_build_path( 'wc-stc-shipments-blocks-dhl' ), array(), false );
+		$this->register_script( 'wc-stc-shipments-blocks-dhl', $this->get_block_asset_build_path( 'wc-shiptastic-blocks-dhl' ), array(), false );
 	}
 
 	/**

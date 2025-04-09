@@ -454,28 +454,67 @@ function wc_stc_dhl_get_label_shipment_address_addition( $shipment ) {
 /**
  * @param Shipment $shipment
  *
- * @return mixed
+ * @return string[]
  */
-function wc_stc_dhl_get_label_shipment_street_number( $shipment ) {
-	$street_number = $shipment->get_address_street_number();
+function wc_stc_dhl_get_shipment_address_components_with_number( $shipment ) {
+	$is_return = is_a( $shipment, 'Vendidero\Shiptastic\ReturnShipment' ) ? true : false;
 
-	if ( ! Package::is_shipping_domestic( $shipment->get_country(), $shipment->get_postcode() ) ) {
+	$components = array(
+		'address_1'         => $is_return ? $shipment->get_sender_address_1() : $shipment->get_address_1(),
+		'address_2'         => $is_return ? $shipment->get_sender_address_2() : $shipment->get_address_2(),
+		'street_number'     => $is_return ? $shipment->get_sender_address_street_number() : $shipment->get_address_street_number(),
+		'street'            => $is_return ? $shipment->get_sender_address_street() : $shipment->get_address_street(),
+		'street_addition'   => $is_return ? $shipment->get_sender_address_street_addition() : $shipment->get_address_street_addition(),
+		'street_addition_2' => $is_return ? $shipment->get_sender_address_street_addition_2() : $shipment->get_address_street_addition_2(),
+		'one_line_addition' => '',
+	);
 
-		if ( empty( $street_number ) ) {
+	$country  = $is_return ? $shipment->get_sender_country() : $shipment->get_country();
+	$postcode = $is_return ? $shipment->get_sender_postcode() : $shipment->get_postcode();
+
+	if ( '' === $components['street_number'] && ! empty( $components['address_2'] ) ) {
+		$address_1_tmp               = wc_stc_split_shipment_street( $components['address_1'] . ' ' . $components['address_2'] );
+		$components['street_number'] = $address_1_tmp['number'];
+		$components['street']        = $address_1_tmp['street'];
+
+		if ( '' === $components['street_number'] && ! Package::is_shipping_domestic( $country, $postcode ) ) {
 			/**
 			 * Filter to adjust the placeholder used as street number for the DHL API in case
-			 * the shipment is not domestic (inner Germnany) and a street number was not provided.
+			 * the shipment is not domestic (inner Germany) and a street number was not provided.
 			 *
 			 * @param string $placeholder The placeholder to use - default 0 as advised by DHL support.
 			 *
 			 * @since 3.1.0
 			 * @package Vendidero/Shiptastic/DHL
 			 */
-			$street_number = apply_filters( 'woocommerce_shiptastic_dhl_label_shipment_street_number_placeholder', '0' );
+			$components['street_number'] = apply_filters( 'woocommerce_shiptastic_dhl_label_shipment_street_number_placeholder', '0' );
 		}
+
+		$components['address_1']       = $components['street'] . ' ' . $components['street_number'];
+		$components['address_2']       = '';
+		$components['street_addition'] = $address_1_tmp['addition'];
 	}
 
-	return $street_number;
+	$components['one_line_addition'] = $components['address_2'];
+
+	if ( ! empty( $components['street_addition'] ) ) {
+		$components['one_line_addition'] = $components['street_addition'] . ( ! empty( $components['address_2'] ) ? ' ' . $components['address_2'] : '' );
+	}
+
+	$components['one_line_addition'] = trim( $components['one_line_addition'] );
+
+	return $components;
+}
+
+/**
+ * @param Shipment $shipment
+ *
+ * @return mixed
+ */
+function wc_stc_dhl_get_label_shipment_street_number( $shipment ) {
+	$components = wc_stc_dhl_get_shipment_address_components_with_number( $shipment );
+
+	return $components['street_number'];
 }
 
 /**

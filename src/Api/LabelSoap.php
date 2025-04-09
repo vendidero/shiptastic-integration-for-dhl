@@ -463,6 +463,7 @@ class LabelSoap extends Soap {
 		);
 		$account_number            = wc_stc_dhl_get_billing_number( $label->get_product_id(), $billing_number_args );
 		$formatted_recipient_state = wc_stc_dhl_format_label_state( $shipment->get_state(), $shipment->get_country() );
+		$address_components        = wc_stc_dhl_get_shipment_address_components_with_number( $shipment );
 
 		$dhl_label_body = array(
 			'Version'           => array(
@@ -502,9 +503,9 @@ class LabelSoap extends Soap {
 							 * @since 3.0.3
 							 * @package Vendidero/Shiptastic/DHL
 							 */
-							'name3'        => apply_filters( 'woocommerce_shiptastic_dhl_label_api_receiver_name3', wc_stc_dhl_get_label_shipment_address_addition( $shipment ), $label ),
-							'streetName'   => $shipment->get_address_street(),
-							'streetNumber' => wc_stc_dhl_get_label_shipment_street_number( $shipment ),
+							'name3'        => apply_filters( 'woocommerce_shiptastic_dhl_label_api_receiver_name3', $address_components['one_line_addition'], $label ),
+							'streetName'   => $address_components['street'],
+							'streetNumber' => $address_components['street_number'],
 							'zip'          => $shipment->get_postcode(),
 							'city'         => $shipment->get_city(),
 							/**

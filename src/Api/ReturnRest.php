@@ -46,6 +46,8 @@ class ReturnRest extends PaketRest {
 			throw new Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'dhl-for-shiptastic' ), $label->get_shipment_id() ) ) );
 		}
 
+		$address_components = wc_stc_dhl_get_shipment_address_components_with_number( $shipment );
+
 		$request_args = array(
 			'receiverId'        => $label->get_receiver_id(),
 			'customerReference' => wc_stc_dhl_get_return_label_customer_reference( $label, $shipment ),
@@ -63,9 +65,9 @@ class ReturnRest extends PaketRest {
 				 * @since 3.0.3
 				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'name3'         => apply_filters( 'woocommerce_shiptastic_dhl_return_label_api_sender_name3', $label->get_sender_address_addition(), $label ),
-				'addressStreet' => $label->get_sender_street(),
-				'addressHouse'  => wc_stc_dhl_get_return_label_sender_street_number( $label ),
+				'name3'         => apply_filters( 'woocommerce_shiptastic_dhl_return_label_api_sender_name3', $address_components['one_line_addition'], $label ),
+				'addressStreet' => $address_components['street'],
+				'addressHouse'  => $address_components['street_number'],
 				'postalCode'    => $label->get_sender_postcode(),
 				'city'          => $label->get_sender_city(),
 				'state'         => $label->get_sender_state(),

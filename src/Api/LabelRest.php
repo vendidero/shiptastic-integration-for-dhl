@@ -301,17 +301,7 @@ class LabelRest extends PaketRest {
 				}
 			}
 		} else {
-			$street_number   = $shipment->get_address_street_number();
-			$street_addition = $shipment->get_address_street_addition();
-			$address_1       = $shipment->get_address_1();
-			$address_2       = $shipment->get_address_2();
-
-			if ( empty( $street_number ) && ! empty( $address_2 ) ) {
-				$address_1_tmp   = wc_stc_split_shipment_street( $address_1 . ' ' . $address_2 );
-				$address_1       = $address_1_tmp['street'] . ' ' . $address_1_tmp['number'];
-				$address_2       = '';
-				$street_addition = $address_1_tmp['addition'];
-			}
+			$address_components = wc_stc_dhl_get_shipment_address_components_with_number( $shipment );
 
 			$shipment_request['consignee'] = array(
 				'name1'                         => wc_shiptastic_substring( $shipment->get_company() ? $shipment->get_company() : $shipment->get_formatted_full_name(), 0, 50 ),
@@ -326,9 +316,9 @@ class LabelRest extends PaketRest {
 				 * @since 3.0.3
 				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'name3'                         => wc_shiptastic_substring( apply_filters( 'woocommerce_shiptastic_dhl_label_api_receiver_name3', $address_2, $label ), 0, 50 ),
-				'addressStreet'                 => $address_1,
-				'additionalAddressInformation1' => wc_shiptastic_substring( $street_addition, 0, 60 ),
+				'name3'                         => wc_shiptastic_substring( apply_filters( 'woocommerce_shiptastic_dhl_label_api_receiver_name3', $address_components['address_2'], $label ), 0, 50 ),
+				'addressStreet'                 => $address_components['address_1'],
+				'additionalAddressInformation1' => wc_shiptastic_substring( $address_components['street_addition'], 0, 60 ),
 				'postalCode'                    => $shipment->get_postcode(),
 				'city'                          => $shipment->get_city(),
 				'state'                         => wc_shiptastic_substring( wc_stc_dhl_format_label_state( $shipment->get_state(), $shipment->get_country() ), 0, 20 ),

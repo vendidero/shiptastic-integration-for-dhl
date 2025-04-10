@@ -70,7 +70,10 @@ trait PickupDeliveryTrait {
 	 */
 	protected function get_pickup_location_instance( $data ) {
 		try {
-			return new PickupLocation( (array) $data );
+			$data                           = (array) $data;
+			$data['shipping_provider_name'] = $this->get_name();
+
+			return new PickupLocation( $data );
 		} catch ( \Exception $e ) {
 			Package::log( $e, 'error' );
 			return false;

@@ -12,9 +12,9 @@ class PreferredLocation extends Service {
 	public function __construct( $shipping_provider, $args = array() ) {
 		$args = array(
 			'id'                 => 'PreferredLocation',
-			'label'              => _x( 'Drop-off location', 'dhl', 'dhl-for-shiptastic' ),
-			'description'        => _x( 'Enable drop-off location delivery.', 'dhl', 'dhl-for-shiptastic' ),
-			'long_description'   => '<div class="wc-shiptastic-additional-desc ">' . _x( 'Enabling this option will display options for the user to select their preferred delivery location during the checkout.', 'dhl', 'dhl-for-shiptastic' ) . '</div>',
+			'label'              => _x( 'Drop-off location', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'description'        => _x( 'Enable drop-off location delivery.', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'long_description'   => '<div class="wc-shiptastic-additional-desc ">' . _x( 'Enabling this option will display options for the user to select their preferred delivery location during the checkout.', 'dhl', 'shiptastic-integration-for-dhl' ) . '</div>',
 			'setting_id'         => 'PreferredLocation_enable',
 			'products'           => array( 'V01PAK', 'V62WP', 'V62KP' ),
 			'countries'          => array( 'DE' ),
@@ -39,7 +39,7 @@ class PreferredLocation extends Service {
 			array(
 				array(
 					'id'                => $this->get_label_field_id( 'location' ),
-					'label'             => _x( 'Drop-off location', 'dhl', 'dhl-for-shiptastic' ),
+					'label'             => _x( 'Drop-off location', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'placeholder'       => '',
 					'description'       => '',
 					'value'             => $value,

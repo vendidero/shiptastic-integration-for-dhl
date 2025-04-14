@@ -32,7 +32,7 @@ class DHL extends Auto {
 	use PickupDeliveryTrait;
 
 	public function get_title( $context = 'view' ) {
-		return _x( 'DHL', 'dhl', 'dhl-for-shiptastic' );
+		return _x( 'DHL', 'dhl', 'shiptastic-integration-for-dhl' );
 	}
 
 	public function get_name( $context = 'view' ) {
@@ -40,7 +40,7 @@ class DHL extends Auto {
 	}
 
 	public function get_description( $context = 'view' ) {
-		return _x( 'Complete DHL integration supporting labels and preferred delivery.', 'dhl', 'dhl-for-shiptastic' );
+		return _x( 'Complete DHL integration supporting labels and preferred delivery.', 'dhl', 'shiptastic-integration-for-dhl' );
 	}
 
 	public function get_default_tracking_url_placeholder() {
@@ -71,21 +71,21 @@ class DHL extends Auto {
 		if ( 'simple' === $shipment_type ) {
 			$reference_types = array(
 				'ref_1' => array(
-					'label'      => _x( 'Reference 1', 'dhl', 'dhl-for-shiptastic' ),
-					'default'    => _x( '#{shipment_number}, order {order_number}', 'dhl', 'dhl-for-shiptastic' ),
+					'label'      => _x( 'Reference 1', 'dhl', 'shiptastic-integration-for-dhl' ),
+					'default'    => _x( '#{shipment_number}, order {order_number}', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'max_length' => 35,
 				),
 				'inlay' => array(
-					'label'      => _x( 'Inlay return reference', 'dhl', 'dhl-for-shiptastic' ),
-					'default'    => _x( 'Return #{shipment_number}, order {order_number}', 'dhl', 'dhl-for-shiptastic' ),
+					'label'      => _x( 'Inlay return reference', 'dhl', 'shiptastic-integration-for-dhl' ),
+					'default'    => _x( 'Return #{shipment_number}, order {order_number}', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'max_length' => 35,
 				),
 			);
 		} elseif ( 'return' === $shipment_type ) {
 			$reference_types = array(
 				'ref_1' => array(
-					'label'      => _x( 'Reference 1', 'dhl', 'dhl-for-shiptastic' ),
-					'default'    => _x( 'Return #{shipment_number}, order {order_number}', 'dhl', 'dhl-for-shiptastic' ),
+					'label'      => _x( 'Reference 1', 'dhl', 'shiptastic-integration-for-dhl' ),
+					'default'    => _x( 'Return #{shipment_number}, order {order_number}', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'max_length' => -1,
 				),
 			);
@@ -108,7 +108,7 @@ class DHL extends Auto {
 		$this->register_product(
 			'V01PAK',
 			array(
-				'label'     => _x( 'DHL Paket', 'dhl', 'dhl-for-shiptastic' ),
+				'label'     => _x( 'DHL Paket', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'countries' => array( 'DE' ),
 				'zones'     => array( 'dom' ),
 			)
@@ -117,7 +117,7 @@ class DHL extends Auto {
 		$this->register_product(
 			'V01PRIO',
 			array(
-				'label'     => _x( 'DHL Paket PRIO', 'dhl', 'dhl-for-shiptastic' ),
+				'label'     => _x( 'DHL Paket PRIO', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'countries' => array( 'DE' ),
 				'zones'     => array( 'dom' ),
 			)
@@ -126,7 +126,7 @@ class DHL extends Auto {
 		$this->register_product(
 			'V06PAK',
 			array(
-				'label'     => _x( 'DHL Paket Taggleich', 'dhl', 'dhl-for-shiptastic' ),
+				'label'     => _x( 'DHL Paket Taggleich', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'countries' => array( 'DE' ),
 				'zones'     => array( 'dom' ),
 			)
@@ -135,7 +135,7 @@ class DHL extends Auto {
 		$this->register_product(
 			'V62WP',
 			array(
-				'label'     => _x( 'DHL Warenpost', 'dhl', 'dhl-for-shiptastic' ),
+				'label'     => _x( 'DHL Warenpost', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'countries' => array( 'DE' ),
 				'zones'     => array( 'dom' ),
 			)
@@ -144,7 +144,7 @@ class DHL extends Auto {
 		$this->register_product(
 			'V62KP',
 			array(
-				'label'     => _x( 'DHL Kleinpaket', 'dhl', 'dhl-for-shiptastic' ),
+				'label'     => _x( 'DHL Kleinpaket', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'countries' => array( 'DE' ),
 				'zones'     => array( 'dom' ),
 			)
@@ -153,7 +153,7 @@ class DHL extends Auto {
 		$this->register_product(
 			'V66WPI',
 			array(
-				'label' => _x( 'DHL Warenpost International', 'dhl', 'dhl-for-shiptastic' ),
+				'label' => _x( 'DHL Warenpost International', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'zones' => array( 'eu', 'int' ),
 			)
 		);
@@ -161,7 +161,7 @@ class DHL extends Auto {
 		$this->register_product(
 			'V54EPAK',
 			array(
-				'label' => _x( 'DHL Europaket (B2B)', 'dhl', 'dhl-for-shiptastic' ),
+				'label' => _x( 'DHL Europaket (B2B)', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'zones' => array( 'eu' ),
 			)
 		);
@@ -169,7 +169,7 @@ class DHL extends Auto {
 		$this->register_product(
 			'V55PAK',
 			array(
-				'label' => _x( 'DHL Paket Connect', 'dhl', 'dhl-for-shiptastic' ),
+				'label' => _x( 'DHL Paket Connect', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'zones' => array( 'eu' ),
 			)
 		);
@@ -177,7 +177,7 @@ class DHL extends Auto {
 		$this->register_product(
 			'V53WPAK',
 			array(
-				'label' => _x( 'DHL Paket International', 'dhl', 'dhl-for-shiptastic' ),
+				'label' => _x( 'DHL Paket International', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'zones' => array( 'eu', 'int' ),
 			)
 		);
@@ -187,8 +187,8 @@ class DHL extends Auto {
 		$this->register_service(
 			'GoGreen',
 			array(
-				'label'       => _x( 'GoGreen', 'dhl', 'dhl-for-shiptastic' ),
-				'description' => _x( 'Ship your parcels climate friendly.', 'dhl', 'dhl-for-shiptastic' ),
+				'label'       => _x( 'GoGreen', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'description' => _x( 'Ship your parcels climate friendly.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'products'    => array( 'V01PAK', 'V53WPAK', 'V54EPAK', 'V62WP', 'V66WPI', 'V62KP' ),
 			)
 		);
@@ -203,8 +203,8 @@ class DHL extends Auto {
 		$this->register_service(
 			'NoNeighbourDelivery',
 			array(
-				'label'       => _x( 'No Neighbor', 'dhl', 'dhl-for-shiptastic' ),
-				'description' => _x( 'Do not deliver to neighbors.', 'dhl', 'dhl-for-shiptastic' ),
+				'label'       => _x( 'No Neighbor', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'description' => _x( 'Do not deliver to neighbors.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'products'    => array( 'V01PAK' ),
 				'countries'   => array( 'DE' ),
 				'zones'       => array( 'dom' ),
@@ -214,8 +214,8 @@ class DHL extends Auto {
 		$this->register_service(
 			'signedForByRecipient',
 			array(
-				'label'       => _x( 'Recipient signature', 'dhl', 'dhl-for-shiptastic' ),
-				'description' => _x( 'Let recipients sign delivery instead of DHL driver.', 'dhl', 'dhl-for-shiptastic' ),
+				'label'       => _x( 'Recipient signature', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'description' => _x( 'Let recipients sign delivery instead of DHL driver.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'products'    => array( 'V01PAK' ),
 				'countries'   => array( 'DE' ),
 				'zones'       => array( 'dom' ),
@@ -225,8 +225,8 @@ class DHL extends Auto {
 		$this->register_service(
 			'NamedPersonOnly',
 			array(
-				'label'       => _x( 'Named person only', 'dhl', 'dhl-for-shiptastic' ),
-				'description' => _x( 'Do only delivery to named person.', 'dhl', 'dhl-for-shiptastic' ),
+				'label'       => _x( 'Named person only', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'description' => _x( 'Do only delivery to named person.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'products'    => array( 'V01PAK' ),
 				'countries'   => array( 'DE' ),
 				'zones'       => array( 'dom' ),
@@ -238,8 +238,8 @@ class DHL extends Auto {
 		$this->register_service(
 			'BulkyGoods',
 			array(
-				'label'       => _x( 'Bulky Goods', 'dhl', 'dhl-for-shiptastic' ),
-				'description' => _x( 'Deliver as bulky goods.', 'dhl', 'dhl-for-shiptastic' ),
+				'label'       => _x( 'Bulky Goods', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'description' => _x( 'Deliver as bulky goods.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'products'    => array( 'V01PAK', 'V53WPAK' ),
 			)
 		);
@@ -247,8 +247,8 @@ class DHL extends Auto {
 		$this->register_service(
 			'ParcelOutletRouting',
 			array(
-				'label'       => _x( 'Retail Outlet Routing', 'dhl', 'dhl-for-shiptastic' ),
-				'description' => _x( 'Send undeliverable items to nearest retail outlet instead of immediate return.', 'dhl', 'dhl-for-shiptastic' ),
+				'label'       => _x( 'Retail Outlet Routing', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'description' => _x( 'Send undeliverable items to nearest retail outlet instead of immediate return.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'products'    => array( 'V01PAK', 'V62WP', 'V62KP' ),
 			)
 		);
@@ -258,8 +258,8 @@ class DHL extends Auto {
 		$this->register_service(
 			'Premium',
 			array(
-				'label'       => _x( 'Premium', 'dhl', 'dhl-for-shiptastic' ),
-				'description' => _x( 'Premium delivery for international shipments.', 'dhl', 'dhl-for-shiptastic' ),
+				'label'       => _x( 'Premium', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'description' => _x( 'Premium delivery for international shipments.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'products'    => array( 'V53WPAK', 'V66WPI' ),
 				'zones'       => array( 'int', 'eu' ),
 			)
@@ -268,8 +268,8 @@ class DHL extends Auto {
 		$this->register_service(
 			'Endorsement',
 			array(
-				'label'         => _x( 'Endorsement', 'dhl', 'dhl-for-shiptastic' ),
-				'description'   => _x( 'Select how DHL should handle international shipments that could not be delivered.', 'dhl', 'dhl-for-shiptastic' ),
+				'label'         => _x( 'Endorsement', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'description'   => _x( 'Select how DHL should handle international shipments that could not be delivered.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'option_type'   => 'select',
 				'options'       => wc_stc_dhl_get_endorsement_types(),
 				'default_value' => 'return',
@@ -281,8 +281,8 @@ class DHL extends Auto {
 		$this->register_service(
 			'Economy',
 			array(
-				'label'       => _x( 'Economy', 'dhl', 'dhl-for-shiptastic' ),
-				'description' => _x( 'Economy delivery for international shipments.', 'dhl', 'dhl-for-shiptastic' ),
+				'label'       => _x( 'Economy', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'description' => _x( 'Economy delivery for international shipments.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'products'    => array( 'V53WPAK', 'V66WPI' ),
 				'zones'       => array( 'int', 'eu' ),
 			)
@@ -293,8 +293,8 @@ class DHL extends Auto {
 		$this->register_service(
 			'PostalDeliveryDutyPaid',
 			array(
-				'label'       => _x( 'Postal Delivery Duty Paid', 'dhl', 'dhl-for-shiptastic' ),
-				'description' => _x( 'DHL takes care of customs clearance and export duties (Postal Delivered Duty Paid).', 'dhl', 'dhl-for-shiptastic' ),
+				'label'       => _x( 'Postal Delivery Duty Paid', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'description' => _x( 'DHL takes care of customs clearance and export duties (Postal Delivered Duty Paid).', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'products'    => array( 'V53WPAK' ),
 				'countries'   => ParcelServices::get_pddp_countries(),
 				'zones'       => array( 'int' ),
@@ -306,22 +306,22 @@ class DHL extends Auto {
 		$this->register_print_format(
 			'default',
 			array(
-				'label'          => _x( 'Default (User configuration)', 'dhl-print-format', 'dhl-for-shiptastic' ),
+				'label'          => _x( 'Default (User configuration)', 'dhl-print-format', 'shiptastic-integration-for-dhl' ),
 				'shipment_types' => array( 'simple' ),
 			)
 		);
 
 		$available = array(
-			'A4'             => _x( 'A4', 'dhl-print-format', 'dhl-for-shiptastic' ),
-			'910-300-700'    => _x( '910-300-700', 'dhl-print-format', 'dhl-for-shiptastic' ),
-			'910-300-700-oZ' => _x( '910-300-700-oZ', 'dhl-print-format', 'dhl-for-shiptastic' ),
-			'910-300-710'    => _x( '910-300-710', 'dhl-print-format', 'dhl-for-shiptastic' ),
-			'910-300-600'    => _x( '910-300-600', 'dhl-print-format', 'dhl-for-shiptastic' ),
-			'910-300-610'    => _x( '910-300-610', 'dhl-print-format', 'dhl-for-shiptastic' ),
-			'910-300-400'    => _x( '910-300-400', 'dhl-print-format', 'dhl-for-shiptastic' ),
-			'910-300-410'    => _x( '910-300-410', 'dhl-print-format', 'dhl-for-shiptastic' ),
-			'910-300-300'    => _x( '910-300-300', 'dhl-print-format', 'dhl-for-shiptastic' ),
-			'910-300-300-oz' => _x( '910-300-300-oz', 'dhl-print-format', 'dhl-for-shiptastic' ),
+			'A4'             => _x( 'A4', 'dhl-print-format', 'shiptastic-integration-for-dhl' ),
+			'910-300-700'    => _x( '910-300-700', 'dhl-print-format', 'shiptastic-integration-for-dhl' ),
+			'910-300-700-oZ' => _x( '910-300-700-oZ', 'dhl-print-format', 'shiptastic-integration-for-dhl' ),
+			'910-300-710'    => _x( '910-300-710', 'dhl-print-format', 'shiptastic-integration-for-dhl' ),
+			'910-300-600'    => _x( '910-300-600', 'dhl-print-format', 'shiptastic-integration-for-dhl' ),
+			'910-300-610'    => _x( '910-300-610', 'dhl-print-format', 'shiptastic-integration-for-dhl' ),
+			'910-300-400'    => _x( '910-300-400', 'dhl-print-format', 'shiptastic-integration-for-dhl' ),
+			'910-300-410'    => _x( '910-300-410', 'dhl-print-format', 'shiptastic-integration-for-dhl' ),
+			'910-300-300'    => _x( '910-300-300', 'dhl-print-format', 'shiptastic-integration-for-dhl' ),
+			'910-300-300-oz' => _x( '910-300-300-oz', 'dhl-print-format', 'shiptastic-integration-for-dhl' ),
 		);
 
 		foreach ( $available as $print_format => $label ) {
@@ -337,7 +337,7 @@ class DHL extends Auto {
 		$this->register_print_format(
 			'100x70mm',
 			array(
-				'label'          => _x( '100x70mm', 'dhl-print-format', 'dhl-for-shiptastic' ),
+				'label'          => _x( '100x70mm', 'dhl-print-format', 'shiptastic-integration-for-dhl' ),
 				'products'       => array( 'V62WP', 'V66WPI', 'V62KP' ),
 				'shipment_types' => array( 'simple' ),
 			)
@@ -368,15 +368,15 @@ class DHL extends Auto {
 	protected function get_config_set_return_label_settings() {
 		$settings = array(
 			array(
-				'title' => _x( 'Retoure', 'dhl', 'dhl-for-shiptastic' ),
+				'title' => _x( 'Retoure', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'  => 'title',
 				'id'    => 'dhl_retoure_options',
-				'desc'  => sprintf( _x( 'Adjust handling of return shipments through the DHL Retoure API. Make sure that your %s contains DHL Retoure Online.', 'dhl', 'dhl-for-shiptastic' ), '<a href="' . esc_url( Package::get_geschaeftskunden_portal_url() ) . '">' . _x( 'contract', 'dhl', 'dhl-for-shiptastic' ) . '</a>' ),
+				'desc'  => sprintf( _x( 'Adjust handling of return shipments through the DHL Retoure API. Make sure that your %s contains DHL Retoure Online.', 'dhl', 'shiptastic-integration-for-dhl' ), '<a href="' . esc_url( Package::get_geschaeftskunden_portal_url() ) . '">' . _x( 'contract', 'dhl', 'shiptastic-integration-for-dhl' ) . '</a>' ),
 			),
 
 			array(
-				'title'   => _x( 'Retoure', 'dhl', 'dhl-for-shiptastic' ),
-				'desc'    => _x( 'Create retoure labels to return shipments.', 'dhl', 'dhl-for-shiptastic' ) . '<div class="wc-shiptastic-additional-desc ">' . _x( 'By enabling this option you might generate retoure labels for return shipments and send them to your customer via email.', 'dhl', 'dhl-for-shiptastic' ) . '</div>',
+				'title'   => _x( 'Retoure', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'desc'    => _x( 'Create retoure labels to return shipments.', 'dhl', 'shiptastic-integration-for-dhl' ) . '<div class="wc-shiptastic-additional-desc ">' . _x( 'By enabling this option you might generate retoure labels for return shipments and send them to your customer via email.', 'dhl', 'shiptastic-integration-for-dhl' ) . '</div>',
 				'id'      => 'label_retoure_enable',
 				'value'   => wc_bool_to_string( $this->enable_retoure() ),
 				'default' => 'yes',
@@ -416,18 +416,18 @@ class DHL extends Auto {
 					$settings,
 					array(
 						array(
-							'title'    => _x( 'Encodable', 'dhl', 'dhl-for-shiptastic' ),
-							'desc'     => _x( 'Labels will only be created if an address is encodable by DHL.', 'dhl', 'dhl-for-shiptastic' ),
+							'title'    => _x( 'Encodable', 'dhl', 'shiptastic-integration-for-dhl' ),
+							'desc'     => _x( 'Labels will only be created if an address is encodable by DHL.', 'dhl', 'shiptastic-integration-for-dhl' ),
 							'id'       => 'label_address_codeable_only',
 							'value'    => $this->get_setting( 'label_address_codeable_only', 'no' ),
 							'default'  => 'no',
 							'type'     => 'shiptastic_toggle',
-							'desc_tip' => _x( 'Choose this option if you want to make sure that by default labels are only generated for encodable addresses.', 'dhl', 'dhl-for-shiptastic' ),
+							'desc_tip' => _x( 'Choose this option if you want to make sure that by default labels are only generated for encodable addresses.', 'dhl', 'shiptastic-integration-for-dhl' ),
 						),
 
 						array(
-							'title'             => _x( 'Sync (IdentCheck)', 'dhl', 'dhl-for-shiptastic' ),
-							'desc'              => _x( 'Verify identity and age if shipment contains applicable items.', 'dhl', 'dhl-for-shiptastic' ) . '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Germanized offers an %s to be enabled for certain products and/or product categories. By checking this option labels for shipments with applicable items will automatically have the identity check service enabled.', 'dhl', 'dhl-for-shiptastic' ), '<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=germanized-checkboxes&checkbox_id=age_verification' ) ) . '">' . _x( 'age verification checkbox', 'dhl', 'dhl-for-shiptastic' ) . '</a>' ) . '</div>',
+							'title'             => _x( 'Sync (IdentCheck)', 'dhl', 'shiptastic-integration-for-dhl' ),
+							'desc'              => _x( 'Verify identity and age if shipment contains applicable items.', 'dhl', 'shiptastic-integration-for-dhl' ) . '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Germanized offers an %s to be enabled for certain products and/or product categories. By checking this option labels for shipments with applicable items will automatically have the identity check service enabled.', 'dhl', 'shiptastic-integration-for-dhl' ), '<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=germanized-checkboxes&checkbox_id=age_verification' ) ) . '">' . _x( 'age verification checkbox', 'dhl', 'shiptastic-integration-for-dhl' ) . '</a>' ) . '</div>',
 							'id'                => 'label_auto_age_check_ident_sync',
 							'value'             => wc_bool_to_string( $this->get_setting( 'label_auto_age_check_ident_sync', 'no' ) ),
 							'default'           => 'no',
@@ -438,8 +438,8 @@ class DHL extends Auto {
 						),
 
 						array(
-							'title'             => _x( 'Sync (Visual Check)', 'dhl', 'dhl-for-shiptastic' ),
-							'desc'              => _x( 'Visually verify age if shipment contains applicable items.', 'dhl', 'dhl-for-shiptastic' ) . '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Germanized offers an %s to be enabled for certain products and/or product categories. By checking this option labels for shipments with applicable items will automatically have the visual age check service enabled.', 'dhl', 'dhl-for-shiptastic' ), '<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=germanized-checkboxes&checkbox_id=age_verification' ) ) . '">' . _x( 'age verification checkbox', 'dhl', 'dhl-for-shiptastic' ) . '</a>' ) . '</div>',
+							'title'             => _x( 'Sync (Visual Check)', 'dhl', 'shiptastic-integration-for-dhl' ),
+							'desc'              => _x( 'Visually verify age if shipment contains applicable items.', 'dhl', 'shiptastic-integration-for-dhl' ) . '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Germanized offers an %s to be enabled for certain products and/or product categories. By checking this option labels for shipments with applicable items will automatically have the visual age check service enabled.', 'dhl', 'shiptastic-integration-for-dhl' ), '<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=germanized-checkboxes&checkbox_id=age_verification' ) ) . '">' . _x( 'age verification checkbox', 'dhl', 'shiptastic-integration-for-dhl' ) . '</a>' ) . '</div>',
 							'id'                => 'label_auto_age_check_sync',
 							'value'             => wc_bool_to_string( $this->get_setting( 'label_auto_age_check_sync', 'yes' ) ),
 							'default'           => 'yes',
@@ -455,12 +455,12 @@ class DHL extends Auto {
 					$settings,
 					array(
 						array(
-							'title'    => _x( 'Default Incoterms', 'dhl', 'dhl-for-shiptastic' ),
+							'title'    => _x( 'Default Incoterms', 'dhl', 'shiptastic-integration-for-dhl' ),
 							'type'     => 'select',
 							'default'  => 'DDP',
 							'id'       => 'label_default_duty',
 							'value'    => $this->get_setting( 'label_default_duty', 'DDP' ),
-							'desc'     => _x( 'Please select a default incoterms option.', 'dhl', 'dhl-for-shiptastic' ),
+							'desc'     => _x( 'Please select a default incoterms option.', 'dhl', 'shiptastic-integration-for-dhl' ),
 							'desc_tip' => true,
 							'options'  => wc_stc_dhl_get_duties(),
 							'class'    => 'wc-enhanced-select',
@@ -539,7 +539,7 @@ class DHL extends Auto {
 
 	public function get_setting_sections() {
 		$sections              = parent::get_setting_sections();
-		$sections['preferred'] = _x( 'Preferred delivery', 'dhl', 'dhl-for-shiptastic' );
+		$sections['preferred'] = _x( 'Preferred delivery', 'dhl', 'shiptastic-integration-for-dhl' );
 
 		return $sections;
 	}
@@ -555,7 +555,7 @@ class DHL extends Auto {
 		return array(
 			array(
 				'id'          => 'receiver_slug',
-				'label'       => _x( 'Receiver', 'dhl', 'dhl-for-shiptastic' ),
+				'label'       => _x( 'Receiver', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'description' => '',
 				'type'        => 'select',
 				'options'     => wc_stc_dhl_get_return_receivers(),
@@ -583,7 +583,7 @@ class DHL extends Auto {
 				array(
 					array(
 						'id'          => 'duties',
-						'label'       => _x( 'Duties', 'dhl', 'dhl-for-shiptastic' ),
+						'label'       => _x( 'Duties', 'dhl', 'shiptastic-integration-for-dhl' ),
 						'description' => '',
 						'value'       => isset( $default_args['duties'] ) ? $default_args['duties'] : '',
 						'options'     => wc_stc_dhl_get_duties(),
@@ -597,7 +597,7 @@ class DHL extends Auto {
 				array(
 					array(
 						'id'            => 'codeable_address_only',
-						'label'         => _x( 'Valid address only', 'dhl', 'dhl-for-shiptastic' ),
+						'label'         => _x( 'Valid address only', 'dhl', 'shiptastic-integration-for-dhl' ),
 						'placeholder'   => '',
 						'description'   => '',
 						'type'          => 'checkbox',
@@ -658,7 +658,7 @@ class DHL extends Auto {
 		$args['receiver_slug'] = sanitize_key( $args['receiver_slug'] );
 
 		if ( empty( $args['receiver_slug'] ) ) {
-			$error->add( 500, _x( 'Receiver is missing or does not exist.', 'dhl', 'dhl-for-shiptastic' ) );
+			$error->add( 500, _x( 'Receiver is missing or does not exist.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 
 		if ( wc_stc_dhl_wp_error_has_errors( $error ) ) {
@@ -688,7 +688,7 @@ class DHL extends Auto {
 		if ( ! Package::is_crossborder_shipment( $shipment->get_country(), $shipment->get_postcode() ) ) {
 			unset( $args['duties'] );
 		} elseif ( ! empty( $args['duties'] ) && ! array_key_exists( $args['duties'], wc_stc_dhl_get_duties() ) ) {
-				$error->add( 500, sprintf( _x( '%s duties element does not exist.', 'dhl', 'dhl-for-shiptastic' ), $args['duties'] ) );
+				$error->add( 500, sprintf( _x( '%s duties element does not exist.', 'dhl', 'shiptastic-integration-for-dhl' ), $args['duties'] ) );
 		}
 
 		if ( wc_stc_dhl_wp_error_has_errors( $error ) ) {
@@ -845,9 +845,9 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title'             => _x( 'Customer Number (EKP)', 'dhl', 'dhl-for-shiptastic' ),
+				'title'             => _x( 'Customer Number (EKP)', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'              => 'text',
-				'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Your 10 digits DHL customer number, also called "EKP". Find your %s in the DHL business portal.', 'dhl', 'dhl-for-shiptastic' ), '<a href="' . esc_url( Package::get_geschaeftskunden_portal_url() ) . '" target="_blank">' . _x( 'customer number', 'dhl', 'dhl-for-shiptastic' ) . '</a>' ) . '</div>',
+				'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Your 10 digits DHL customer number, also called "EKP". Find your %s in the DHL business portal.', 'dhl', 'shiptastic-integration-for-dhl' ), '<a href="' . esc_url( Package::get_geschaeftskunden_portal_url() ) . '" target="_blank">' . _x( 'customer number', 'dhl', 'shiptastic-integration-for-dhl' ) . '</a>' ) . '</div>',
 				'id'                => 'account_number',
 				'value'             => $this->get_setting( 'account_number', '' ),
 				'placeholder'       => '1234567890',
@@ -860,7 +860,7 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title' => _x( 'API', 'dhl', 'dhl-for-shiptastic' ),
+				'title' => _x( 'API', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'  => 'title',
 				'id'    => 'dhl_api_options',
 				'desc'  => '',
@@ -874,12 +874,12 @@ class DHL extends Auto {
 				$settings,
 				array(
 					array(
-						'title'   => _x( 'API Type', 'dhl', 'dhl-for-shiptastic' ),
-						'desc'    => _x( 'Choose the DHL API to use. Please note: The SOAP API is currently in a legacy mode and will be replaced by the newer REST API in the future.', 'dhl', 'dhl-for-shiptastic' ),
+						'title'   => _x( 'API Type', 'dhl', 'shiptastic-integration-for-dhl' ),
+						'desc'    => _x( 'Choose the DHL API to use. Please note: The SOAP API is currently in a legacy mode and will be replaced by the newer REST API in the future.', 'dhl', 'shiptastic-integration-for-dhl' ),
 						'id'      => 'api_type',
 						'options' => array(
-							'rest' => _x( 'New API (REST)', 'dhl', 'dhl-for-shiptastic' ),
-							'soap' => _x( 'Old API (SOAP)', 'dhl', 'dhl-for-shiptastic' ),
+							'rest' => _x( 'New API (REST)', 'dhl', 'shiptastic-integration-for-dhl' ),
+							'soap' => _x( 'Old API (SOAP)', 'dhl', 'shiptastic-integration-for-dhl' ),
 						),
 						'default' => $use_soap ? 'soap' : 'rest',
 						'type'    => 'select',
@@ -893,17 +893,17 @@ class DHL extends Auto {
 			$settings,
 			array(
 				array(
-					'title' => _x( 'Enable Sandbox', 'dhl', 'dhl-for-shiptastic' ),
-					'desc'  => _x( 'Activate Sandbox mode for testing purposes.', 'dhl', 'dhl-for-shiptastic' ),
+					'title' => _x( 'Enable Sandbox', 'dhl', 'shiptastic-integration-for-dhl' ),
+					'desc'  => _x( 'Activate Sandbox mode for testing purposes.', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'id'    => 'sandbox_mode',
 					'value' => wc_bool_to_string( $this->get_setting( 'sandbox_mode', 'no' ) ),
 					'type'  => 'shiptastic_toggle',
 				),
 
 				array(
-					'title'             => _x( 'Live Username', 'dhl', 'dhl-for-shiptastic' ),
+					'title'             => _x( 'Live Username', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'              => 'text',
-					'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Your username (<strong>not</strong> your email address) to the DHL business customer portal. Please make sure to test your access data in advance %s.', 'dhl', 'dhl-for-shiptastic' ), '<a href="' . esc_url( Package::get_geschaeftskunden_portal_url() ) . '" target = "_blank">' . _x( 'here', 'dhl', 'dhl-for-shiptastic' ) . '</a>' ) . '</div>',
+					'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Your username (<strong>not</strong> your email address) to the DHL business customer portal. Please make sure to test your access data in advance %s.', 'dhl', 'shiptastic-integration-for-dhl' ), '<a href="' . esc_url( Package::get_geschaeftskunden_portal_url() ) . '" target = "_blank">' . _x( 'here', 'dhl', 'shiptastic-integration-for-dhl' ) . '</a>' ) . '</div>',
 					'id'                => 'api_username',
 					'default'           => '',
 					'value'             => $this->get_setting( 'api_username', '' ),
@@ -914,9 +914,9 @@ class DHL extends Auto {
 				),
 
 				array(
-					'title'             => _x( 'Live Password', 'dhl', 'dhl-for-shiptastic' ),
+					'title'             => _x( 'Live Password', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'              => 'password',
-					'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Your password to the DHL business customer portal. Please note the new assignment of the password to 3 (Standard User) or 12 (System User) months and make sure to test your access data in advance %s.', 'dhl', 'dhl-for-shiptastic' ), '<a href="' . esc_url( Package::get_geschaeftskunden_portal_url() ) . '" target = "_blank">' . _x( 'here', 'dhl', 'dhl-for-shiptastic' ) . '</a>' ) . '</div>',
+					'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Your password to the DHL business customer portal. Please note the new assignment of the password to 3 (Standard User) or 12 (System User) months and make sure to test your access data in advance %s.', 'dhl', 'shiptastic-integration-for-dhl' ), '<a href="' . esc_url( Package::get_geschaeftskunden_portal_url() ) . '" target = "_blank">' . _x( 'here', 'dhl', 'shiptastic-integration-for-dhl' ) . '</a>' ) . '</div>',
 					'id'                => 'api_password',
 					'value'             => $this->get_setting( 'api_password', '' ),
 					'custom_attributes' => array(
@@ -926,9 +926,9 @@ class DHL extends Auto {
 				),
 
 				array(
-					'title'             => _x( 'Sandbox Username', 'dhl', 'dhl-for-shiptastic' ),
+					'title'             => _x( 'Sandbox Username', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'              => 'text',
-					'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Your username (<strong>not</strong> your email address) to the DHL developer portal. Please make sure to test your access data in advance %s.', 'dhl', 'dhl-for-shiptastic' ), '<a href="https://entwickler.dhl.de" target = "_blank">' . _x( 'here', 'dhl', 'dhl-for-shiptastic' ) . '</a>' ) . '</div>',
+					'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Your username (<strong>not</strong> your email address) to the DHL developer portal. Please make sure to test your access data in advance %s.', 'dhl', 'shiptastic-integration-for-dhl' ), '<a href="https://entwickler.dhl.de" target = "_blank">' . _x( 'here', 'dhl', 'shiptastic-integration-for-dhl' ) . '</a>' ) . '</div>',
 					'id'                => 'api_sandbox_username',
 					'value'             => $this->get_setting( 'api_sandbox_username', '' ),
 					'custom_attributes' => array(
@@ -938,9 +938,9 @@ class DHL extends Auto {
 				),
 
 				array(
-					'title'             => _x( 'Sandbox Password', 'dhl', 'dhl-for-shiptastic' ),
+					'title'             => _x( 'Sandbox Password', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'              => 'password',
-					'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Your password for the DHL developer portal. Please test your access data in advance %s.', 'dhl', 'dhl-for-shiptastic' ), '<a href="https://entwickler.dhl.de" target = "_blank">' . _x( 'here', 'dhl', 'dhl-for-shiptastic' ) . '</a>' ) . '</div>',
+					'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Your password for the DHL developer portal. Please test your access data in advance %s.', 'dhl', 'shiptastic-integration-for-dhl' ), '<a href="https://entwickler.dhl.de" target = "_blank">' . _x( 'here', 'dhl', 'shiptastic-integration-for-dhl' ) . '</a>' ) . '</div>',
 					'id'                => 'api_sandbox_password',
 					'value'             => $this->get_setting( 'api_sandbox_password', '' ),
 					'custom_attributes' => array(
@@ -955,15 +955,15 @@ class DHL extends Auto {
 				),
 
 				array(
-					'title' => _x( 'Products and Participation Numbers', 'dhl', 'dhl-for-shiptastic' ),
+					'title' => _x( 'Products and Participation Numbers', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'  => 'title',
 					'id'    => 'dhl_product_options',
-					'desc'  => sprintf( _x( 'Learn how to <a href="%1$s" target="_blank">find your participation numbers</a> in your DHL business portal.', 'dhl', 'dhl-for-shiptastic' ), 'https://vendidero.de/doc/woocommerce-germanized/dhl-integration-einrichten#produkte-und-teilnahmenummern' ),
+					'desc'  => sprintf( _x( 'Learn how to <a href="%1$s" target="_blank">find your participation numbers</a> in your DHL business portal.', 'dhl', 'shiptastic-integration-for-dhl' ), 'https://vendidero.de/doc/woocommerce-germanized/dhl-integration-einrichten#produkte-und-teilnahmenummern' ),
 				),
 			)
 		);
 
-		$dhl_available_products = $this->get_products()->as_options() + array( 'return' => _x( 'Inlay Returns', 'dhl', 'dhl-for-shiptastic' ) );
+		$dhl_available_products = $this->get_products()->as_options() + array( 'return' => _x( 'Inlay Returns', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		$dhl_products           = array();
 
 		foreach ( $dhl_available_products as $product => $title ) {
@@ -988,7 +988,7 @@ class DHL extends Auto {
 			$settings,
 			array(
 				array(
-					'title'    => _x( 'Participation Numbers', 'dhl', 'dhl-for-shiptastic' ),
+					'title'    => _x( 'Participation Numbers', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'     => 'dhl_participation_numbers',
 					'products' => $dhl_available_products,
 					'default'  => '',
@@ -999,14 +999,14 @@ class DHL extends Auto {
 					'id'   => 'dhl_product_options',
 				),
 				array(
-					'title' => _x( 'Bank Account', 'dhl', 'dhl-for-shiptastic' ),
+					'title' => _x( 'Bank Account', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'  => 'title',
 					'id'    => 'dhl_bank_account_options',
-					'desc'  => _x( 'Enter your bank details needed for services that use COD.', 'dhl', 'dhl-for-shiptastic' ),
+					'desc'  => _x( 'Enter your bank details needed for services that use COD.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				),
 
 				array(
-					'title'   => _x( 'Holder', 'dhl', 'dhl-for-shiptastic' ),
+					'title'   => _x( 'Holder', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'    => 'text',
 					'id'      => 'bank_holder',
 					'value'   => $this->get_setting( 'bank_holder' ),
@@ -1014,7 +1014,7 @@ class DHL extends Auto {
 				),
 
 				array(
-					'title'   => _x( 'Bank Name', 'dhl', 'dhl-for-shiptastic' ),
+					'title'   => _x( 'Bank Name', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'    => 'text',
 					'id'      => 'bank_name',
 					'value'   => $this->get_setting( 'bank_name' ),
@@ -1022,7 +1022,7 @@ class DHL extends Auto {
 				),
 
 				array(
-					'title'   => _x( 'IBAN', 'dhl', 'dhl-for-shiptastic' ),
+					'title'   => _x( 'IBAN', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'    => 'text',
 					'id'      => 'bank_iban',
 					'value'   => $this->get_setting( 'bank_iban' ),
@@ -1030,7 +1030,7 @@ class DHL extends Auto {
 				),
 
 				array(
-					'title'   => _x( 'BIC', 'dhl', 'dhl-for-shiptastic' ),
+					'title'   => _x( 'BIC', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'    => 'text',
 					'id'      => 'bank_bic',
 					'value'   => $this->get_setting( 'bank_bic' ),
@@ -1038,22 +1038,22 @@ class DHL extends Auto {
 				),
 
 				array(
-					'title'             => _x( 'Payment Reference', 'dhl', 'dhl-for-shiptastic' ),
+					'title'             => _x( 'Payment Reference', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'              => 'text',
 					'id'                => 'bank_ref',
 					'custom_attributes' => array( 'maxlength' => '35' ),
 					'value'             => $this->get_setting( 'bank_ref' ),
-					'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Use these placeholders to add info to the payment reference: %s. This text is limited to 35 characters.', 'dhl', 'dhl-for-shiptastic' ), '<code>' . esc_html( $ref_placeholders_str ) . '</code>' ) . '</div>',
+					'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Use these placeholders to add info to the payment reference: %s. This text is limited to 35 characters.', 'dhl', 'shiptastic-integration-for-dhl' ), '<code>' . esc_html( $ref_placeholders_str ) . '</code>' ) . '</div>',
 					'default'           => '{shipment_id}',
 				),
 
 				array(
-					'title'             => _x( 'Payment Reference 2', 'dhl', 'dhl-for-shiptastic' ),
+					'title'             => _x( 'Payment Reference 2', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'              => 'text',
 					'id'                => 'bank_ref_2',
 					'custom_attributes' => array( 'maxlength' => '35' ),
 					'value'             => $this->get_setting( 'bank_ref_2' ),
-					'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Use these placeholders to add info to the payment reference: %s. This text is limited to 35 characters.', 'dhl', 'dhl-for-shiptastic' ), '<code>' . esc_html( $ref_placeholders_str ) . '</code>' ) . '</div>',
+					'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Use these placeholders to add info to the payment reference: %s. This text is limited to 35 characters.', 'dhl', 'shiptastic-integration-for-dhl' ), '<code>' . esc_html( $ref_placeholders_str ) . '</code>' ) . '</div>',
 					'default'           => '{email}',
 				),
 
@@ -1062,7 +1062,7 @@ class DHL extends Auto {
 					'id'   => 'dhl_bank_account_options',
 				),
 				array(
-					'title' => _x( 'Tracking', 'dhl', 'dhl-for-shiptastic' ),
+					'title' => _x( 'Tracking', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'  => 'title',
 					'id'    => 'tracking_options',
 				),
@@ -1096,9 +1096,9 @@ class DHL extends Auto {
 					'id'    => 'dhl_pickup_options',
 				),
 				array(
-					'title'             => _x( 'Packstation', 'dhl', 'dhl-for-shiptastic' ),
-					'desc'              => _x( 'Enable delivery to Packstation.', 'dhl', 'dhl-for-shiptastic' ),
-					'desc_tip'          => _x( 'Let customers choose a Packstation as delivery address.', 'dhl', 'dhl-for-shiptastic' ),
+					'title'             => _x( 'Packstation', 'dhl', 'shiptastic-integration-for-dhl' ),
+					'desc'              => _x( 'Enable delivery to Packstation.', 'dhl', 'shiptastic-integration-for-dhl' ),
+					'desc_tip'          => _x( 'Let customers choose a Packstation as delivery address.', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'id'                => 'parcel_pickup_packstation_enable',
 					'value'             => wc_bool_to_string( $this->get_setting( 'parcel_pickup_packstation_enable' ) ),
 					'default'           => 'yes',
@@ -1106,9 +1106,9 @@ class DHL extends Auto {
 					'custom_attributes' => array( 'data-show_if_pickup_locations_enable' => '' ),
 				),
 				array(
-					'title'             => _x( 'Postoffice', 'dhl', 'dhl-for-shiptastic' ),
-					'desc'              => _x( 'Enable delivery to Post Offices.', 'dhl', 'dhl-for-shiptastic' ),
-					'desc_tip'          => _x( 'Let customers choose a Post Office as delivery address.', 'dhl', 'dhl-for-shiptastic' ),
+					'title'             => _x( 'Postoffice', 'dhl', 'shiptastic-integration-for-dhl' ),
+					'desc'              => _x( 'Enable delivery to Post Offices.', 'dhl', 'shiptastic-integration-for-dhl' ),
+					'desc_tip'          => _x( 'Let customers choose a Post Office as delivery address.', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'id'                => 'parcel_pickup_postoffice_enable',
 					'value'             => wc_bool_to_string( $this->get_setting( 'parcel_pickup_postoffice_enable' ) ),
 					'default'           => 'yes',
@@ -1116,9 +1116,9 @@ class DHL extends Auto {
 					'custom_attributes' => array( 'data-show_if_pickup_locations_enable' => '' ),
 				),
 				array(
-					'title'             => _x( 'Parcel Shop', 'dhl', 'dhl-for-shiptastic' ),
-					'desc'              => _x( 'Enable delivery to Parcel Shops.', 'dhl', 'dhl-for-shiptastic' ),
-					'desc_tip'          => _x( 'Let customers choose a Parcel Shop as delivery address.', 'dhl', 'dhl-for-shiptastic' ),
+					'title'             => _x( 'Parcel Shop', 'dhl', 'shiptastic-integration-for-dhl' ),
+					'desc'              => _x( 'Enable delivery to Parcel Shops.', 'dhl', 'shiptastic-integration-for-dhl' ),
+					'desc_tip'          => _x( 'Let customers choose a Parcel Shop as delivery address.', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'id'                => 'parcel_pickup_parcelshop_enable',
 					'value'             => wc_bool_to_string( $this->get_setting( 'parcel_pickup_parcelshop_enable' ) ),
 					'default'           => 'yes',
@@ -1155,8 +1155,8 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title'   => _x( 'Drop-off location', 'dhl', 'dhl-for-shiptastic' ),
-				'desc'    => _x( 'Enable drop-off location delivery.', 'dhl', 'dhl-for-shiptastic' ) . '<div class="wc-shiptastic-additional-desc ">' . _x( 'Enabling this option will display options for the user to select their preferred delivery location during the checkout.', 'dhl', 'dhl-for-shiptastic' ) . '</div>',
+				'title'   => _x( 'Drop-off location', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'desc'    => _x( 'Enable drop-off location delivery.', 'dhl', 'shiptastic-integration-for-dhl' ) . '<div class="wc-shiptastic-additional-desc ">' . _x( 'Enabling this option will display options for the user to select their preferred delivery location during the checkout.', 'dhl', 'shiptastic-integration-for-dhl' ) . '</div>',
 				'id'      => 'PreferredLocation_enable',
 				'value'   => wc_bool_to_string( $this->get_setting( 'PreferredLocation_enable' ) ),
 				'default' => 'yes',
@@ -1164,8 +1164,8 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title'   => _x( 'Neighbor', 'dhl', 'dhl-for-shiptastic' ),
-				'desc'    => _x( 'Enable delivery to a neighbor.', 'dhl', 'dhl-for-shiptastic' ) . '<div class="wc-shiptastic-additional-desc ">' . _x( 'Enabling this option will display options for the user to deliver to their preferred neighbor during the checkout.', 'dhl', 'dhl-for-shiptastic' ) . '</div>',
+				'title'   => _x( 'Neighbor', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'desc'    => _x( 'Enable delivery to a neighbor.', 'dhl', 'shiptastic-integration-for-dhl' ) . '<div class="wc-shiptastic-additional-desc ">' . _x( 'Enabling this option will display options for the user to deliver to their preferred neighbor during the checkout.', 'dhl', 'shiptastic-integration-for-dhl' ) . '</div>',
 				'id'      => 'PreferredNeighbour_enable',
 				'value'   => wc_bool_to_string( $this->get_setting( 'PreferredNeighbour_enable' ) ),
 				'default' => 'yes',
@@ -1173,8 +1173,8 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title'   => _x( 'Delivery Type (CDP)', 'dhl', 'dhl-for-shiptastic' ),
-				'desc'    => _x( 'Allow your international customers to choose between home and closest droppoint delivery.', 'dhl', 'dhl-for-shiptastic' ) . '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Display options for the user to select their preferred delivery type during checkout. Currently available for <a href="%s">certain countries only</a>.', 'dhl', 'dhl-for-shiptastic' ), esc_url( 'https://www.dhl.de/de/geschaeftskunden/paket/leistungen-und-services/internationaler-versand/paket-international.html' ) ) . '</div>',
+				'title'   => _x( 'Delivery Type (CDP)', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'desc'    => _x( 'Allow your international customers to choose between home and closest droppoint delivery.', 'dhl', 'shiptastic-integration-for-dhl' ) . '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Display options for the user to select their preferred delivery type during checkout. Currently available for <a href="%s">certain countries only</a>.', 'dhl', 'shiptastic-integration-for-dhl' ), esc_url( 'https://www.dhl.de/de/geschaeftskunden/paket/leistungen-und-services/internationaler-versand/paket-international.html' ) ) . '</div>',
 				'id'      => 'PreferredDeliveryType_enable',
 				'value'   => wc_bool_to_string( $this->get_setting( 'PreferredDeliveryType_enable' ) ),
 				'default' => 'no',
@@ -1182,9 +1182,9 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title'             => _x( 'Default Delivery Type', 'dhl', 'dhl-for-shiptastic' ),
+				'title'             => _x( 'Default Delivery Type', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'              => 'select',
-				'desc'              => _x( 'Select the default delivery type presented to the customer during checkout.', 'dhl', 'dhl-for-shiptastic' ),
+				'desc'              => _x( 'Select the default delivery type presented to the customer during checkout.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'desc_tip'          => true,
 				'id'                => 'preferred_default_delivery_type',
 				'value'             => $this->get_setting( 'preferred_default_delivery_type' ),
@@ -1195,9 +1195,9 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title'             => _x( 'Home Delivery Fee', 'dhl', 'dhl-for-shiptastic' ),
+				'title'             => _x( 'Home Delivery Fee', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'              => 'text',
-				'desc'              => _x( 'Insert gross value as surcharge for home deliveries for countries which support closest droppoint deliveries. Insert 0 to offer service for free.', 'dhl', 'dhl-for-shiptastic' ),
+				'desc'              => _x( 'Insert gross value as surcharge for home deliveries for countries which support closest droppoint deliveries. Insert 0 to offer service for free.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'desc_tip'          => true,
 				'id'                => 'preferred_home_delivery_cost',
 				'value'             => wc_format_localized_decimal( $this->get_setting( 'preferred_home_delivery_cost' ) ),
@@ -1208,8 +1208,8 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title'   => _x( 'Delivery day', 'dhl', 'dhl-for-shiptastic' ),
-				'desc'    => _x( 'Enable delivery day delivery.', 'dhl', 'dhl-for-shiptastic' ) . '<div class="wc-shiptastic-additional-desc ">' . _x( 'Enabling this option will display options for the user to select their delivery day of delivery during the checkout.', 'dhl', 'dhl-for-shiptastic' ) . '</div>',
+				'title'   => _x( 'Delivery day', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'desc'    => _x( 'Enable delivery day delivery.', 'dhl', 'shiptastic-integration-for-dhl' ) . '<div class="wc-shiptastic-additional-desc ">' . _x( 'Enabling this option will display options for the user to select their delivery day of delivery during the checkout.', 'dhl', 'shiptastic-integration-for-dhl' ) . '</div>',
 				'id'      => 'PreferredDay_enable',
 				'value'   => wc_bool_to_string( $this->get_setting( 'PreferredDay_enable' ) ),
 				'default' => 'yes',
@@ -1217,9 +1217,9 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title'             => _x( 'Fee', 'dhl', 'dhl-for-shiptastic' ),
+				'title'             => _x( 'Fee', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'              => 'text',
-				'desc'              => _x( 'Insert gross value as surcharge for delivery day delivery. Insert 0 to offer service for free.', 'dhl', 'dhl-for-shiptastic' ),
+				'desc'              => _x( 'Insert gross value as surcharge for delivery day delivery. Insert 0 to offer service for free.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'desc_tip'          => true,
 				'id'                => 'PreferredDay_cost',
 				'value'             => wc_format_localized_decimal( $this->get_setting( 'PreferredDay_cost' ) ),
@@ -1230,21 +1230,21 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title'             => _x( 'Cut-off time', 'dhl', 'dhl-for-shiptastic' ),
+				'title'             => _x( 'Cut-off time', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'              => 'time',
 				'id'                => 'PreferredDay_cutoff_time',
 				'value'             => $this->get_setting( 'PreferredDay_cutoff_time' ),
-				'desc'              => '<div class="wc-shiptastic-additional-desc ">' . _x( 'The cut-off time is the latest possible order time up to which the minimum delivery day (day of order + 2 working days) can be guaranteed. As soon as the time is exceeded, the earliest delivery day displayed in the frontend will be shifted to one day later (day of order + 3 working days).', 'dhl', 'dhl-for-shiptastic' ) . '</div>',
+				'desc'              => '<div class="wc-shiptastic-additional-desc ">' . _x( 'The cut-off time is the latest possible order time up to which the minimum delivery day (day of order + 2 working days) can be guaranteed. As soon as the time is exceeded, the earliest delivery day displayed in the frontend will be shifted to one day later (day of order + 3 working days).', 'dhl', 'shiptastic-integration-for-dhl' ) . '</div>',
 				'default'           => '12:00',
 				'custom_attributes' => array( 'data-show_if_PreferredDay_enable' => '' ),
 			),
 
 			array(
-				'title'             => _x( 'Preparation days', 'dhl', 'dhl-for-shiptastic' ),
+				'title'             => _x( 'Preparation days', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'              => 'number',
 				'id'                => 'PreferredDay_preparation_days',
 				'value'             => $this->get_setting( 'PreferredDay_preparation_days' ),
-				'desc'              => '<div class="wc-shiptastic-additional-desc ">' . _x( 'If you need more time to prepare your shipments you might want to add a static preparation time to the possible starting date for delivery day delivery.', 'dhl', 'dhl-for-shiptastic' ) . '</div>',
+				'desc'              => '<div class="wc-shiptastic-additional-desc ">' . _x( 'If you need more time to prepare your shipments you might want to add a static preparation time to the possible starting date for delivery day delivery.', 'dhl', 'shiptastic-integration-for-dhl' ) . '</div>',
 				'default'           => '0',
 				'css'               => 'max-width: 60px',
 				'custom_attributes' => array(
@@ -1255,9 +1255,9 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title'             => _x( 'Exclude days of transfer', 'dhl', 'dhl-for-shiptastic' ),
-				'desc'              => _x( 'Monday', 'dhl', 'dhl-for-shiptastic' ),
-				'desc_tip'          => _x( 'Exclude days from transferring shipments to DHL.', 'dhl', 'dhl-for-shiptastic' ),
+				'title'             => _x( 'Exclude days of transfer', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'desc'              => _x( 'Monday', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'desc_tip'          => _x( 'Exclude days from transferring shipments to DHL.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'value'             => wc_bool_to_string( $this->get_setting( 'PreferredDay_exclusion_mon' ) ),
 				'id'                => 'PreferredDay_exclusion_mon',
 				'type'              => 'shiptastic_toggle',
@@ -1267,7 +1267,7 @@ class DHL extends Auto {
 			),
 
 			array(
-				'desc'              => _x( 'Tuesday', 'dhl', 'dhl-for-shiptastic' ),
+				'desc'              => _x( 'Tuesday', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'id'                => 'PreferredDay_exclusion_tue',
 				'value'             => wc_bool_to_string( $this->get_setting( 'PreferredDay_exclusion_tue' ) ),
 				'type'              => 'shiptastic_toggle',
@@ -1277,7 +1277,7 @@ class DHL extends Auto {
 			),
 
 			array(
-				'desc'              => _x( 'Wednesday', 'dhl', 'dhl-for-shiptastic' ),
+				'desc'              => _x( 'Wednesday', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'id'                => 'PreferredDay_exclusion_wed',
 				'value'             => wc_bool_to_string( $this->get_setting( 'PreferredDay_exclusion_wed' ) ),
 				'type'              => 'shiptastic_toggle',
@@ -1287,7 +1287,7 @@ class DHL extends Auto {
 			),
 
 			array(
-				'desc'              => _x( 'Thursday', 'dhl', 'dhl-for-shiptastic' ),
+				'desc'              => _x( 'Thursday', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'id'                => 'PreferredDay_exclusion_thu',
 				'value'             => wc_bool_to_string( $this->get_setting( 'PreferredDay_exclusion_thu' ) ),
 				'type'              => 'shiptastic_toggle',
@@ -1297,7 +1297,7 @@ class DHL extends Auto {
 			),
 
 			array(
-				'desc'              => _x( 'Friday', 'dhl', 'dhl-for-shiptastic' ),
+				'desc'              => _x( 'Friday', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'id'                => 'PreferredDay_exclusion_fri',
 				'value'             => wc_bool_to_string( $this->get_setting( 'PreferredDay_exclusion_fri' ) ),
 				'type'              => 'shiptastic_toggle',
@@ -1307,7 +1307,7 @@ class DHL extends Auto {
 			),
 
 			array(
-				'desc'              => _x( 'Saturday', 'dhl', 'dhl-for-shiptastic' ),
+				'desc'              => _x( 'Saturday', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'id'                => 'PreferredDay_exclusion_sat',
 				'value'             => wc_bool_to_string( $this->get_setting( 'PreferredDay_exclusion_sat' ) ),
 				'type'              => 'shiptastic_toggle',
@@ -1317,9 +1317,9 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title'    => _x( 'Exclude gateways', 'dhl', 'dhl-for-shiptastic' ),
+				'title'    => _x( 'Exclude gateways', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'     => 'multiselect',
-				'desc'     => _x( 'Select payment gateways to be excluded from showing preferred services.', 'dhl', 'dhl-for-shiptastic' ),
+				'desc'     => _x( 'Select payment gateways to be excluded from showing preferred services.', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'desc_tip' => true,
 				'id'       => 'preferred_payment_gateways_excluded',
 				'value'    => $this->get_setting( 'preferred_payment_gateways_excluded' ),
@@ -1345,8 +1345,8 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title'   => _x( 'Custom shipper', 'dhl', 'dhl-for-shiptastic' ),
-				'desc'    => _x( 'Use a custom shipper address managed within your DHL business profile.', 'dhl', 'dhl-for-shiptastic' ) . '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Choose this option if you want to use a <a href="%s" target="_blank">custom address</a> profile managed within your DHL business profile as shipper reference for your labels.', 'dhl', 'dhl-for-shiptastic' ), 'https://vendidero.de/doc/woocommerce-germanized/dhl-integration-einrichten#individuelle-absenderreferenz-samt-logo-nutzen' ) . '</div>',
+				'title'   => _x( 'Custom shipper', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'desc'    => _x( 'Use a custom shipper address managed within your DHL business profile.', 'dhl', 'shiptastic-integration-for-dhl' ) . '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Choose this option if you want to use a <a href="%s" target="_blank">custom address</a> profile managed within your DHL business profile as shipper reference for your labels.', 'dhl', 'shiptastic-integration-for-dhl' ), 'https://vendidero.de/doc/woocommerce-germanized/dhl-integration-einrichten#individuelle-absenderreferenz-samt-logo-nutzen' ) . '</div>',
 				'id'      => 'label_use_custom_shipper',
 				'value'   => $this->get_setting( 'label_use_custom_shipper', 'no' ),
 				'default' => 'no',
@@ -1354,8 +1354,8 @@ class DHL extends Auto {
 			),
 
 			array(
-				'title'             => _x( 'Shipper reference', 'dhl', 'dhl-for-shiptastic' ),
-				'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Insert the <a href="%s" target="_blank">address reference</a> you have chosen within the DHL business portal for your custom shipper address.', 'dhl', 'dhl-for-shiptastic' ), 'https://vendidero.de/doc/woocommerce-germanized/dhl-integration-einrichten#individuelle-absenderreferenz-samt-logo-nutzen' ) . '</div>',
+				'title'             => _x( 'Shipper reference', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Insert the <a href="%s" target="_blank">address reference</a> you have chosen within the DHL business portal for your custom shipper address.', 'dhl', 'shiptastic-integration-for-dhl' ), 'https://vendidero.de/doc/woocommerce-germanized/dhl-integration-einrichten#individuelle-absenderreferenz-samt-logo-nutzen' ) . '</div>',
 				'id'                => 'label_custom_shipper_reference',
 				'value'             => $this->get_setting( 'label_custom_shipper_reference', '' ),
 				'default'           => '',
@@ -1394,7 +1394,7 @@ class DHL extends Auto {
 						'next_url'     => '',
 						'next_trigger' => array(),
 						'options'      => array(
-							'content'  => '<h3>' . esc_html_x( 'Customer Number', 'dhl', 'dhl-for-shiptastic' ) . '</h3><p>' . esc_html_x( 'Insert your DHL business customer number (EKP) here. If you are not yet a business customer you might want to create a new account first.', 'dhl', 'dhl-for-shiptastic' ) . '</p>',
+							'content'  => '<h3>' . esc_html_x( 'Customer Number', 'dhl', 'shiptastic-integration-for-dhl' ) . '</h3><p>' . esc_html_x( 'Insert your DHL business customer number (EKP) here. If you are not yet a business customer you might want to create a new account first.', 'dhl', 'shiptastic-integration-for-dhl' ) . '</p>',
 							'position' => array(
 								'edge'  => 'left',
 								'align' => 'left',
@@ -1407,7 +1407,7 @@ class DHL extends Auto {
 						'next_url'     => add_query_arg( array( 'tutorial' => 'yes' ), $this->get_edit_link( 'config_set_simple_label' ) ),
 						'next_trigger' => array(),
 						'options'      => array(
-							'content'  => '<h3>' . esc_html_x( 'API Access', 'dhl', 'dhl-for-shiptastic' ) . '</h3><p>' . esc_html_x( 'To create labels and embed DHL services, our software needs access to the API. You will need to fill out the username and password fields accordingly.', 'dhl', 'dhl-for-shiptastic' ) . '</p>',
+							'content'  => '<h3>' . esc_html_x( 'API Access', 'dhl', 'shiptastic-integration-for-dhl' ) . '</h3><p>' . esc_html_x( 'To create labels and embed DHL services, our software needs access to the API. You will need to fill out the username and password fields accordingly.', 'dhl', 'shiptastic-integration-for-dhl' ) . '</p>',
 							'position' => array(
 								'edge'  => 'left',
 								'align' => 'left',
@@ -1425,7 +1425,7 @@ class DHL extends Auto {
 						'next_url'     => $this->get_edit_link( 'automation' ),
 						'next_trigger' => array(),
 						'options'      => array(
-							'content'  => '<h3>' . esc_html_x( 'Zones', 'dhl', 'dhl-for-shiptastic' ) . '</h3><p>' . esc_html_x( 'Configure separate service(s) based on your customer\'s location.', 'dhl', 'dhl-for-shiptastic' ) . '</p>',
+							'content'  => '<h3>' . esc_html_x( 'Zones', 'dhl', 'shiptastic-integration-for-dhl' ) . '</h3><p>' . esc_html_x( 'Configure separate service(s) based on your customer\'s location.', 'dhl', 'shiptastic-integration-for-dhl' ) . '</p>',
 							'position' => array(
 								'edge'  => 'left',
 								'align' => 'left',
@@ -1443,7 +1443,7 @@ class DHL extends Auto {
 						'next_url'     => add_query_arg( array( 'tutorial' => 'yes' ), $this->get_edit_link( 'pickup_locations' ) ),
 						'next_trigger' => array(),
 						'options'      => array(
-							'content'  => '<h3>' . esc_html_x( 'Automation', 'dhl', 'dhl-for-shiptastic' ) . '</h3><p>' . esc_html_x( 'You might want to save some time and generate labels automatically as soon as a shipment switches to a certain status.', 'dhl', 'dhl-for-shiptastic' ) . '</p>',
+							'content'  => '<h3>' . esc_html_x( 'Automation', 'dhl', 'shiptastic-integration-for-dhl' ) . '</h3><p>' . esc_html_x( 'You might want to save some time and generate labels automatically as soon as a shipment switches to a certain status.', 'dhl', 'shiptastic-integration-for-dhl' ) . '</p>',
 							'position' => array(
 								'edge'  => 'left',
 								'align' => 'left',
@@ -1467,7 +1467,7 @@ class DHL extends Auto {
 						'next_url'     => $next_url,
 						'next_trigger' => array(),
 						'options'      => array(
-							'content'  => '<h3>' . esc_html_x( 'Packstation', 'dhl', 'dhl-for-shiptastic' ) . '</h3><p>' . esc_html_x( 'Allow your customers to ship to a packstation (and/or other DHL location types as configured below).', 'dhl', 'dhl-for-shiptastic' ) . '</p>',
+							'content'  => '<h3>' . esc_html_x( 'Packstation', 'dhl', 'shiptastic-integration-for-dhl' ) . '</h3><p>' . esc_html_x( 'Allow your customers to ship to a packstation (and/or other DHL location types as configured below).', 'dhl', 'shiptastic-integration-for-dhl' ) . '</p>',
 							'position' => array(
 								'edge'  => 'left',
 								'align' => 'left',

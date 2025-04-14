@@ -46,7 +46,7 @@ class Admin {
 	public static function preferred_delivery_notice( $method_str, $order ) {
 		if ( $dhl_order = wc_stc_dhl_get_order( $order ) ) {
 			if ( $dhl_order->has_preferred_day() ) {
-				$method_str .= ' - ' . sprintf( _x( 'Preferred day: %1$s', 'dhl', 'dhl-for-shiptastic' ), $dhl_order->get_preferred_day()->date_i18n( get_option( 'date_format' ) ) );
+				$method_str .= ' - ' . sprintf( _x( 'Preferred day: %1$s', 'dhl', 'shiptastic-integration-for-dhl' ), $dhl_order->get_preferred_day()->date_i18n( get_option( 'date_format' ) ) );
 			}
 		}
 
@@ -62,7 +62,7 @@ class Admin {
 
 			if ( $dhl_order->has_preferred_day() ) {
 				$dhl_data[] = array(
-					'label' => _x( 'Delivery day', 'dhl', 'dhl-for-shiptastic' ),
+					'label' => _x( 'Delivery day', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'value' => $dhl_order->get_preferred_day()->date_i18n( get_option( 'date_format' ) ),
 				);
 			}
@@ -72,28 +72,28 @@ class Admin {
 				$type        = $dhl_order->get_preferred_delivery_type();
 
 				$dhl_data[] = array(
-					'label' => _x( 'Delivery type', 'dhl', 'dhl-for-shiptastic' ),
+					'label' => _x( 'Delivery type', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'value' => array_key_exists( $type, $type_titles ) ? $type_titles[ $type ] : $type,
 				);
 			}
 
 			if ( $dhl_order->has_preferred_location() ) {
 				$dhl_data[] = array(
-					'label' => _x( 'Preferred location', 'dhl', 'dhl-for-shiptastic' ),
+					'label' => _x( 'Preferred location', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'value' => $dhl_order->get_preferred_location(),
 				);
 			}
 
 			if ( $dhl_order->has_preferred_neighbor() ) {
 				$dhl_data[] = array(
-					'label' => _x( 'Preferred neighbor', 'dhl', 'dhl-for-shiptastic' ),
+					'label' => _x( 'Preferred neighbor', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'value' => $dhl_order->get_preferred_neighbor_formatted_address(),
 				);
 			}
 			?>
 			<?php if ( ! empty( $dhl_data ) ) : ?>
 				<p class="wc-stc-shipment-order-meta-data">
-					<strong><?php echo esc_html_x( 'DHL Preferred Delivery', 'dhl', 'dhl-for-shiptastic' ); ?>:</strong><br/>
+					<strong><?php echo esc_html_x( 'DHL Preferred Delivery', 'dhl', 'shiptastic-integration-for-dhl' ); ?>:</strong><br/>
 					<?php foreach ( $dhl_data as $dhl_dataset ) : ?>
 						<span class="label"><?php echo esc_html( $dhl_dataset['label'] ); ?>: </span><span class="value"><?php echo esc_html( $dhl_dataset['value'] ); ?></span><br/>
 					<?php endforeach; ?>
@@ -108,7 +108,7 @@ class Admin {
 			if ( isset( $_GET['im-refresh-type'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$refresh_type    = wc_clean( wp_unslash( $_GET['im-refresh-type'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$refresh_type    = in_array( $refresh_type, array( 'products', 'print_formats' ), true ) ? $refresh_type : 'products';
-				$refresh_message = isset( $_GET['success'] ) ? _x( 'Refreshed data successfully.', 'dhl', 'dhl-for-shiptastic' ) : sprintf( _x( 'Error while refreshing data: %1$s', 'dhl', 'dhl-for-shiptastic' ), get_transient( "_wc_stc_dhl_im_{$refresh_type}_refresh_error" ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$refresh_message = isset( $_GET['success'] ) ? _x( 'Refreshed data successfully.', 'dhl', 'shiptastic-integration-for-dhl' ) : sprintf( _x( 'Error while refreshing data: %1$s', 'dhl', 'shiptastic-integration-for-dhl' ), get_transient( "_wc_stc_dhl_im_{$refresh_type}_refresh_error" ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				?>
 				<div class="notice fade <?php echo ( isset( $_GET['success'] ) ? 'updated' : 'error' );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>">
 					<p><?php echo wp_kses_post( $refresh_message ); ?></p>
@@ -117,7 +117,7 @@ class Admin {
 			} elseif ( isset( $_GET['has-imported'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				?>
 				<div class="notice fade updated">
-					<p><?php echo wp_kses_post( sprintf( _x( 'New to DHL in Shiptastic? Learn how to <a href="%s" target="_blank">easily create DHL labels</a> to your shipments.', 'dhl', 'dhl-for-shiptastic' ), esc_url( 'https://vendidero.de/doc/woocommerce-germanized/dhl-labels-zu-sendungen-erstellen' ) ) );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?></p>
+					<p><?php echo wp_kses_post( sprintf( _x( 'New to DHL in Shiptastic? Learn how to <a href="%s" target="_blank">easily create DHL labels</a> to your shipments.', 'dhl', 'shiptastic-integration-for-dhl' ), esc_url( 'https://vendidero.de/doc/woocommerce-germanized/dhl-labels-zu-sendungen-erstellen' ) ) );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?></p>
 				</div>
 				<?php
 			}
@@ -226,14 +226,14 @@ class Admin {
 		?>
 
 		<tr valign="top">
-			<th scope="row" class="titledesc"><?php echo esc_html_x( 'Charge (€)', 'dhl', 'dhl-for-shiptastic' ); ?></th>
+			<th scope="row" class="titledesc"><?php echo esc_html_x( 'Charge (€)', 'dhl', 'shiptastic-integration-for-dhl' ); ?></th>
 			<td class="forminp forminp-custom" id="woocommerce_stc_dhl_im_portokasse_charge_wrapper">
 				<input type="text" placeholder="10.00" style="max-width: 150px; margin-right: 10px;" class="wc-input-price short" name="woocommerce_stc_dhl_im_portokasse_charge_amount" id="woocommerce_stc_dhl_im_portokasse_charge_amount" />
 
 				<a id="woocommerce_stc_dhl_im_portokasse_charge" class="button button-secondary" data-url="https://portokasse.deutschepost.de/portokasse/marketplace/enter-app-payment" data-success_url="<?php echo esc_url( add_query_arg( array( 'wallet-charge-success' => 'yes' ), $settings_url ) ); ?>" data-cancel_url="<?php echo esc_url( add_query_arg( array( 'wallet-charge-success' => 'no' ), $settings_url ) ); ?>" data-partner_id="<?php echo esc_attr( Package::get_internetmarke_partner_id() ); ?>" data-key_phase="<?php echo esc_attr( Package::get_internetmarke_key_phase() ); ?>" data-user_token="<?php echo esc_attr( $user_token ); ?>" data-schluessel_dpwn_partner="<?php echo esc_attr( Package::get_internetmarke_token() ); ?>" data-wallet="<?php echo esc_attr( $balance ); ?>">
-					<?php echo esc_html_x( 'Charge Portokasse', 'dhl', 'dhl-for-shiptastic' ); ?>
+					<?php echo esc_html_x( 'Charge Portokasse', 'dhl', 'shiptastic-integration-for-dhl' ); ?>
 				</a>
-				<p class="description"><?php printf( esc_html_x( 'The minimum amount is %s', 'dhl', 'dhl-for-shiptastic' ), wc_price( 10, array( 'currency' => 'EUR' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
+				<p class="description"><?php printf( esc_html_x( 'The minimum amount is %s', 'dhl', 'shiptastic-integration-for-dhl' ), wc_price( 10, array( 'currency' => 'EUR' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 			</td>
 		</tr>
 		<?php
@@ -244,15 +244,15 @@ class Admin {
 		ob_start();
 		?>
 		<tr valign="top">
-			<th scope="row" class="titledesc"><?php echo esc_html_x( 'Participation', 'dhl', 'dhl-for-shiptastic' ); ?></th>
+			<th scope="row" class="titledesc"><?php echo esc_html_x( 'Participation', 'dhl', 'shiptastic-integration-for-dhl' ); ?></th>
 			<td class="forminp" id="dhl_participation_numbers">
 				<div class="wc_input_table_wrapper">
 					<table class="widefat wc_input_table sortable" cellspacing="0">
 						<thead>
 						<tr>
-							<th><?php echo esc_html_x( 'Product', 'dhl', 'dhl-for-shiptastic' ); ?></th>
-							<th><?php echo esc_html_x( 'Participation Number', 'dhl', 'dhl-for-shiptastic' ); ?> <?php echo wc_help_tip( _x( 'The participation number for the chosen product. Find your participation number in your DHL business customer portal.', 'dhl', 'dhl-for-shiptastic' ) ); ?></th>
-							<th><?php echo esc_html_x( 'GoGreen', 'dhl', 'dhl-for-shiptastic' ); ?> <?php echo wc_help_tip( _x( 'Optionally choose a separate participation number for GoGreen. Leave empty in case your main participation number includes GoGreen already.', 'dhl', 'dhl-for-shiptastic' ) ); ?></th>
+							<th><?php echo esc_html_x( 'Product', 'dhl', 'shiptastic-integration-for-dhl' ); ?></th>
+							<th><?php echo esc_html_x( 'Participation Number', 'dhl', 'shiptastic-integration-for-dhl' ); ?> <?php echo wc_help_tip( _x( 'The participation number for the chosen product. Find your participation number in your DHL business customer portal.', 'dhl', 'shiptastic-integration-for-dhl' ) ); ?></th>
+							<th><?php echo esc_html_x( 'GoGreen', 'dhl', 'shiptastic-integration-for-dhl' ); ?> <?php echo wc_help_tip( _x( 'Optionally choose a separate participation number for GoGreen. Leave empty in case your main participation number includes GoGreen already.', 'dhl', 'shiptastic-integration-for-dhl' ) ); ?></th>
 						</tr>
 						</thead>
 						<tbody class="dhl_particpation_number_settings">
@@ -286,15 +286,15 @@ class Admin {
 		$settings_url = isset( $option['settings_url'] ) ? $option['settings_url'] : '';
 		?>
 		<tr valign="top">
-			<th scope="row" class="titledesc"><?php echo esc_html_x( 'Receiver Ids', 'dhl', 'dhl-for-shiptastic' ); ?></th>
+			<th scope="row" class="titledesc"><?php echo esc_html_x( 'Receiver Ids', 'dhl', 'shiptastic-integration-for-dhl' ); ?></th>
 			<td class="forminp" id="dhl_receiver_ids">
 				<div class="wc_input_table_wrapper">
 					<table class="widefat wc_input_table sortable" cellspacing="0">
 						<input type="text" name="dhl_settings_hider" style="display: none" data-show_if_woocommerce_stc_dhl_label_retoure_enable="" />
 						<thead>
 						<tr>
-							<th><?php echo esc_html_x( 'Receiver Id', 'dhl', 'dhl-for-shiptastic' ); ?> <?php echo wc_help_tip( _x( 'Find your Receiver Ids within your DHL contract data.', 'dhl', 'dhl-for-shiptastic' ) ); ?></th>
-							<th><?php echo esc_html_x( 'Country Code', 'dhl', 'dhl-for-shiptastic' ); ?> <?php echo wc_help_tip( _x( 'Leave empty to use the Receiver Id as fallback.', 'dhl', 'dhl-for-shiptastic' ) ); ?></th>
+							<th><?php echo esc_html_x( 'Receiver Id', 'dhl', 'shiptastic-integration-for-dhl' ); ?> <?php echo wc_help_tip( _x( 'Find your Receiver Ids within your DHL contract data.', 'dhl', 'shiptastic-integration-for-dhl' ) ); ?></th>
+							<th><?php echo esc_html_x( 'Country Code', 'dhl', 'shiptastic-integration-for-dhl' ); ?> <?php echo wc_help_tip( _x( 'Leave empty to use the Receiver Id as fallback.', 'dhl', 'shiptastic-integration-for-dhl' ) ); ?></th>
 						</tr>
 						</thead>
 						<tbody class="receiver_ids">
@@ -313,9 +313,9 @@ class Admin {
 						<tfoot>
 						<tr>
 							<th colspan="2" style="font-weight: normal; padding-right: 10px;">
-								<a href="#" class="add button"><?php echo esc_html_x( '+ Add receiver', 'dhl', 'dhl-for-shiptastic' ); ?></a>
-								<a href="#" class="remove_rows button"><?php echo esc_html_x( 'Remove selected receiver(s)', 'dhl', 'dhl-for-shiptastic' ); ?></a>
-								<a style="float: right; margin-right: 0; margin-left: 5px;" href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'wc-stc-dhl-refresh-retoure-receiver-ids' ), $settings_url ), 'wc-stc-dhl-refresh-retoure-receiver-ids' ) ); ?>" class="button button-primary"><?php echo esc_html_x( 'Refresh via API', 'dhl', 'dhl-for-shiptastic' ); ?></a>
+								<a href="#" class="add button"><?php echo esc_html_x( '+ Add receiver', 'dhl', 'shiptastic-integration-for-dhl' ); ?></a>
+								<a href="#" class="remove_rows button"><?php echo esc_html_x( 'Remove selected receiver(s)', 'dhl', 'shiptastic-integration-for-dhl' ); ?></a>
+								<a style="float: right; margin-right: 0; margin-left: 5px;" href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'wc-stc-dhl-refresh-retoure-receiver-ids' ), $settings_url ), 'wc-stc-dhl-refresh-retoure-receiver-ids' ) ); ?>" class="button button-primary"><?php echo esc_html_x( 'Refresh via API', 'dhl', 'shiptastic-integration-for-dhl' ); ?></a>
 							</th>
 						</tr>
 						</tfoot>
@@ -348,7 +348,7 @@ class Admin {
 		global $post;
 
 		if ( ! DHL::is_plugin_enabled() && ( $post && 'shop_order' === $post->post_type && get_post_meta( $post->ID, '_pr_shipment_dhl_label_tracking' ) ) ) {
-			add_meta_box( 'woocommerce-stc-shipment-dhl-legacy-label', _x( 'DHL Label', 'dhl', 'dhl-for-shiptastic' ), array( __CLASS__, 'legacy_meta_box' ), 'shop_order', 'side', 'high' );
+			add_meta_box( 'woocommerce-stc-shipment-dhl-legacy-label', _x( 'DHL Label', 'dhl', 'shiptastic-integration-for-dhl' ), array( __CLASS__, 'legacy_meta_box' ), 'shop_order', 'side', 'high' );
 		}
 	}
 
@@ -360,8 +360,8 @@ class Admin {
 		$meta     = $order->get_meta( '_pr_shipment_dhl_label_tracking' );
 
 		if ( ! empty( $meta ) ) {
-			echo '<p>' . esc_html_x( 'This label has been generated by the DHL for WooCommerce Plugin and is shown for legacy purposes.', 'dhl', 'dhl-for-shiptastic' ) . '</p>';
-			echo '<a class="button button-primary" target="_blank" href="' . esc_url( self::get_legacy_label_download_url( $order_id ) ) . '">' . esc_html_x( 'Download label', 'dhl', 'dhl-for-shiptastic' ) . '</a>';
+			echo '<p>' . esc_html_x( 'This label has been generated by the DHL for WooCommerce Plugin and is shown for legacy purposes.', 'dhl', 'shiptastic-integration-for-dhl' ) . '</p>';
+			echo '<a class="button button-primary" target="_blank" href="' . esc_url( self::get_legacy_label_download_url( $order_id ) ) . '">' . esc_html_x( 'Download label', 'dhl', 'shiptastic-integration-for-dhl' ) . '</a>';
 		}
 	}
 

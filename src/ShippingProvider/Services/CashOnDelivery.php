@@ -12,7 +12,7 @@ class CashOnDelivery extends Service {
 	public function __construct( $shipping_provider, $args = array() ) {
 		$args = array(
 			'id'                 => 'CashOnDelivery',
-			'label'              => _x( 'Cash on Delivery', 'dhl', 'dhl-for-shiptastic' ),
+			'label'              => _x( 'Cash on Delivery', 'dhl', 'shiptastic-integration-for-dhl' ),
 			'products'           => array( 'V01PAK', 'V53WPAK' ),
 			'excluded_locations' => array( 'settings' ),
 		);
@@ -55,7 +55,7 @@ class CashOnDelivery extends Service {
 					'id'                => $this->get_label_field_id( 'cod_total' ),
 					'class'             => 'wc_input_decimal',
 					'data_type'         => 'price',
-					'label'             => _x( 'COD Amount', 'dhl', 'dhl-for-shiptastic' ),
+					'label'             => _x( 'COD Amount', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'placeholder'       => '',
 					'description'       => '',
 					'value'             => wc_format_localized_decimal( $value ),

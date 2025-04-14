@@ -57,7 +57,7 @@ function wc_stc_dhl_get_label_payment_ref_placeholder( $shipment = false ) {
 }
 
 function wc_stc_dhl_get_preferred_days_select_options( $days, $current = '' ) {
-	$preferred_days = array( 0 => _x( 'None', 'dhl day context', 'dhl-for-shiptastic' ) );
+	$preferred_days = array( 0 => _x( 'None', 'dhl day context', 'shiptastic-integration-for-dhl' ) );
 
 	if ( ! empty( $days ) ) {
 		$days = array_keys( $days );
@@ -87,10 +87,10 @@ function wc_stc_dhl_get_preferred_days_select_options( $days, $current = '' ) {
 
 function wc_stc_dhl_get_duties() {
 	$duties = array(
-		'DDP' => _x( 'Delivery Duty Paid', 'dhl', 'dhl-for-shiptastic' ),
-		'DAP' => _x( 'Delivery At Place', 'dhl', 'dhl-for-shiptastic' ),
-		'DXV' => _x( 'Delivery Duty Paid (excl. VAT )', 'dhl', 'dhl-for-shiptastic' ),
-		'DDX' => _x( 'Delivery Duty Paid (excl. Duties, taxes and VAT)', 'dhl', 'dhl-for-shiptastic' ),
+		'DDP' => _x( 'Delivery Duty Paid', 'dhl', 'shiptastic-integration-for-dhl' ),
+		'DAP' => _x( 'Delivery At Place', 'dhl', 'shiptastic-integration-for-dhl' ),
+		'DXV' => _x( 'Delivery Duty Paid (excl. VAT )', 'dhl', 'shiptastic-integration-for-dhl' ),
+		'DDX' => _x( 'Delivery Duty Paid (excl. Duties, taxes and VAT)', 'dhl', 'shiptastic-integration-for-dhl' ),
 	);
 
 	return $duties;
@@ -118,9 +118,9 @@ function wc_stc_dhl_is_valid_ident_min_age( $min_age ) {
 
 function wc_stc_dhl_get_visual_min_ages() {
 	$visual_age = array(
-		'0'   => _x( 'None', 'age context', 'dhl-for-shiptastic' ),
-		'A16' => _x( 'Minimum age of 16', 'dhl', 'dhl-for-shiptastic' ),
-		'A18' => _x( 'Minimum age of 18', 'dhl', 'dhl-for-shiptastic' ),
+		'0'   => _x( 'None', 'age context', 'shiptastic-integration-for-dhl' ),
+		'A16' => _x( 'Minimum age of 16', 'dhl', 'shiptastic-integration-for-dhl' ),
+		'A18' => _x( 'Minimum age of 18', 'dhl', 'shiptastic-integration-for-dhl' ),
 	);
 
 	return $visual_age;
@@ -166,8 +166,8 @@ function wc_stc_dhl_get_label_customer_reference( $label, $shipment ) {
 
 function wc_stc_dhl_get_endorsement_types() {
 	return array(
-		'return'  => _x( 'Return shipment', 'dhl', 'dhl-for-shiptastic' ),
-		'abandon' => _x( 'Abandon shipment', 'dhl', 'dhl-for-shiptastic' ),
+		'return'  => _x( 'Return shipment', 'dhl', 'shiptastic-integration-for-dhl' ),
+		'abandon' => _x( 'Abandon shipment', 'dhl', 'shiptastic-integration-for-dhl' ),
 	);
 }
 
@@ -307,9 +307,9 @@ function wc_stc_dhl_get_pickup_types() {
 	wc_deprecated_function( 'wc_stc_dhl_get_pickup_types', '3.1' );
 
 	return array(
-		'packstation' => _x( 'Packstation', 'dhl', 'dhl-for-shiptastic' ),
-		'postoffice'  => _x( 'Postfiliale', 'dhl', 'dhl-for-shiptastic' ),
-		'parcelshop'  => _x( 'Postfiliale', 'dhl', 'dhl-for-shiptastic' ),
+		'packstation' => _x( 'Packstation', 'dhl', 'shiptastic-integration-for-dhl' ),
+		'postoffice'  => _x( 'Postfiliale', 'dhl', 'shiptastic-integration-for-dhl' ),
+		'parcelshop'  => _x( 'Postfiliale', 'dhl', 'shiptastic-integration-for-dhl' ),
 	);
 }
 
@@ -645,12 +645,12 @@ function wc_stc_dhl_get_billing_number( $product, $args = array() ) {
 		$account_number = $account_base . $product_number . $participation_number;
 
 		if ( strlen( $account_number ) !== 14 ) {
-			throw new Exception( wp_kses_post( sprintf( _x( 'Either your customer number or the participation number for <strong>%1$s</strong> is missing. Please validate your <a href="%2$s">settings</a> and try again.', 'dhl', 'dhl-for-shiptastic' ), esc_html( $provider->get_product( $product ) ? $provider->get_product( $product )->get_label() : $product ), esc_url( Package::get_dhl_shipping_provider()->get_edit_link() ) ) ) );
+			throw new Exception( wp_kses_post( sprintf( _x( 'Either your customer number or the participation number for <strong>%1$s</strong> is missing. Please validate your <a href="%2$s">settings</a> and try again.', 'dhl', 'shiptastic-integration-for-dhl' ), esc_html( $provider->get_product( $product ) ? $provider->get_product( $product )->get_label() : $product ), esc_url( Package::get_dhl_shipping_provider()->get_edit_link() ) ) ) );
 		}
 
 		return $account_number;
 	} else {
-		throw new Exception( esc_html_x( 'Could not create billing number, participation number is missing.', 'dhl', 'dhl-for-shiptastic' ) );
+		throw new Exception( esc_html_x( 'Could not create billing number, participation number is missing.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 	}
 }
 

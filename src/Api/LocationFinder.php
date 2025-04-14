@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
 class LocationFinder extends \Vendidero\Shiptastic\API\REST {
 
 	public function get_title() {
-		return _x( 'DHL LocationFinder', 'dhl', 'dhl-for-shiptastic' );
+		return _x( 'DHL LocationFinder', 'dhl', 'shiptastic-integration-for-dhl' );
 	}
 
 	public function get_name() {
@@ -78,7 +78,7 @@ class LocationFinder extends \Vendidero\Shiptastic\API\REST {
 			$result->internal_type = $api_types[ $result->location->type ];
 		}
 
-		$result->internal_name = sprintf( _x( '%1$s %2$s', 'dhl location name', 'dhl-for-shiptastic' ), wc_clean( $result->location->keyword ), $result->internal_id );
+		$result->internal_name = sprintf( _x( '%1$s %2$s', 'dhl location name', 'shiptastic-integration-for-dhl' ), wc_clean( $result->location->keyword ), $result->internal_id );
 	}
 
 	/**
@@ -147,7 +147,7 @@ class LocationFinder extends \Vendidero\Shiptastic\API\REST {
 		$limit = is_numeric( $limit ) ? $limit : ParcelLocator::get_max_results();
 
 		if ( empty( $address['city'] ) && empty( $address['zip'] ) ) {
-			throw new Exception( esc_html_x( 'At least shipping city or zip is required.', 'dhl', 'dhl-for-shiptastic' ) );
+			throw new Exception( esc_html_x( 'At least shipping city or zip is required.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 
 		$args = array(

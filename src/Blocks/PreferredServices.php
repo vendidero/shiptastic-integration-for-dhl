@@ -109,7 +109,7 @@ final class PreferredServices {
 
 	/**
 	 * Use woocommerce-stc-dhl as namespace to not conflict with the
-	 * dhl-for-shiptastic textdomain which might get replaced within js files
+	 * shiptastic-integration-for-dhl textdomain which might get replaced within js files
 	 * while bundling the package.
 	 *
 	 * @return void
@@ -160,55 +160,55 @@ final class PreferredServices {
 	private function get_cart_schema() {
 		return array(
 			'preferred_day_enabled'           => array(
-				'description' => _x( 'Preferred day enabled', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Preferred day enabled', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => 'boolean',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_day_cost'              => array(
-				'description' => _x( 'Preferred day costs', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Preferred day costs', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => 'string',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_day'                   => array(
-				'description' => _x( 'Preferred day', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Preferred day', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => 'string',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_home_delivery_cost'    => array(
-				'description' => _x( 'Preferred delivery costs', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Preferred delivery costs', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => 'string',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_delivery_type_enabled' => array(
-				'description' => _x( 'Preferred delivery type enabled', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Preferred delivery type enabled', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => 'boolean',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_delivery_type'         => array(
-				'description' => _x( 'Preferred delivery type', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Preferred delivery type', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => 'string',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_location_enabled'      => array(
-				'description' => _x( 'Preferred location enabled', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Preferred location enabled', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => 'boolean',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_neighbor_enabled'      => array(
-				'description' => _x( 'Preferred neighbor enabled', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Preferred neighbor enabled', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => 'boolean',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
 			),
 			'preferred_days'                  => array(
-				'description' => _x( 'Available preferred days', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Available preferred days', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => 'array',
 				'context'     => array( 'view', 'edit' ),
 				'readonly'    => true,
@@ -216,19 +216,19 @@ final class PreferredServices {
 					'type'       => 'object',
 					'properties' => array(
 						'day'      => array(
-							'description' => _x( 'The preferred day.', 'dhl', 'dhl-for-shiptastic' ),
+							'description' => _x( 'The preferred day.', 'dhl', 'shiptastic-integration-for-dhl' ),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 							'readonly'    => true,
 						),
 						'week_day' => array(
-							'description' => _x( 'The formatted week day.', 'dhl', 'dhl-for-shiptastic' ),
+							'description' => _x( 'The formatted week day.', 'dhl', 'shiptastic-integration-for-dhl' ),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 							'readonly'    => true,
 						),
 						'date'     => array(
-							'description' => _x( 'The preferred day date.', 'dhl', 'dhl-for-shiptastic' ),
+							'description' => _x( 'The preferred day date.', 'dhl', 'shiptastic-integration-for-dhl' ),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 							'readonly'    => true,
@@ -304,37 +304,37 @@ final class PreferredServices {
 	private function get_checkout_schema() {
 		return array(
 			'preferred_day'                       => array(
-				'description' => _x( 'Preferred day', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Preferred day', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => array( 'string', 'null' ),
 				'context'     => array( 'view', 'edit' ),
 				'default'     => '',
 			),
 			'preferred_location_type'             => array(
-				'description' => _x( 'Preferred location type', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Preferred location type', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => array( 'string', 'null' ),
 				'context'     => array( 'view', 'edit' ),
 				'default'     => '',
 			),
 			'preferred_location'                  => array(
-				'description' => _x( 'Preferred location', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Preferred location', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => array( 'string', 'null' ),
 				'context'     => array( 'view', 'edit' ),
 				'default'     => '',
 			),
 			'preferred_location_neighbor_name'    => array(
-				'description' => _x( 'Preferred neighbor name', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Preferred neighbor name', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => array( 'string', 'null' ),
 				'context'     => array( 'view', 'edit' ),
 				'default'     => '',
 			),
 			'preferred_location_neighbor_address' => array(
-				'description' => _x( 'Preferred neighbor name', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Preferred neighbor name', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => array( 'string', 'null' ),
 				'context'     => array( 'view', 'edit' ),
 				'default'     => '',
 			),
 			'preferred_delivery_type'             => array(
-				'description' => _x( 'Preferred delivery type', 'dhl', 'dhl-for-shiptastic' ),
+				'description' => _x( 'Preferred delivery type', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'        => array( 'string', 'null' ),
 				'context'     => array( 'view', 'edit' ),
 				'default'     => '',

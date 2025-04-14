@@ -13,8 +13,8 @@ class IdentCheck extends Service {
 	public function __construct( $shipping_provider, $args = array() ) {
 		$args = array(
 			'id'          => 'IdentCheck',
-			'label'       => _x( 'Ident-Check', 'dhl', 'dhl-for-shiptastic' ),
-			'description' => _x( 'Use the DHL Ident-Check service to make sure your parcels are only released to the recipient in person.', 'dhl', 'dhl-for-shiptastic' ),
+			'label'       => _x( 'Ident-Check', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'description' => _x( 'Use the DHL Ident-Check service to make sure your parcels are only released to the recipient in person.', 'dhl', 'shiptastic-integration-for-dhl' ),
 			'products'    => array( 'V01PAK' ),
 			'countries'   => array( 'DE' ),
 			'zones'       => array( 'dom' ),
@@ -35,14 +35,14 @@ class IdentCheck extends Service {
 
 		return array(
 			array(
-				'title'             => _x( 'Minimum age', 'dhl', 'dhl-for-shiptastic' ),
+				'title'             => _x( 'Minimum age', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'id'                => $setting_id,
 				'type'              => 'select',
 				'default'           => '0',
 				'value'             => $value,
 				'options'           => wc_stc_dhl_get_ident_min_ages(),
 				'custom_attributes' => array( "data-show_if_{$base_setting_id}" => '' ),
-				'desc_tip'          => _x( 'Choose this option if you want to let DHL check your customer\'s identity and age.', 'dhl', 'dhl-for-shiptastic' ),
+				'desc_tip'          => _x( 'Choose this option if you want to let DHL check your customer\'s identity and age.', 'dhl', 'shiptastic-integration-for-dhl' ),
 			),
 		);
 	}
@@ -96,7 +96,7 @@ class IdentCheck extends Service {
 				),
 				array(
 					'id'                => $this->get_label_field_id( 'date_of_birth' ),
-					'label'             => _x( 'Date of Birth', 'dhl', 'dhl-for-shiptastic' ),
+					'label'             => _x( 'Date of Birth', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'placeholder'       => '',
 					'description'       => '',
 					'value'             => $date_of_birth,
@@ -111,7 +111,7 @@ class IdentCheck extends Service {
 				),
 				array(
 					'id'                => $this->get_label_field_id( 'min_age' ),
-					'label'             => _x( 'Minimum age', 'dhl', 'dhl-for-shiptastic' ),
+					'label'             => _x( 'Minimum age', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'description'       => '',
 					'type'              => 'select',
 					'value'             => $min_age,
@@ -135,15 +135,15 @@ class IdentCheck extends Service {
 		$min_age       = isset( $props[ $this->get_label_field_id( 'min_age' ) ] ) ? $props[ $this->get_label_field_id( 'min_age' ) ] : '';
 
 		if ( ! empty( $date_of_birth ) && ! wc_stc_dhl_is_valid_datetime( $date_of_birth, 'Y-m-d' ) ) {
-			$error->add( 500, _x( 'There was an error parsing the date of birth for the identity check.', 'dhl', 'dhl-for-shiptastic' ) );
+			$error->add( 500, _x( 'There was an error parsing the date of birth for the identity check.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 
 		if ( ! empty( $min_age ) && ! wc_stc_dhl_is_valid_ident_min_age( $min_age ) ) {
-			$error->add( 500, _x( 'The minimum age (IdentCheck) supplied is invalid.', 'dhl', 'dhl-for-shiptastic' ) );
+			$error->add( 500, _x( 'The minimum age (IdentCheck) supplied is invalid.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 
 		if ( empty( $date_of_birth ) && empty( $min_age ) ) {
-			$error->add( 500, _x( 'Either a minimum age or a date of birth is need for the ident check.', 'dhl', 'dhl-for-shiptastic' ) );
+			$error->add( 500, _x( 'Either a minimum age or a date of birth is need for the ident check.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 
 		return wc_stc_shipment_wp_error_has_errors( $error ) ? $error : true;

@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 class LabelRest extends PaketRest {
 
 	public function get_title() {
-		return _x( 'DHL Paket Label REST', 'dhl', 'dhl-for-shiptastic' );
+		return _x( 'DHL Paket Label REST', 'dhl', 'shiptastic-integration-for-dhl' );
 	}
 
 	public function get_name() {
@@ -53,7 +53,7 @@ class LabelRest extends PaketRest {
 		$dhl_provider = Package::get_dhl_shipping_provider();
 
 		if ( ! $shipment ) {
-			throw new \Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'dhl-for-shiptastic' ), $label->get_shipment_id() ) ) );
+			throw new \Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'shiptastic-integration-for-dhl' ), $label->get_shipment_id() ) ) );
 		}
 
 		$currency            = $shipment->get_order() ? $shipment->get_order()->get_currency() : 'EUR';
@@ -259,7 +259,7 @@ class LabelRest extends PaketRest {
 			}
 
 			if ( ! empty( $missing_address_fields ) ) {
-				throw new \Exception( wp_kses_post( sprintf( _x( 'Your shipper address is incomplete (%1$s). Please validate your <a href="%2$s">settings</a> and try again.', 'dhl', 'dhl-for-shiptastic' ), implode( ', ', $missing_address_fields ), esc_url( Settings::get_settings_url( 'general', 'business_information' ) ) ) ) );
+				throw new \Exception( wp_kses_post( sprintf( _x( 'Your shipper address is incomplete (%1$s). Please validate your <a href="%2$s">settings</a> and try again.', 'dhl', 'shiptastic-integration-for-dhl' ), implode( ', ', $missing_address_fields ), esc_url( Settings::get_settings_url( 'general', 'business_information' ) ) ) ) );
 			}
 
 			$shipment_request['shipper'] = array(
@@ -371,7 +371,7 @@ class LabelRest extends PaketRest {
 
 		if ( Package::is_crossborder_shipment( $shipment->get_country(), $shipment->get_postcode() ) ) {
 			if ( count( $shipment->get_items() ) > 30 ) {
-				throw new \Exception( esc_html( sprintf( _x( 'Only %1$s shipment items can be processed, your shipment has %2$s items.', 'dhl', 'dhl-for-shiptastic' ), 30, count( $shipment->get_items() ) ) ) );
+				throw new \Exception( esc_html( sprintf( _x( 'Only %1$s shipment items can be processed, your shipment has %2$s items.', 'dhl', 'shiptastic-integration-for-dhl' ), 30, count( $shipment->get_items() ) ) ) );
 			}
 
 			$customs_label_data = wc_stc_dhl_get_shipment_customs_data( $label );
@@ -472,7 +472,7 @@ class LabelRest extends PaketRest {
 					$shipment_data = $body['items'][0];
 
 					if ( ! isset( $shipment_data['shipmentNo'] ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-						throw new \Exception( _x( 'There was an error generating the label. Please try again or consider switching to sandbox mode.', 'dhl', 'dhl-for-shiptastic' ) );
+						throw new \Exception( _x( 'There was an error generating the label. Please try again or consider switching to sandbox mode.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 					}
 
 					$label->set_number( $shipment_data['shipmentNo'] ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -550,7 +550,7 @@ class LabelRest extends PaketRest {
 						$result = new ShipmentError();
 					}
 
-					$result->add_soft_error( 'label-soft-error', _x( 'You\'ve explicitly booked the additional insurance service resulting in additional fees although the value of goods does not exceed EUR 500. The label has been created anyway.', 'dhl', 'dhl-for-shiptastic' ) );
+					$result->add_soft_error( 'label-soft-error', _x( 'You\'ve explicitly booked the additional insurance service resulting in additional fees although the value of goods does not exceed EUR 500. The label has been created anyway.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 				}
 			} catch ( \Exception $e ) {
 				try {
@@ -559,7 +559,7 @@ class LabelRest extends PaketRest {
 				} catch ( \Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
 				}
 
-				throw new \Exception( esc_html_x( 'Error while creating and uploading the label', 'dhl', 'dhl-for-shiptastic' ) );
+				throw new \Exception( esc_html_x( 'Error while creating and uploading the label', 'dhl', 'shiptastic-integration-for-dhl' ) );
 			}
 		}
 
@@ -695,12 +695,12 @@ class LabelRest extends PaketRest {
 
 		if ( $response->is_error() ) {
 			if ( 401 === $response->get_code() ) {
-				$error->add( 'unauthorized', _x( 'Your DHL API credentials seem to be invalid.', 'dhl', 'dhl-for-shiptastic' ) );
+				$error->add( 'unauthorized', _x( 'Your DHL API credentials seem to be invalid.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 			} elseif ( 400 !== $response->get_code() ) {
 				if ( $response->is_error() ) {
 					$error = $response->get_error();
 				} else {
-					$error->add( 'dhl-api-error', _x( 'Unknown DHL API error.', 'dhl', 'dhl-for-shiptastic' ) );
+					$error->add( 'dhl-api-error', _x( 'Unknown DHL API error.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 				}
 			}
 		}

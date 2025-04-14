@@ -60,7 +60,7 @@ class Internetmarke {
 		$this->errors  = new \WP_Error();
 
 		if ( ! Package::is_deutsche_post_enabled() ) {
-			$this->errors->add( 'startup', _x( 'Internetmarke is disabled. Please enable Internetmarke.', 'dhl', 'dhl-for-shiptastic' ) );
+			$this->errors->add( 'startup', _x( 'Internetmarke is disabled. Please enable Internetmarke.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 	}
 
@@ -68,13 +68,13 @@ class Internetmarke {
 		if ( is_null( $this->api ) ) {
 			try {
 				if ( ! Package::supports_soap() ) {
-					throw new \Exception( sprintf( _x( 'To enable communication between your shop and DHL, the PHP <a href="%1$s">SOAPClient</a> is required. Please contact your host and make sure that SOAPClient is <a href="%2$s">installed</a>.', 'dhl', 'dhl-for-shiptastic' ), 'https://www.php.net/manual/class.soapclient.php', esc_url( admin_url( 'admin.php?page=wc-status' ) ) ) );
+					throw new \Exception( sprintf( _x( 'To enable communication between your shop and DHL, the PHP <a href="%1$s">SOAPClient</a> is required. Please contact your host and make sure that SOAPClient is <a href="%2$s">installed</a>.', 'dhl', 'shiptastic-integration-for-dhl' ), 'https://www.php.net/manual/class.soapclient.php', esc_url( admin_url( 'admin.php?page=wc-status' ) ) ) );
 				}
 
 				$this->api = new Service( $this->partner, array(), Package::get_core_wsdl_file( Package::get_internetmarke_main_url() ) );
 			} catch ( \Exception $e ) {
 				$this->api = null;
-				$this->errors->add( 'startup', sprintf( _x( 'Error while instantiating main Internetmarke API: %s', 'dhl', 'dhl-for-shiptastic' ), $e->getMessage() ) );
+				$this->errors->add( 'startup', sprintf( _x( 'Error while instantiating main Internetmarke API: %s', 'dhl', 'shiptastic-integration-for-dhl' ), $e->getMessage() ) );
 			}
 		}
 
@@ -86,7 +86,7 @@ class Internetmarke {
 					$this->user = $this->api->authenticateUser( Package::get_internetmarke_username(), Package::get_internetmarke_password() );
 				} catch ( \Exception $e ) {
 					$this->user = null;
-					$this->errors->add( 'authentication', _x( 'Wrong username or password', 'dhl', 'dhl-for-shiptastic' ) );
+					$this->errors->add( 'authentication', _x( 'Wrong username or password', 'dhl', 'shiptastic-integration-for-dhl' ) );
 				}
 			}
 
@@ -224,7 +224,7 @@ class Internetmarke {
 				$dimension .= '-' . $product->{"product_{$type}_max"};
 			}
 		} elseif ( 0 === (int) $product->{"product_{$type}_min"} ) {
-			$dimension = sprintf( _x( 'until %s', 'dhl', 'dhl-for-shiptastic' ), $product->{"product_{$type}_max"} );
+			$dimension = sprintf( _x( 'until %s', 'dhl', 'shiptastic-integration-for-dhl' ), $product->{"product_{$type}_max"} );
 		}
 
 		if ( ! empty( $dimension ) ) {
@@ -307,26 +307,26 @@ class Internetmarke {
 		$formatted_weight = $product->get_formatted_dimensions( 'weight' );
 
 		if ( ! empty( $formatted_length ) ) {
-			$dimensions[] = sprintf( _x( 'Length: %s', 'dhl', 'dhl-for-shiptastic' ), $formatted_length );
+			$dimensions[] = sprintf( _x( 'Length: %s', 'dhl', 'shiptastic-integration-for-dhl' ), $formatted_length );
 		}
 
 		if ( ! empty( $formatted_width ) ) {
-			$dimensions[] = sprintf( _x( 'Width: %s', 'dhl', 'dhl-for-shiptastic' ), $formatted_width );
+			$dimensions[] = sprintf( _x( 'Width: %s', 'dhl', 'shiptastic-integration-for-dhl' ), $formatted_width );
 		}
 
 		if ( ! empty( $formatted_height ) ) {
-			$dimensions[] = sprintf( _x( 'Height: %s', 'dhl', 'dhl-for-shiptastic' ), $formatted_height );
+			$dimensions[] = sprintf( _x( 'Height: %s', 'dhl', 'shiptastic-integration-for-dhl' ), $formatted_height );
 		}
 
 		if ( ! empty( $formatted_weight ) ) {
-			$dimensions[] = sprintf( _x( 'Weight: %s', 'dhl', 'dhl-for-shiptastic' ), $formatted_weight );
+			$dimensions[] = sprintf( _x( 'Weight: %s', 'dhl', 'shiptastic-integration-for-dhl' ), $formatted_weight );
 		}
 
 		$formatted = array_merge(
 			(array) $product,
 			array(
 				'title_formatted'            => $product->get_label(),
-				'price_formatted'            => wc_price( Package::cents_to_eur( $product->get_price() ), array( 'currency' => 'EUR' ) ) . ' <span class="price-suffix">' . _x( 'Total', 'dhl', 'dhl-for-shiptastic' ) . '</span>',
+				'price_formatted'            => wc_price( Package::cents_to_eur( $product->get_price() ), array( 'currency' => 'EUR' ) ) . ' <span class="price-suffix">' . _x( 'Total', 'dhl', 'shiptastic-integration-for-dhl' ) . '</span>',
 				'description_formatted'      => $product->get_meta( 'annotation' ) ? $product->get_meta( 'annotation' ) : $product->get_description(),
 				'information_text_formatted' => $product->get_meta( 'information_text' ),
 				'dimensions_formatted'       => implode( '<br/>', $dimensions ),
@@ -469,7 +469,7 @@ class Internetmarke {
 		try {
 			return $this->refund_default_label( $label );
 		} catch ( \Exception $e ) {
-			throw new \Exception( esc_html( sprintf( _x( 'Could not refund post label: %s', 'dhl', 'dhl-for-shiptastic' ), $e->getMessage() ) ) );
+			throw new \Exception( esc_html( sprintf( _x( 'Could not refund post label: %s', 'dhl', 'shiptastic-integration-for-dhl' ), $e->getMessage() ) ) );
 		}
 	}
 
@@ -483,7 +483,7 @@ class Internetmarke {
 		$refund = $this->get_refund_api();
 
 		if ( ! $refund ) {
-			throw new \Exception( esc_html_x( 'Refund API could not be instantiated', 'dhl', 'dhl-for-shiptastic' ) );
+			throw new \Exception( esc_html_x( 'Refund API could not be instantiated', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 
 		$refund_id = $refund->createRetoureId();
@@ -601,7 +601,7 @@ class Internetmarke {
 		$shipment = $label->get_shipment();
 
 		if ( ! $shipment ) {
-			throw new \Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'dhl-for-shiptastic' ), $label->get_shipment_id() ) ) );
+			throw new \Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'shiptastic-integration-for-dhl' ), $label->get_shipment_id() ) ) );
 		}
 
 		$sender          = $this->get_shipment_address_data( $shipment, 'sender' );
@@ -616,7 +616,7 @@ class Internetmarke {
 			$shop_order_id = $api->createShopOrderId( $this->get_user()->getUserToken() );
 
 			if ( ! $shop_order_id ) {
-				throw new \Exception( _x( 'Error while generating shop order id.', 'dhl', 'dhl-for-shiptastic' ) );
+				throw new \Exception( _x( 'Error while generating shop order id.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 			}
 
 			$label->set_shop_order_id( $shop_order_id );
@@ -654,7 +654,7 @@ class Internetmarke {
 		} catch ( \Exception $e ) {
 			Package::log( 'Error while purchasing the stamp: ' . $e->getMessage() );
 
-			throw new \Exception( wp_kses_post( sprintf( _x( 'Error while trying to purchase the stamp. Please manually <a href="%s">refresh</a> your product database and try again.', 'dhl', 'dhl-for-shiptastic' ), esc_url( Package::get_deutsche_post_shipping_provider()->get_edit_link( 'label' ) ) ) ) );
+			throw new \Exception( wp_kses_post( sprintf( _x( 'Error while trying to purchase the stamp. Please manually <a href="%s">refresh</a> your product database and try again.', 'dhl', 'shiptastic-integration-for-dhl' ), esc_url( Package::get_deutsche_post_shipping_provider()->get_edit_link( 'label' ) ) ) ) );
 		}
 	}
 
@@ -692,14 +692,14 @@ class Internetmarke {
 			$result = $label->download_label_file( $stamp->link );
 
 			if ( ! $result ) {
-				throw new \Exception( esc_html_x( 'Error while downloading the PDF stamp.', 'dhl', 'dhl-for-shiptastic' ) );
+				throw new \Exception( esc_html_x( 'Error while downloading the PDF stamp.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 			}
 
 			$label->save();
 
 			return $label;
 		} else {
-			throw new \Exception( esc_html_x( 'Invalid stamp response.', 'dhl', 'dhl-for-shiptastic' ) );
+			throw new \Exception( esc_html_x( 'Invalid stamp response.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 	}
 

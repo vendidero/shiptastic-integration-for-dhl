@@ -27,7 +27,7 @@ class LabelSoap extends Soap {
 	}
 
 	public function get_title() {
-		return _x( 'DHL Label SOAP', 'dhl', 'dhl-for-shiptastic' );
+		return _x( 'DHL Label SOAP', 'dhl', 'shiptastic-integration-for-dhl' );
 	}
 
 	/**
@@ -111,7 +111,7 @@ class LabelSoap extends Soap {
 		} catch ( Exception $e ) {
 			switch ( $e->getMessage() ) {
 				case 'Unauthorized':
-					$error->add( 'unauthorized', _x( 'Your DHL API credentials seem to be invalid.', 'dhl', 'dhl-for-shiptastic' ) );
+					$error->add( 'unauthorized', _x( 'Your DHL API credentials seem to be invalid.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 					break;
 				default:
 					$error->add( $e->getCode(), $e->getMessage() );
@@ -183,10 +183,10 @@ class LabelSoap extends Soap {
 
 			switch ( $e->getMessage() ) {
 				case 'Unauthorized':
-					throw new Exception( esc_html_x( 'Your DHL API credentials seem to be invalid. Please check your DHL settings.', 'dhl', 'dhl-for-shiptastic' ) );
+					throw new Exception( esc_html_x( 'Your DHL API credentials seem to be invalid. Please check your DHL settings.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 				case "SOAP-ERROR: Encoding: object has no 'customsTariffNumber' property":
 				case "SOAP-ERROR: Encoding: object has no 'countryCodeOrigin' property":
-					throw new Exception( esc_html_x( 'Your products are missing data relevant for custom declarations. Please provide missing DHL fields (country of origin, HS code) in your product data > shipping tab.', 'dhl', 'dhl-for-shiptastic' ) );
+					throw new Exception( esc_html_x( 'Your products are missing data relevant for custom declarations. Please provide missing DHL fields (country of origin, HS code) in your product data > shipping tab.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 			}
 
 			throw $e;
@@ -194,10 +194,10 @@ class LabelSoap extends Soap {
 
 		if ( ! isset( $response_body->Status ) || ! isset( $response_body->CreationState ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			if ( isset( $response_body->Status ) && ! empty( $response_body->Status->statusText ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-				throw new Exception( esc_html( sprintf( _x( 'There was an error contacting the DHL API: %s.', 'dhl', 'dhl-for-shiptastic' ), $response_body->Status->statusText ) ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				throw new Exception( esc_html( sprintf( _x( 'There was an error contacting the DHL API: %s.', 'dhl', 'shiptastic-integration-for-dhl' ), $response_body->Status->statusText ) ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			}
 
-			throw new Exception( esc_html_x( 'An error ocurred while contacting the DHL API. Please consider enabling the sandbox mode.', 'dhl', 'dhl-for-shiptastic' ) );
+			throw new Exception( esc_html_x( 'An error ocurred while contacting the DHL API. Please consider enabling the sandbox mode.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 
 		return $this->update_label( $label, $response_body->Status, $response_body->CreationState ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -219,7 +219,7 @@ class LabelSoap extends Soap {
 
 				throw new Exception( wp_kses_post( $messages ) );
 			} else {
-				throw new Exception( esc_html_x( 'There was an error generating the label. Please try again or consider switching to sandbox mode.', 'dhl', 'dhl-for-shiptastic' ) );
+				throw new Exception( esc_html_x( 'There was an error generating the label. Please try again or consider switching to sandbox mode.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 			}
 		} else {
 			$return_label = false;
@@ -297,7 +297,7 @@ class LabelSoap extends Soap {
 				// Delete the label dues to errors.
 				$label->delete();
 
-				throw new Exception( esc_html_x( 'Error while creating and uploading the label', 'dhl', 'dhl-for-shiptastic' ) );
+				throw new Exception( esc_html_x( 'Error while creating and uploading the label', 'dhl', 'shiptastic-integration-for-dhl' ) );
 			}
 
 			return $label;
@@ -341,7 +341,7 @@ class LabelSoap extends Soap {
 		do_action( 'woocommerce_shiptastic_dhl_label_api_deleted', $label );
 
 		if ( 0 !== $response_body->Status->statusCode ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-			throw new Exception( esc_html( sprintf( _x( 'Could not delete label - %s', 'dhl', 'dhl-for-shiptastic' ), $response_body->Status->statusMessage ) ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			throw new Exception( esc_html( sprintf( _x( 'Could not delete label - %s', 'dhl', 'shiptastic-integration-for-dhl' ), $response_body->Status->statusMessage ) ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		}
 
 		return $label;
@@ -375,7 +375,7 @@ class LabelSoap extends Soap {
 		$dhl_provider = Package::get_dhl_shipping_provider();
 
 		if ( ! $shipment ) {
-			throw new Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'dhl-for-shiptastic' ), $label->get_shipment_id() ) ) );
+			throw new Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'shiptastic-integration-for-dhl' ), $label->get_shipment_id() ) ) );
 		}
 
 		$services  = array();
@@ -611,7 +611,7 @@ class LabelSoap extends Soap {
 			}
 
 			if ( ! empty( $missing_address_fields ) ) {
-				throw new Exception( wp_kses_post( sprintf( _x( 'Your shipper address is incomplete (%1$s). Please validate your <a href="%2$s">settings</a> and try again.', 'dhl', 'dhl-for-shiptastic' ), implode( ', ', $missing_address_fields ), esc_url( Settings::get_settings_url( 'general', 'business_information' ) ) ) ) );
+				throw new Exception( wp_kses_post( sprintf( _x( 'Your shipper address is incomplete (%1$s). Please validate your <a href="%2$s">settings</a> and try again.', 'dhl', 'shiptastic-integration-for-dhl' ), implode( ', ', $missing_address_fields ), esc_url( Settings::get_settings_url( 'general', 'business_information' ) ) ) ) );
 			}
 
 			$dhl_label_body['ShipmentOrder']['Shipment']['Shipper'] = array(
@@ -717,7 +717,7 @@ class LabelSoap extends Soap {
 
 		if ( Package::is_crossborder_shipment( $shipment->get_country(), $shipment->get_postcode() ) ) {
 			if ( count( $shipment->get_items() ) > self::DHL_MAX_ITEMS ) {
-				throw new Exception( esc_html( sprintf( _x( 'Only %1$s shipment items can be processed, your shipment has %2$s items.', 'dhl', 'dhl-for-shiptastic' ), self::DHL_MAX_ITEMS, count( $shipment->get_items() ) ) ) );
+				throw new Exception( esc_html( sprintf( _x( 'Only %1$s shipment items can be processed, your shipment has %2$s items.', 'dhl', 'shiptastic-integration-for-dhl' ), self::DHL_MAX_ITEMS, count( $shipment->get_items() ) ) ) );
 			}
 
 			$customs_label_data = wc_stc_dhl_get_shipment_customs_data( $label );

@@ -13,8 +13,8 @@ class VisualCheckOfAge extends Service {
 	public function __construct( $shipping_provider, $args = array() ) {
 		$args = array(
 			'id'          => 'VisualCheckOfAge',
-			'label'       => _x( 'Visual Age check', 'dhl', 'dhl-for-shiptastic' ),
-			'description' => _x( 'Let DHL handle the age check for you at the point of delivery.', 'dhl', 'dhl-for-shiptastic' ),
+			'label'       => _x( 'Visual Age check', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'description' => _x( 'Let DHL handle the age check for you at the point of delivery.', 'dhl', 'shiptastic-integration-for-dhl' ),
 			'products'    => array( 'V01PAK' ),
 			'countries'   => array( 'DE' ),
 			'zones'       => array( 'dom' ),
@@ -35,14 +35,14 @@ class VisualCheckOfAge extends Service {
 
 		return array(
 			array(
-				'title'             => _x( 'Minimum age', 'dhl', 'dhl-for-shiptastic' ),
+				'title'             => _x( 'Minimum age', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'id'                => $setting_id,
 				'type'              => 'select',
 				'default'           => '0',
 				'value'             => $value,
 				'options'           => wc_stc_dhl_get_ident_min_ages(),
 				'custom_attributes' => array( "data-show_if_{$base_setting_id}" => '' ),
-				'desc_tip'          => _x( 'Choose this option if you want to let DHL check your customer\'s identity and age.', 'dhl', 'dhl-for-shiptastic' ),
+				'desc_tip'          => _x( 'Choose this option if you want to let DHL check your customer\'s identity and age.', 'dhl', 'shiptastic-integration-for-dhl' ),
 			),
 		);
 	}
@@ -71,7 +71,7 @@ class VisualCheckOfAge extends Service {
 			array(
 				array(
 					'id'                => $this->get_label_field_id( 'min_age' ),
-					'label'             => _x( 'Minimum Age', 'dhl', 'dhl-for-shiptastic' ),
+					'label'             => _x( 'Minimum Age', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'description'       => '',
 					'type'              => 'select',
 					'value'             => $min_age,
@@ -103,7 +103,7 @@ class VisualCheckOfAge extends Service {
 		$min_age = isset( $props[ $this->get_label_field_id( 'min_age' ) ] ) ? $props[ $this->get_label_field_id( 'min_age' ) ] : '';
 
 		if ( empty( $min_age ) || ! wc_stc_dhl_is_valid_visual_min_age( $min_age ) ) {
-			$error->add( 500, _x( 'The minimum age (VisualCheckOfAge) supplied is invalid.', 'dhl', 'dhl-for-shiptastic' ) );
+			$error->add( 500, _x( 'The minimum age (VisualCheckOfAge) supplied is invalid.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 
 		return wc_stc_shipment_wp_error_has_errors( $error ) ? $error : true;

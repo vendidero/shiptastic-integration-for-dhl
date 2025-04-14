@@ -62,6 +62,6 @@ class PickupLocation extends \Vendidero\Shiptastic\ShippingProvider\PickupLocati
 	}
 
 	public function get_customer_number_field_label() {
-		return _x( 'Customer Number (Post Number)', 'dhl', 'dhl-for-shiptastic' );
+		return _x( 'Customer Number (Post Number)', 'dhl', 'shiptastic-integration-for-dhl' );
 	}
 }

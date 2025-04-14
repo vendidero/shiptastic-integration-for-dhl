@@ -80,7 +80,7 @@ class DHL extends Label {
 	}
 
 	public function get_return_formatted_full_name() {
-		return sprintf( _x( '%1$s', 'dhl full name', 'dhl-for-shiptastic' ), $this->get_return_name() ); // phpcs:ignore WordPress.WP.I18n.NoEmptyStrings
+		return sprintf( _x( '%1$s', 'dhl full name', 'shiptastic-integration-for-dhl' ), $this->get_return_name() ); // phpcs:ignore WordPress.WP.I18n.NoEmptyStrings
 	}
 
 	public function get_return_postcode( $context = 'view' ) {

@@ -13,9 +13,9 @@ class PreferredDay extends Service {
 	public function __construct( $shipping_provider, $args = array() ) {
 		$args = array(
 			'id'                 => 'PreferredDay',
-			'label'              => _x( 'Delivery day', 'dhl', 'dhl-for-shiptastic' ),
-			'description'        => _x( 'Enable delivery day delivery.', 'dhl', 'dhl-for-shiptastic' ),
-			'long_description'   => '<div class="wc-shiptastic-additional-desc ">' . _x( 'Enabling this option will display options for the user to select their delivery day of delivery during the checkout.', 'dhl', 'dhl-for-shiptastic' ) . '</div>',
+			'label'              => _x( 'Delivery day', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'description'        => _x( 'Enable delivery day delivery.', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'long_description'   => '<div class="wc-shiptastic-additional-desc ">' . _x( 'Enabling this option will display options for the user to select their delivery day of delivery during the checkout.', 'dhl', 'shiptastic-integration-for-dhl' ) . '</div>',
 			'setting_id'         => 'PreferredDay_enable',
 			'products'           => array( 'V01PAK' ),
 			'countries'          => array( 'DE' ),
@@ -41,7 +41,7 @@ class PreferredDay extends Service {
 			array(
 				array(
 					'id'                => $this->get_label_field_id( 'day' ),
-					'label'             => _x( 'Delivery day', 'dhl', 'dhl-for-shiptastic' ),
+					'label'             => _x( 'Delivery day', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'description'       => '',
 					'value'             => $value,
 					'options'           => wc_stc_dhl_get_preferred_days_select_options( $preferred_days, '' ),
@@ -89,7 +89,7 @@ class PreferredDay extends Service {
 		$preferred_days = $this->get_preferred_day_options( $shipment->get_postcode() );
 
 		if ( empty( $preferred_day ) || ! array_key_exists( $preferred_day, $preferred_days ) ) {
-			$error->add( 500, _x( 'Please choose a valid preferred delivery day.', 'dhl', 'dhl-for-shiptastic' ) );
+			$error->add( 500, _x( 'Please choose a valid preferred delivery day.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 
 		return wc_stc_shipment_wp_error_has_errors( $error ) ? $error : true;

@@ -37,7 +37,7 @@ class Paket {
 			try {
 				return Helper::get_api( 'dhl_paket_label_soap', $this->is_debug_mode() );
 			} catch ( Exception $e ) {
-				throw new Exception( esc_html( sprintf( _x( 'Label API not available: %s', 'dhl', 'dhl-for-shiptastic' ), $e->getMessage() ) ) );
+				throw new Exception( esc_html( sprintf( _x( 'Label API not available: %s', 'dhl', 'shiptastic-integration-for-dhl' ), $e->getMessage() ) ) );
 			}
 		} else {
 			return $this->get_label_rest_api();
@@ -71,6 +71,13 @@ class Paket {
 	 */
 	public function get_parcel_services_api() {
 		return Helper::get_api( 'dhl_paket_parcel_services', $this->is_debug_mode() );
+	}
+
+	/**
+	 * @return \Vendidero\Shiptastic\DHL\Api\MyAccount
+	 */
+	public function get_myaccount_api() {
+		return Helper::get_api( 'dhl_paket_myaccount', $this->is_debug_mode() );
 	}
 
 	/**
@@ -204,13 +211,13 @@ class Paket {
 
 	protected function get_preferred_days( $preferred_services ) {
 		$day_of_week_arr = array(
-			'1' => _x( 'Mon', 'dhl', 'dhl-for-shiptastic' ),
-			'2' => _x( 'Tue', 'dhl', 'dhl-for-shiptastic' ),
-			'3' => _x( 'Wed', 'dhl', 'dhl-for-shiptastic' ),
-			'4' => _x( 'Thu', 'dhl', 'dhl-for-shiptastic' ),
-			'5' => _x( 'Fri', 'dhl', 'dhl-for-shiptastic' ),
-			'6' => _x( 'Sat', 'dhl', 'dhl-for-shiptastic' ),
-			'7' => _x( 'Sun', 'dhl', 'dhl-for-shiptastic' ),
+			'1' => _x( 'Mon', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'2' => _x( 'Tue', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'3' => _x( 'Wed', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'4' => _x( 'Thu', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'5' => _x( 'Fri', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'6' => _x( 'Sat', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'7' => _x( 'Sun', 'dhl', 'shiptastic-integration-for-dhl' ),
 		);
 
 		$preferred_days = array();
@@ -227,7 +234,7 @@ class Paket {
 			}
 
 			// Add none option
-			array_unshift( $preferred_days, _x( 'None', 'dhl day context', 'dhl-for-shiptastic' ) );
+			array_unshift( $preferred_days, _x( 'None', 'dhl day context', 'shiptastic-integration-for-dhl' ) );
 		}
 
 		return $preferred_days;

@@ -13,8 +13,8 @@ class DHLRetoure extends Service {
 	public function __construct( $shipping_provider, $args = array() ) {
 		$args = array(
 			'id'                 => 'dhlRetoure',
-			'label'              => _x( 'Inlay Return Label', 'dhl', 'dhl-for-shiptastic' ),
-			'description'        => _x( 'Additionally create inlay return labels for shipments that support returns.', 'dhl', 'dhl-for-shiptastic' ),
+			'label'              => _x( 'Inlay Return Label', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'description'        => _x( 'Additionally create inlay return labels for shipments that support returns.', 'dhl', 'shiptastic-integration-for-dhl' ),
 			'products'           => array( 'V01PAK', 'V62WP', 'V62KP' ),
 			'countries'          => array( 'DE' ),
 			'zones'              => array( 'dom' ),
@@ -64,7 +64,7 @@ class DHLRetoure extends Service {
 			array(
 				array(
 					'id'            => $field_prefix . '[name]',
-					'label'         => _x( 'Name', 'dhl', 'dhl-for-shiptastic' ),
+					'label'         => _x( 'Name', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'placeholder'   => '',
 					'description'   => '',
 					'value'         => $return_address['name'],
@@ -73,7 +73,7 @@ class DHLRetoure extends Service {
 				),
 				array(
 					'id'            => $field_prefix . '[company]',
-					'label'         => _x( 'Company', 'dhl', 'dhl-for-shiptastic' ),
+					'label'         => _x( 'Company', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'placeholder'   => '',
 					'description'   => '',
 					'wrapper_class' => 'show-if-has-return',
@@ -86,7 +86,7 @@ class DHLRetoure extends Service {
 				),
 				array(
 					'id'            => $field_prefix . '[street]',
-					'label'         => _x( 'Street', 'dhl', 'dhl-for-shiptastic' ),
+					'label'         => _x( 'Street', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'placeholder'   => '',
 					'description'   => '',
 					'type'          => 'text',
@@ -95,7 +95,7 @@ class DHLRetoure extends Service {
 				),
 				array(
 					'id'            => $field_prefix . '[street_number]',
-					'label'         => _x( 'Street No', 'dhl', 'dhl-for-shiptastic' ),
+					'label'         => _x( 'Street No', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'placeholder'   => '',
 					'description'   => '',
 					'type'          => 'text',
@@ -112,7 +112,7 @@ class DHLRetoure extends Service {
 				),
 				array(
 					'id'            => $field_prefix . '[postcode]',
-					'label'         => _x( 'Postcode', 'dhl', 'dhl-for-shiptastic' ),
+					'label'         => _x( 'Postcode', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'placeholder'   => '',
 					'description'   => '',
 					'type'          => 'text',
@@ -121,7 +121,7 @@ class DHLRetoure extends Service {
 				),
 				array(
 					'id'            => $field_prefix . '[city]',
-					'label'         => _x( 'City', 'dhl', 'dhl-for-shiptastic' ),
+					'label'         => _x( 'City', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'placeholder'   => '',
 					'description'   => '',
 					'type'          => 'text',
@@ -138,7 +138,7 @@ class DHLRetoure extends Service {
 				),
 				array(
 					'id'            => $field_prefix . '[phone]',
-					'label'         => _x( 'Phone', 'dhl', 'dhl-for-shiptastic' ),
+					'label'         => _x( 'Phone', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'placeholder'   => '',
 					'description'   => '',
 					'type'          => 'text',
@@ -147,7 +147,7 @@ class DHLRetoure extends Service {
 				),
 				array(
 					'id'            => $field_prefix . '[email]',
-					'label'         => _x( 'Email', 'dhl', 'dhl-for-shiptastic' ),
+					'label'         => _x( 'Email', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'placeholder'   => '',
 					'description'   => '',
 					'type'          => 'text',
@@ -182,19 +182,19 @@ class DHLRetoure extends Service {
 		);
 
 		$mandatory = array(
-			'street'   => _x( 'Street', 'dhl', 'dhl-for-shiptastic' ),
-			'postcode' => _x( 'Postcode', 'dhl', 'dhl-for-shiptastic' ),
-			'city'     => _x( 'City', 'dhl', 'dhl-for-shiptastic' ),
+			'street'   => _x( 'Street', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'postcode' => _x( 'Postcode', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'city'     => _x( 'City', 'dhl', 'shiptastic-integration-for-dhl' ),
 		);
 
 		foreach ( $mandatory as $mand => $title ) {
 			if ( empty( $return_address[ $mand ] ) ) {
-				$error->add( 500, sprintf( _x( '%s of the return address is a mandatory field.', 'dhl', 'dhl-for-shiptastic' ), $title ) );
+				$error->add( 500, sprintf( _x( '%s of the return address is a mandatory field.', 'dhl', 'shiptastic-integration-for-dhl' ), $title ) );
 			}
 		}
 
 		if ( empty( $return_address['name'] ) && empty( $return_address['company'] ) ) {
-			$error->add( 500, _x( 'Please either add a return company or name.', 'dhl', 'dhl-for-shiptastic' ) );
+			$error->add( 500, _x( 'Please either add a return company or name.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 
 		return wc_stc_shipment_wp_error_has_errors( $error ) ? $error : true;

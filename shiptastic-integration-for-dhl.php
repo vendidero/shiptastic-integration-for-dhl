@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: DHL for Shiptastic
- * Plugin URI: https://github.com/vendidero/dhl-for-shiptastic
+ * Plugin Name: Shiptastic Integration for DHL
+ * Plugin URI: https://github.com/vendidero/shiptastic-integration-for-dhl
  * Description: Create DHL and Deutsche Post labels for Shiptastic.
  * Author: vendidero
  * Author URI: https://vendidero.de
- * Version: 3.6.5
+ * Version: 3.7.0
  * Requires PHP: 5.6
  * License: GPLv3
  * Requires Plugins: shiptastic-for-woocommerce
@@ -13,8 +13,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! defined( 'WC_DHL_FOR_STC_IS_STANDALONE_PLUGIN' ) ) {
-	define( 'WC_DHL_FOR_STC_IS_STANDALONE_PLUGIN', true );
+if ( ! defined( 'WC_STC_INTEGRATION_FOR_DHL_IS_STANDALONE_PLUGIN' ) ) {
+	define( 'WC_STC_INTEGRATION_FOR_DHL_IS_STANDALONE_PLUGIN', true );
 }
 
 if ( version_compare( PHP_VERSION, '5.6.0', '<' ) ) {

@@ -77,7 +77,7 @@ class DeutschePost extends Auto {
 	}
 
 	public function get_title( $context = 'view' ) {
-		return _x( 'Deutsche Post', 'dhl', 'dhl-for-shiptastic' );
+		return _x( 'Deutsche Post', 'dhl', 'shiptastic-integration-for-dhl' );
 	}
 
 	public function get_name( $context = 'view' ) {
@@ -85,7 +85,7 @@ class DeutschePost extends Auto {
 	}
 
 	public function get_description( $context = 'view' ) {
-		return _x( 'Integration for products of the Deutsche Post through Internetmarke.', 'dhl', 'dhl-for-shiptastic' );
+		return _x( 'Integration for products of the Deutsche Post through Internetmarke.', 'dhl', 'shiptastic-integration-for-dhl' );
 	}
 
 	public function get_default_tracking_url_placeholder() {
@@ -105,7 +105,7 @@ class DeutschePost extends Auto {
 	}
 
 	protected function get_connection_status_html( $maybe_error ) {
-		return '<span class="wc-stc-shipment-api-connection-status ' . ( is_wp_error( $maybe_error ) ? 'connection-status-error' : 'connection-status-success' ) . '">' . ( sprintf( _x( 'Status: %1$s', 'dhl', 'dhl-for-shiptastic' ), ( is_wp_error( $maybe_error ) ? $maybe_error->get_error_message() : _x( 'Connected', 'dhl', 'dhl-for-shiptastic' ) ) ) ) . '</span>';
+		return '<span class="wc-stc-shipment-api-connection-status ' . ( is_wp_error( $maybe_error ) ? 'connection-status-error' : 'connection-status-success' ) . '">' . ( sprintf( _x( 'Status: %1$s', 'dhl', 'shiptastic-integration-for-dhl' ), ( is_wp_error( $maybe_error ) ? $maybe_error->get_error_message() : _x( 'Connected', 'dhl', 'shiptastic-integration-for-dhl' ) ) ) ) . '</span>';
 	}
 
 	protected function get_printing_settings() {
@@ -115,15 +115,15 @@ class DeutschePost extends Auto {
 		$settings = array_merge(
 			array(
 				array(
-					'title' => _x( 'Printing', 'dhl', 'dhl-for-shiptastic' ),
+					'title' => _x( 'Printing', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'  => 'title',
 					'id'    => 'shipping_provider_label_printing_options',
-					'desc'  => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Choose a print format which will be selected by default when creating labels. Manually <a href="%s">refresh</a> available print formats to make sure the list is up-to-date.', 'dhl', 'dhl-for-shiptastic' ), esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'wc-stc-dhl-im-page-formats-refresh' ), $settings_url ), 'wc-stc-dhl-refresh-im-page-formats' ) ) ) . '</div>',
+					'desc'  => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Choose a print format which will be selected by default when creating labels. Manually <a href="%s">refresh</a> available print formats to make sure the list is up-to-date.', 'dhl', 'shiptastic-integration-for-dhl' ), esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'wc-stc-dhl-im-page-formats-refresh' ), $settings_url ), 'wc-stc-dhl-refresh-im-page-formats' ) ) ) . '</div>',
 				),
 				array(
-					'title'             => _x( 'Print X-axis column', 'dhl', 'dhl-for-shiptastic' ),
+					'title'             => _x( 'Print X-axis column', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'id'                => 'label_position_x',
-					'desc_tip'          => _x( 'Adjust the print X-axis start column for the label.', 'dhl', 'dhl-for-shiptastic' ),
+					'desc_tip'          => _x( 'Adjust the print X-axis start column for the label.', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'              => 'number',
 					'value'             => $this->get_setting( 'label_position_x', 1 ),
 					'custom_attributes' => array(
@@ -134,9 +134,9 @@ class DeutschePost extends Auto {
 					'default'           => 1,
 				),
 				array(
-					'title'             => _x( 'Print Y-axis column', 'dhl', 'dhl-for-shiptastic' ),
+					'title'             => _x( 'Print Y-axis column', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'id'                => 'label_position_y',
-					'desc_tip'          => _x( 'Adjust the print Y-axis start column for the label.', 'dhl', 'dhl-for-shiptastic' ),
+					'desc_tip'          => _x( 'Adjust the print Y-axis start column for the label.', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'              => 'number',
 					'value'             => $this->get_setting( 'label_position_y', 1 ),
 					'custom_attributes' => array(
@@ -176,9 +176,9 @@ class DeutschePost extends Auto {
 			),
 
 			array(
-				'title'             => _x( 'Username', 'dhl', 'dhl-for-shiptastic' ),
+				'title'             => _x( 'Username', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'              => 'text',
-				'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Your credentials to the <a href="%s" target="_blank">Portokasse</a>. Please test your credentials before connecting.', 'dhl', 'dhl-for-shiptastic' ), 'https://portokasse.deutschepost.de/portokasse/#!/' ) . '</div>',
+				'desc'              => '<div class="wc-shiptastic-additional-desc ">' . sprintf( _x( 'Your credentials to the <a href="%s" target="_blank">Portokasse</a>. Please test your credentials before connecting.', 'dhl', 'shiptastic-integration-for-dhl' ), 'https://portokasse.deutschepost.de/portokasse/#!/' ) . '</div>',
 				'id'                => 'api_username',
 				'default'           => '',
 				'value'             => $this->get_setting( 'api_username', '' ),
@@ -186,7 +186,7 @@ class DeutschePost extends Auto {
 			),
 
 			array(
-				'title'             => _x( 'Password', 'dhl', 'dhl-for-shiptastic' ),
+				'title'             => _x( 'Password', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'type'              => 'password',
 				'id'                => 'api_password',
 				'default'           => '',
@@ -214,18 +214,18 @@ class DeutschePost extends Auto {
 							$settings,
 							array(
 								array(
-									'title' => _x( 'Portokasse', 'dhl', 'dhl-for-shiptastic' ),
+									'title' => _x( 'Portokasse', 'dhl', 'shiptastic-integration-for-dhl' ),
 									'type'  => 'title',
 									'id'    => 'deutsche_post_portokasse_options',
 								),
 								array(
-									'title' => _x( 'Balance', 'dhl', 'dhl-for-shiptastic' ),
+									'title' => _x( 'Balance', 'dhl', 'shiptastic-integration-for-dhl' ),
 									'type'  => 'html',
 									'html'  => wc_price( Package::cents_to_eur( $balance ), array( 'currency' => 'EUR' ) ),
 								),
 
 								array(
-									'title' => _x( 'Charge (€)', 'dhl', 'dhl-for-shiptastic' ),
+									'title' => _x( 'Charge (€)', 'dhl', 'shiptastic-integration-for-dhl' ),
 									'type'  => 'dp_charge',
 								),
 
@@ -241,7 +241,7 @@ class DeutschePost extends Auto {
 						$settings,
 						array(
 							array(
-								'title' => _x( 'Portokasse', 'dhl', 'dhl-for-shiptastic' ),
+								'title' => _x( 'Portokasse', 'dhl', 'shiptastic-integration-for-dhl' ),
 								'type'  => 'title',
 								'id'    => 'deutsche_post_api_error',
 							),
@@ -260,10 +260,10 @@ class DeutschePost extends Auto {
 						$settings,
 						array(
 							array(
-								'title' => _x( 'Products', 'dhl', 'dhl-for-shiptastic' ),
+								'title' => _x( 'Products', 'dhl', 'shiptastic-integration-for-dhl' ),
 								'type'  => 'title',
 								'id'    => 'deutsche_post_product_refresh_options',
-								'desc'  => '<a class="button button-secondary" href="' . esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'wc-stc-dhl-im-product-refresh' ), $settings_url ), 'wc-stc-dhl-refresh-im-products' ) ) . '">' . esc_html_x( 'Refresh available products', 'dhl', 'dhl-for-shiptastic' ) . '</a>',
+								'desc'  => '<a class="button button-secondary" href="' . esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'wc-stc-dhl-im-product-refresh' ), $settings_url ), 'wc-stc-dhl-refresh-im-products' ) ) . '">' . esc_html_x( 'Refresh available products', 'dhl', 'shiptastic-integration-for-dhl' ) . '</a>',
 							),
 							array(
 								'type' => 'sectionend',
@@ -279,7 +279,7 @@ class DeutschePost extends Auto {
 			$settings,
 			array(
 				array(
-					'title' => _x( 'Tracking', 'dhl', 'dhl-for-shiptastic' ),
+					'title' => _x( 'Tracking', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'type'  => 'title',
 					'id'    => 'tracking_options',
 				),
@@ -456,7 +456,7 @@ class DeutschePost extends Auto {
 		}
 
 		if ( $products->empty() ) {
-			return new \WP_Error( 'dp-label-missing-products', sprintf( _x( 'Sorry but none of your selected <a href="%s">Deutsche Post Products</a> is available for this shipment. Please verify your shipment data (e.g. weight) and try again.', 'dhl', 'dhl-for-shiptastic' ), esc_url( $this->get_edit_link( 'label' ) ) ) );
+			return new \WP_Error( 'dp-label-missing-products', sprintf( _x( 'Sorry but none of your selected <a href="%s">Deutsche Post Products</a> is available for this shipment. Please verify your shipment data (e.g. weight) and try again.', 'dhl', 'shiptastic-integration-for-dhl' ), esc_url( $this->get_edit_link( 'label' ) ) ) );
 		}
 
 		$settings = array_merge( $settings, $this->get_available_additional_services( $props['product_id'], $props['services'] ) );
@@ -469,7 +469,7 @@ class DeutschePost extends Auto {
 				),
 				array(
 					'id'                => 'position_x',
-					'label'             => _x( 'Print X-Position', 'dhl', 'dhl-for-shiptastic' ),
+					'label'             => _x( 'Print X-Position', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'description'       => '',
 					'type'              => 'number',
 					'wrapper_class'     => 'column col-6',
@@ -482,7 +482,7 @@ class DeutschePost extends Auto {
 				),
 				array(
 					'id'                => 'position_y',
-					'label'             => _x( 'Print Y-Position', 'dhl', 'dhl-for-shiptastic' ),
+					'label'             => _x( 'Print Y-Position', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'description'       => '',
 					'type'              => 'number',
 					'wrapper_class'     => 'column col-6',
@@ -591,7 +591,7 @@ class DeutschePost extends Auto {
 			$im_product_code = Package::get_internetmarke_api()->get_product_code( $args['product_id'], $args['services'] );
 
 			if ( false === $im_product_code ) {
-				$error->add( 500, _x( 'The services chosen are not available for the current product.', 'dhl', 'dhl-for-shiptastic' ) );
+				$error->add( 500, _x( 'The services chosen are not available for the current product.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 			} else {
 				$args['product_id'] = $im_product_code;
 			}
@@ -607,7 +607,7 @@ class DeutschePost extends Auto {
 			 * In case no other products are available or this is a manual request - return error
 			 */
 			if ( empty( $available_products ) || ( is_admin() && current_user_can( 'manage_woocommerce' ) ) ) {
-				$error->add( 500, sprintf( _x( 'Sorry but none of your selected <a href="%s">Deutsche Post Products</a> is available for this shipment. Please verify your shipment data (e.g. weight) and try again.', 'dhl', 'dhl-for-shiptastic' ), esc_url( $this->get_edit_link( 'label' ) ) ) );
+				$error->add( 500, sprintf( _x( 'Sorry but none of your selected <a href="%s">Deutsche Post Products</a> is available for this shipment. Please verify your shipment data (e.g. weight) and try again.', 'dhl', 'shiptastic-integration-for-dhl' ), esc_url( $this->get_edit_link( 'label' ) ) ) );
 			} else {
 				/**
 				 * In case the chosen product is not available - use the first product available instead
@@ -633,7 +633,7 @@ class DeutschePost extends Auto {
 		if ( ! empty( $args['product_id'] ) ) {
 			$args['stamp_total'] = Package::get_internetmarke_api()->get_product_total( $args['product_id'] );
 		} else {
-			$error->add( 500, sprintf( _x( 'Deutsche Post product is missing for %s.', 'dhl', 'dhl-for-shiptastic' ), $shipment->get_id() ) );
+			$error->add( 500, sprintf( _x( 'Deutsche Post product is missing for %s.', 'dhl', 'shiptastic-integration-for-dhl' ), $shipment->get_id() ) );
 		}
 
 		if ( wc_stc_dhl_wp_error_has_errors( $error ) ) {
@@ -661,9 +661,9 @@ class DeutschePost extends Auto {
 					'id'    => 'deutsche_post_pickup_options',
 				),
 				array(
-					'title'             => _x( 'Packstation', 'dhl', 'dhl-for-shiptastic' ),
-					'desc'              => _x( 'Enable delivery to Packstation.', 'dhl', 'dhl-for-shiptastic' ),
-					'desc_tip'          => _x( 'Let customers choose a Packstation as delivery address.', 'dhl', 'dhl-for-shiptastic' ),
+					'title'             => _x( 'Packstation', 'dhl', 'shiptastic-integration-for-dhl' ),
+					'desc'              => _x( 'Enable delivery to Packstation.', 'dhl', 'shiptastic-integration-for-dhl' ),
+					'desc_tip'          => _x( 'Let customers choose a Packstation as delivery address.', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'id'                => 'parcel_pickup_packstation_enable',
 					'value'             => wc_bool_to_string( $this->get_setting( 'parcel_pickup_packstation_enable' ) ),
 					'default'           => 'yes',

@@ -37,7 +37,7 @@ abstract class PaketRest extends \Vendidero\Shiptastic\API\REST {
 		$soft_error_messages = array();
 
 		if ( 401 === $response_code ) {
-			$error_messages[] = sprintf( _x( 'Your DHL <a href="%s">API credentials</a> seem to be invalid.', 'dhl', 'dhl-for-shiptastic' ), esc_url( Package::get_dhl_shipping_provider()->get_edit_link() ) );
+			$error_messages[] = sprintf( _x( 'Your DHL <a href="%s">API credentials</a> seem to be invalid.', 'dhl', 'shiptastic-integration-for-dhl' ), esc_url( Package::get_dhl_shipping_provider()->get_edit_link() ) );
 		} elseif ( isset( $response_body['items'] ) && isset( $response_body['items'][0]['validationMessages'] ) ) {
 			if ( ! empty( $response_body['items'][0]['validationMessages'] ) ) {
 				foreach ( $response_body['items'][0]['validationMessages'] as $message ) {
@@ -76,7 +76,7 @@ abstract class PaketRest extends \Vendidero\Shiptastic\API\REST {
 				}
 			}
 		} elseif ( empty( $response_body['status']['detail'] ) && empty( $response_body['detail'] ) ) {
-			$error_message = _x( 'POST error or timeout occurred. Please try again later.', 'dhl', 'dhl-for-shiptastic' );
+			$error_message = _x( 'POST error or timeout occurred. Please try again later.', 'dhl', 'shiptastic-integration-for-dhl' );
 
 			if ( ! in_array( $error_message, $error_messages, true ) ) {
 				$error_messages[] = $error_message;

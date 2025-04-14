@@ -55,33 +55,33 @@ class ParcelServices {
 		if ( $dhl_order = wc_stc_dhl_get_order( $order ) ) {
 			if ( $dhl_order->has_preferred_day() ) {
 				$new_rows['preferred_day'] = array(
-					'label' => _x( 'Delivery day', 'dhl', 'dhl-for-shiptastic' ),
+					'label' => _x( 'Delivery day', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'value' => wc_format_datetime( $dhl_order->get_preferred_day(), wc_date_format() ),
 				);
 			}
 
 			if ( $dhl_order->has_preferred_time() ) {
 				$new_rows['preferred_time'] = array(
-					'label' => _x( 'Delivery time', 'dhl', 'dhl-for-shiptastic' ),
+					'label' => _x( 'Delivery time', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'value' => $dhl_order->get_preferred_time(),
 				);
 			}
 
 			if ( $dhl_order->has_preferred_location() ) {
 				$new_rows['preferred_location'] = array(
-					'label' => _x( 'Drop-off location', 'dhl', 'dhl-for-shiptastic' ),
+					'label' => _x( 'Drop-off location', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'value' => $dhl_order->get_preferred_location(),
 				);
 			} elseif ( $dhl_order->has_preferred_neighbor() ) {
 				$new_rows['preferred_neighbor'] = array(
-					'label' => _x( 'Neighbor', 'dhl', 'dhl-for-shiptastic' ),
+					'label' => _x( 'Neighbor', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'value' => $dhl_order->get_preferred_neighbor_formatted_address(),
 				);
 			}
 
 			if ( $dhl_order->has_preferred_delivery_type() ) {
 				$new_rows['preferred_delivery_type'] = array(
-					'label' => _x( 'Delivery Type', 'dhl', 'dhl-for-shiptastic' ),
+					'label' => _x( 'Delivery Type', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'value' => self::get_preferred_delivery_type_title( $dhl_order->get_preferred_delivery_type() ),
 				);
 			}
@@ -200,13 +200,13 @@ class ParcelServices {
 			try {
 				if ( ! empty( $data['preferred_day'] ) ) {
 					if ( ! empty( $data['preferred_day_cost'] ) ) {
-						$cart->add_fee( _x( 'DHL Delivery day', 'dhl', 'dhl-for-shiptastic' ), $data['preferred_day_cost'], true );
+						$cart->add_fee( _x( 'DHL Delivery day', 'dhl', 'shiptastic-integration-for-dhl' ), $data['preferred_day_cost'], true );
 					}
 				}
 
 				if ( $data['preferred_delivery_type_enabled'] && ! empty( $data['preferred_delivery_type'] ) && 'home' === $data['preferred_delivery_type'] ) {
 					if ( ! empty( $data['preferred_home_delivery_cost'] ) ) {
-						$cart->add_fee( _x( 'DHL Home Delivery', 'dhl', 'dhl-for-shiptastic' ), $data['preferred_home_delivery_cost'], true );
+						$cart->add_fee( _x( 'DHL Home Delivery', 'dhl', 'shiptastic-integration-for-dhl' ), $data['preferred_home_delivery_cost'], true );
 					}
 				}
 			} catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
@@ -430,7 +430,7 @@ class ParcelServices {
 						}
 
 						if ( empty( $data['preferred_day'] ) ) {
-							$data['errors']->add( 'validation', _x( 'Sorry, but the delivery day you have chosen is no longer available.', 'dhl', 'dhl-for-shiptastic' ) );
+							$data['errors']->add( 'validation', _x( 'Sorry, but the delivery day you have chosen is no longer available.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 						}
 					}
 				}
@@ -453,7 +453,7 @@ class ParcelServices {
 							if ( ! empty( $location ) ) {
 								$data['preferred_location'] = $location;
 							} else {
-								$data['errors']->add( 'validation', _x( 'Please choose a drop-off location.', 'dhl', 'dhl-for-shiptastic' ) );
+								$data['errors']->add( 'validation', _x( 'Please choose a drop-off location.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 							}
 						} elseif ( self::is_preferred_neighbor_enabled() && 'neighbor' === $post_data['dhl_preferred_location_type'] ) {
 							$name    = isset( $post_data['dhl_preferred_location_neighbor_name'] ) ? wc_clean( wp_unslash( $post_data['dhl_preferred_location_neighbor_name'] ) ) : '';
@@ -465,7 +465,7 @@ class ParcelServices {
 								$data['preferred_location_neighbor_name']    = $name;
 								$data['preferred_location_neighbor_address'] = $address;
 							} else {
-								$data['errors']->add( 'validation', _x( 'Please choose name and address of your preferred neighbor.', 'dhl', 'dhl-for-shiptastic' ) );
+								$data['errors']->add( 'validation', _x( 'Please choose name and address of your preferred neighbor.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 							}
 						}
 					}
@@ -550,8 +550,8 @@ class ParcelServices {
 
 	public static function get_preferred_delivery_types() {
 		return array(
-			'cdp'  => _x( 'Shop', 'dhl delivery type context', 'dhl-for-shiptastic' ),
-			'home' => _x( 'Home', 'dhl delivery type context', 'dhl-for-shiptastic' ),
+			'cdp'  => _x( 'Shop', 'dhl delivery type context', 'shiptastic-integration-for-dhl' ),
+			'home' => _x( 'Home', 'dhl delivery type context', 'shiptastic-integration-for-dhl' ),
 		);
 	}
 

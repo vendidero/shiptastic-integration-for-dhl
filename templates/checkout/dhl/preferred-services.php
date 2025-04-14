@@ -10,7 +10,7 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @version 1.3.0
+ * @version 3.7.0
  */
 defined( 'ABSPATH' ) || exit;
 ?>
@@ -21,17 +21,17 @@ defined( 'ABSPATH' ) || exit;
 				<img src="<?php echo esc_url( $logo_url ); ?>" alt="DHL logo" class="dhl-co-logo">
 			</div>
 			<div class="dhl-preferred-service-title">
-				<?php echo esc_html_x( 'DHL Preferred Delivery. Delivered just as you wish.', 'dhl', 'dhl-for-shiptastic' ); ?>
+				<?php echo esc_html_x( 'DHL Preferred Delivery. Delivered just as you wish.', 'dhl', 'shiptastic-integration-for-dhl' ); ?>
 			</div>
 		</div>
 
 		<?php if ( ! empty( $preferred_day_options ) && $preferred_day_enabled ) : ?>
 			<div class="dhl-preferred-service-item dhl-preferred-service-day">
-				<div class="dhl-preferred-service-title"><?php echo esc_html_x( 'Delivery day', 'dhl', 'dhl-for-shiptastic' ); ?> <?php echo wc_help_tip( _x( 'Choose one of the displayed days as your delivery day for your parcel delivery. Other days are not possible due to delivery processes.', 'dhl', 'dhl-for-shiptastic' ) ); ?></div>
+				<div class="dhl-preferred-service-title"><?php echo esc_html_x( 'Delivery day', 'dhl', 'shiptastic-integration-for-dhl' ); ?> <?php echo wc_help_tip( _x( 'Choose one of the displayed days as your delivery day for your parcel delivery. Other days are not possible due to delivery processes.', 'dhl', 'shiptastic-integration-for-dhl' ) ); ?></div>
 
 				<?php if ( ! empty( $preferred_day_cost ) ) : ?>
 					<div class="dhl-preferred-service-cost">
-						<?php echo wp_kses_post( sprintf( _x( 'There is a surcharge of %1$s %2$s for this service.*', 'dhl', 'dhl-for-shiptastic' ), wc_price( $preferred_day_cost ), ( wc_shiptastic_additional_costs_include_tax() ? _x( 'incl. VAT', 'dhl', 'dhl-for-shiptastic' ) : _x( 'excl. VAT', 'dhl', 'dhl-for-shiptastic' ) ) ) ); ?>
+						<?php echo wp_kses_post( sprintf( _x( 'There is a surcharge of %1$s %2$s for this service.*', 'dhl', 'shiptastic-integration-for-dhl' ), wc_price( $preferred_day_cost ), ( wc_shiptastic_additional_costs_include_tax() ? _x( 'incl. VAT', 'dhl', 'shiptastic-integration-for-dhl' ) : _x( 'excl. VAT', 'dhl', 'shiptastic-integration-for-dhl' ) ) ) ); ?>
 					</div>
 				<?php endif; ?>
 
@@ -55,43 +55,43 @@ defined( 'ABSPATH' ) || exit;
 
 		<?php if ( $preferred_location_enabled || $preferred_neighbor_enabled ) : ?>
 			<div class="dhl-preferred-service-item dhl-preferred-service-location">
-				<div class="dhl-preferred-service-title"><?php echo esc_html_x( 'Drop-off location or neighbor', 'dhl', 'dhl-for-shiptastic' ); ?></div>
+				<div class="dhl-preferred-service-title"><?php echo esc_html_x( 'Drop-off location or neighbor', 'dhl', 'shiptastic-integration-for-dhl' ); ?></div>
 
 				<div class="dhl-preferred-service-data">
 					<ul class="dhl-preferred-location-types">
 						<li>
 							<input type="radio" name="dhl_preferred_location_type" id="dhl-preferred_location-none" class="" value="none" <?php checked( 'none', $preferred_location_type ); ?> />
-							<label for="dhl-preferred_location-none"><?php echo esc_html_x( 'None', 'dhl location context', 'dhl-for-shiptastic' ); ?></label>
+							<label for="dhl-preferred_location-none"><?php echo esc_html_x( 'None', 'dhl location context', 'shiptastic-integration-for-dhl' ); ?></label>
 						</li>
 						<?php if ( $preferred_location_enabled ) : ?>
 							<li>
 								<input type="radio" name="dhl_preferred_location_type" id="dhl-preferred_location-place" class="" value="place" <?php checked( 'place', $preferred_location_type ); ?> />
-								<label for="dhl-preferred_location-place"><?php echo esc_html_x( 'Location', 'dhl', 'dhl-for-shiptastic' ); ?></label>
+								<label for="dhl-preferred_location-place"><?php echo esc_html_x( 'Location', 'dhl', 'shiptastic-integration-for-dhl' ); ?></label>
 							</li>
 						<?php endif; ?>
 						<?php if ( $preferred_neighbor_enabled ) : ?>
 							<li>
 								<input type="radio" name="dhl_preferred_location_type" id="dhl-preferred_location-neighbor" class="" value="neighbor" <?php checked( 'neighbor', $preferred_location_type ); ?> />
-								<label for="dhl-preferred_location-neighbor"><?php echo esc_html_x( 'Neighbor', 'dhl', 'dhl-for-shiptastic' ); ?></label>
+								<label for="dhl-preferred_location-neighbor"><?php echo esc_html_x( 'Neighbor', 'dhl', 'shiptastic-integration-for-dhl' ); ?></label>
 							</li>
 						<?php endif; ?>
 					</ul>
 
 					<?php if ( $preferred_location_enabled ) : ?>
 						<div class="dhl-preferred-service-item dhl-preferred-service-location-data dhl-preferred-service-location-place dhl-hidden">
-							<div class="dhl-preferred-service-title"><?php echo esc_html_x( 'Drop-off location', 'dhl', 'dhl-for-shiptastic' ); ?> <?php echo wc_help_tip( _x( 'Choose a weather-protected and non-visible place on your property, where we can deposit the parcel in your absence.', 'dhl', 'dhl-for-shiptastic' ) ); ?></div>
+							<div class="dhl-preferred-service-title"><?php echo esc_html_x( 'Drop-off location', 'dhl', 'shiptastic-integration-for-dhl' ); ?> <?php echo wc_help_tip( _x( 'Choose a weather-protected and non-visible place on your property, where we can deposit the parcel in your absence.', 'dhl', 'shiptastic-integration-for-dhl' ) ); ?></div>
 							<div class="dhl-preferred-service-data">
-								<input type="text" name="dhl_preferred_location" id="dhl-preferred-location" class="" value="<?php echo esc_attr( $preferred_location ); ?>" maxlength="80" placeholder="<?php echo esc_attr( _x( 'e.g. Garage, Terrace', 'dhl', 'dhl-for-shiptastic' ) ); ?>" />
+								<input type="text" name="dhl_preferred_location" id="dhl-preferred-location" class="" value="<?php echo esc_attr( $preferred_location ); ?>" maxlength="80" placeholder="<?php echo esc_attr( _x( 'e.g. Garage, Terrace', 'dhl', 'shiptastic-integration-for-dhl' ) ); ?>" />
 							</div>
 						</div>
 					<?php endif; ?>
 
 					<?php if ( $preferred_neighbor_enabled ) : ?>
 						<div class="dhl-preferred-service-item dhl-preferred-service-location-data dhl-preferred-service-location-neighbor dhl-hidden">
-							<div class="dhl-preferred-service-title"><?php echo esc_html_x( 'Neighbor', 'dhl', 'dhl-for-shiptastic' ); ?> <?php echo wc_help_tip( _x( 'Determine a person in your immediate neighborhood whom we can hand out your parcel in your absence. This person should live in the same building, directly opposite or next door.', 'dhl', 'dhl-for-shiptastic' ) ); ?></div>
+							<div class="dhl-preferred-service-title"><?php echo esc_html_x( 'Neighbor', 'dhl', 'shiptastic-integration-for-dhl' ); ?> <?php echo wc_help_tip( _x( 'Determine a person in your immediate neighborhood whom we can hand out your parcel in your absence. This person should live in the same building, directly opposite or next door.', 'dhl', 'shiptastic-integration-for-dhl' ) ); ?></div>
 							<div class="dhl-preferred-service-data">
-								<input type="text" name="dhl_preferred_location_neighbor_name" id="dhl-preferred-location-neighbor-name" class="" value="<?php echo esc_attr( $preferred_location_neighbor_name ); ?>" maxlength="25" placeholder="<?php echo esc_attr( _x( 'First name, last name of neighbor', 'dhl', 'dhl-for-shiptastic' ) ); ?>" />
-								<input type="text" name="dhl_preferred_location_neighbor_address" id="dhl-preferred-location-neighbor-address" class="" value="<?php echo esc_attr( $preferred_location_neighbor_address ); ?>" maxlength="55" placeholder="<?php echo esc_attr( _x( 'Street, number, postal code, city', 'dhl', 'dhl-for-shiptastic' ) ); ?>" />
+								<input type="text" name="dhl_preferred_location_neighbor_name" id="dhl-preferred-location-neighbor-name" class="" value="<?php echo esc_attr( $preferred_location_neighbor_name ); ?>" maxlength="25" placeholder="<?php echo esc_attr( _x( 'First name, last name of neighbor', 'dhl', 'shiptastic-integration-for-dhl' ) ); ?>" />
+								<input type="text" name="dhl_preferred_location_neighbor_address" id="dhl-preferred-location-neighbor-address" class="" value="<?php echo esc_attr( $preferred_location_neighbor_address ); ?>" maxlength="55" placeholder="<?php echo esc_attr( _x( 'Street, number, postal code, city', 'dhl', 'shiptastic-integration-for-dhl' ) ); ?>" />
 							</div>
 						</div>
 					<?php endif; ?>
@@ -101,7 +101,7 @@ defined( 'ABSPATH' ) || exit;
 
 		<?php if ( $preferred_delivery_type_enabled ) : ?>
 			<div class="dhl-preferred-service-item dhl-preferred-delivery-type">
-				<div class="dhl-preferred-service-title"><?php echo esc_html_x( 'Delivery Type', 'dhl', 'dhl-for-shiptastic' ); ?></div>
+				<div class="dhl-preferred-service-title"><?php echo esc_html_x( 'Delivery Type', 'dhl', 'shiptastic-integration-for-dhl' ); ?></div>
 
 				<div class="dhl-preferred-service-data">
 					<ul class="dhl-preferred-delivery-types">
@@ -110,10 +110,10 @@ defined( 'ABSPATH' ) || exit;
 								<input type="radio" name="dhl_preferred_delivery_type" id="dhl-preferred_delivery_type-<?php echo esc_attr( $delivery_type ); ?>" class="" value="<?php echo esc_attr( $delivery_type ); ?>" <?php checked( $delivery_type, $preferred_delivery_type ); ?> />
 								<label for="dhl-preferred_delivery_type-<?php echo esc_attr( $delivery_type ); ?>"><?php echo esc_html( $delivery_type_title ); ?>
 									<?php if ( 'cdp' === $delivery_type ) : ?>
-										<?php echo wc_help_tip( _x( 'Delivery to nearby parcel store/locker or to the front door.', 'dhl', 'dhl-for-shiptastic' ) ); ?></label>
+										<?php echo wc_help_tip( _x( 'Delivery to nearby parcel store/locker or to the front door.', 'dhl', 'shiptastic-integration-for-dhl' ) ); ?></label>
 								<?php elseif ( 'home' === $delivery_type ) : ?>
-									<?php echo ( ! empty( $preferred_home_delivery_cost ) ? wp_kses_post( sprintf( _x( '(+%1$s %2$s)*', 'dhl', 'dhl-for-shiptastic' ), wc_price( $preferred_home_delivery_cost ), ( wc_shiptastic_additional_costs_include_tax() ? _x( 'incl. VAT', 'dhl', 'dhl-for-shiptastic' ) : _x( 'excl. VAT', 'dhl', 'dhl-for-shiptastic' ) ) ) ) : '' ); ?>
-									<?php echo wc_help_tip( _x( 'Delivery usually to the front door.', 'dhl', 'dhl-for-shiptastic' ) ); ?>
+									<?php echo ( ! empty( $preferred_home_delivery_cost ) ? wp_kses_post( sprintf( _x( '(+%1$s %2$s)*', 'dhl', 'shiptastic-integration-for-dhl' ), wc_price( $preferred_home_delivery_cost ), ( wc_shiptastic_additional_costs_include_tax() ? _x( 'incl. VAT', 'dhl', 'shiptastic-integration-for-dhl' ) : _x( 'excl. VAT', 'dhl', 'shiptastic-integration-for-dhl' ) ) ) ) : '' ); ?>
+									<?php echo wc_help_tip( _x( 'Delivery usually to the front door.', 'dhl', 'shiptastic-integration-for-dhl' ) ); ?>
 								<?php endif; ?>
 							</li>
 						<?php endforeach; ?>

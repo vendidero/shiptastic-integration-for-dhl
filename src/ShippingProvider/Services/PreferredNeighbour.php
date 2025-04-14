@@ -12,9 +12,9 @@ class PreferredNeighbour extends Service {
 	public function __construct( $shipping_provider, $args = array() ) {
 		$args = array(
 			'id'                 => 'PreferredNeighbour',
-			'label'              => _x( 'Neighbor', 'dhl', 'dhl-for-shiptastic' ),
-			'description'        => _x( 'Enable delivery to a neighbor.', 'dhl', 'dhl-for-shiptastic' ),
-			'long_description'   => '<div class="wc-shiptastic-additional-desc ">' . _x( 'Enabling this option will display options for the user to deliver to their preferred neighbor during the checkout.', 'dhl', 'dhl-for-shiptastic' ) . '</div>',
+			'label'              => _x( 'Neighbor', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'description'        => _x( 'Enable delivery to a neighbor.', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'long_description'   => '<div class="wc-shiptastic-additional-desc ">' . _x( 'Enabling this option will display options for the user to deliver to their preferred neighbor during the checkout.', 'dhl', 'shiptastic-integration-for-dhl' ) . '</div>',
 			'setting_id'         => 'PreferredNeighbour_enable',
 			'products'           => array( 'V01PAK', 'V62WP', 'V62KP' ),
 			'countries'          => array( 'DE' ),
@@ -39,7 +39,7 @@ class PreferredNeighbour extends Service {
 			array(
 				array(
 					'id'                => $this->get_label_field_id( 'neighbor' ),
-					'label'             => _x( 'Neighbor', 'dhl', 'dhl-for-shiptastic' ),
+					'label'             => _x( 'Neighbor', 'dhl', 'shiptastic-integration-for-dhl' ),
 					'placeholder'       => '',
 					'description'       => '',
 					'value'             => $value,

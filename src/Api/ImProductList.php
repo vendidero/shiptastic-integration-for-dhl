@@ -236,16 +236,16 @@ class ImProductList {
 
 	public function get_additional_services() {
 		return array(
-			'PRIO' => _x( 'PRIO', 'dhl', 'dhl-for-shiptastic' ),
-			'ESEW' => _x( 'Einschreiben (Einwurf)', 'dhl', 'dhl-for-shiptastic' ),
-			'ESCH' => _x( 'Einschreiben', 'dhl', 'dhl-for-shiptastic' ),
-			'ESEH' => _x( 'Einschreiben (Eigenhändig)', 'dhl', 'dhl-for-shiptastic' ),
-			'AS16' => _x( 'Alterssichtprüfung 16', 'dhl', 'dhl-for-shiptastic' ),
-			'AS18' => _x( 'Alterssichtprüfung 18', 'dhl', 'dhl-for-shiptastic' ),
-			'ZMBF' => _x( 'Zusatzentgelt MBf', 'dhl', 'dhl-for-shiptastic' ),
-			'USFT' => _x( 'Unterschrift', 'dhl', 'dhl-for-shiptastic' ),
-			'TRCK' => _x( 'Tracked', 'dhl', 'dhl-for-shiptastic' ),
-			'RCKS' => _x( 'Rückschein', 'dhl', 'dhl-for-shiptastic' ),
+			'PRIO' => _x( 'PRIO', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'ESEW' => _x( 'Einschreiben (Einwurf)', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'ESCH' => _x( 'Einschreiben', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'ESEH' => _x( 'Einschreiben (Eigenhändig)', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'AS16' => _x( 'Alterssichtprüfung 16', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'AS18' => _x( 'Alterssichtprüfung 18', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'ZMBF' => _x( 'Zusatzentgelt MBf', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'USFT' => _x( 'Unterschrift', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'TRCK' => _x( 'Tracked', 'dhl', 'shiptastic-integration-for-dhl' ),
+			'RCKS' => _x( 'Rückschein', 'dhl', 'shiptastic-integration-for-dhl' ),
 		);
 	}
 
@@ -340,7 +340,7 @@ class ImProductList {
 				if ( isset( $response->message ) ) {
 					throw new \Exception( wc_clean( $response->message ) );
 				} else {
-					throw new \Exception( _x( 'No Internetmarke product data found.', 'dhl', 'dhl-for-shiptastic' ) );
+					throw new \Exception( _x( 'No Internetmarke product data found.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 				}
 			}
 

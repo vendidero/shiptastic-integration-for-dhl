@@ -293,7 +293,7 @@ class Order {
 		$end   = $this->get_preferred_time_end();
 
 		if ( $start && $end ) {
-			return sprintf( _x( '%1$s-%2$s', 'dhl time-span', 'dhl-for-shiptastic' ), $start->date( 'H' ), $end->date( 'H' ) );
+			return sprintf( _x( '%1$s-%2$s', 'dhl time-span', 'shiptastic-integration-for-dhl' ), $start->date( 'H' ), $end->date( 'H' ) );
 		}
 
 		return null;

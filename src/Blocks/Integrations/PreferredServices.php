@@ -22,7 +22,7 @@ class PreferredServices implements IntegrationInterface {
 	 * @return string
 	 */
 	public function get_name() {
-		return 'dhl-for-shiptastic-preferred-services';
+		return 'shiptastic-integration-for-dhl-preferred-services';
 	}
 
 	/**

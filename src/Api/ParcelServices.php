@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
 class ParcelServices extends PaketRest {
 
 	public function get_title() {
-		return _x( 'DHL Paket Parcel Services', 'dhl', 'dhl-for-shiptastic' );
+		return _x( 'DHL Paket Parcel Services', 'dhl', 'shiptastic-integration-for-dhl' );
 	}
 
 	public function get_url() {
@@ -41,11 +41,11 @@ class ParcelServices extends PaketRest {
 		);
 
 		if ( empty( $args['postcode'] ) ) {
-			throw new Exception( esc_html_x( 'Please provide the receiver postnumber.', 'dhl', 'dhl-for-shiptastic' ) );
+			throw new Exception( esc_html_x( 'Please provide the receiver postnumber.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 
 		if ( empty( $args['start_date'] ) ) {
-			throw new Exception( esc_html_x( 'Please provide the shipment start date.', 'dhl', 'dhl-for-shiptastic' ) );
+			throw new Exception( esc_html_x( 'Please provide the shipment start date.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 
 		$response = $this->get( "checkout/{$args['postcode']}/availableServices", array( 'startDate' => $args['start_date'] ) );

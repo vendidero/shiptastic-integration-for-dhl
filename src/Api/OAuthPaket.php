@@ -73,7 +73,7 @@ class OAuthPaket extends OAuth {
 				return true;
 			}
 
-			$response->set_error( new ShipmentError( 'auth', _x( 'Error while authenticating with DHL.', 'dhl', 'dhl-for-shiptastic' ) ) );
+			$response->set_error( new ShipmentError( 'auth', _x( 'Error while authenticating with DHL.', 'dhl', 'shiptastic-integration-for-dhl' ) ) );
 
 			return $response;
 		} else {

@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
 class ReturnRest extends PaketRest {
 
 	public function get_title() {
-		return _x( 'DHL Paket Return REST', 'dhl', 'dhl-for-shiptastic' );
+		return _x( 'DHL Paket Return REST', 'dhl', 'shiptastic-integration-for-dhl' );
 	}
 
 	public function get_name() {
@@ -43,7 +43,7 @@ class ReturnRest extends PaketRest {
 		$currency = $shipment->get_order() ? $shipment->get_order()->get_currency() : 'EUR';
 
 		if ( ! $shipment ) {
-			throw new Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'dhl-for-shiptastic' ), $label->get_shipment_id() ) ) );
+			throw new Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'shiptastic-integration-for-dhl' ), $label->get_shipment_id() ) ) );
 		}
 
 		$address_components = wc_stc_dhl_get_shipment_address_components_with_number( $shipment );
@@ -188,7 +188,7 @@ class ReturnRest extends PaketRest {
 					// Delete the label dues to errors.
 					$label->delete();
 
-					throw new Exception( esc_html_x( 'Error while creating and uploading the label', 'dhl', 'dhl-for-shiptastic' ) );
+					throw new Exception( esc_html_x( 'Error while creating and uploading the label', 'dhl', 'shiptastic-integration-for-dhl' ) );
 				}
 
 				return $label;

@@ -15,7 +15,7 @@ output() {
 	echo "$(tput setaf "$1")$2$(tput sgr0)"
 }
 
-wp i18n make-pot ./ ./i18n/languages/dhl-for-shiptastic.pot --ignore-domain --exclude="assets/,release/,node_modules/"
+wp i18n make-pot ./ ./i18n/languages/shiptastic-integration-for-dhl.pot --ignore-domain --exclude="assets/,release/,node_modules/"
 
 # Run composer update to make sure POT file paths are being updated
 composer update

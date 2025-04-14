@@ -1,7 +1,7 @@
 {
-  "name": "vendidero/dhl-for-shiptastic",
+  "name": "vendidero/shiptastic-integration-for-dhl",
   "description": "DHL & Deutsche Post integration for Shiptastic",
-  "homepage": "https://github.com/vendidero/dhl-for-shiptastic",
+  "homepage": "https://github.com/vendidero/shiptastic-integration-for-dhl",
   "license": "GPL-3.0-or-later",
   "type": "wordpress-plugin",
   "version": "dev-main",

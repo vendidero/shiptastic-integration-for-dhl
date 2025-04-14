@@ -5,7 +5,7 @@
   "homepage": "https://vendidero.de",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vendidero/dhl-for-shiptastic.git"
+    "url": "https://github.com/vendidero/shiptastic-integration-for-dhl.git"
   },
   "license": "GPL-3.0+",
   "main": "build/index.js",

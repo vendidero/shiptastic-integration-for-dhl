@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAIN_PLUGIN_FILE="dhl-for-shiptastic.php"
+MAIN_PLUGIN_FILE="shiptastic-integration-for-dhl.php"
 PACKAGE_JSON_FILE=package.json
 PACKAGE_FILE=src/Package.php
 COMPOSER_FILE=composer.json

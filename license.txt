@@ -1,4 +1,4 @@
-DHL for Shiptastic
+Shiptastic Integration for DHL
 
 Copyright 2011 by the contributors
 

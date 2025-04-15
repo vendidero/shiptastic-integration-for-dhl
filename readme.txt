@@ -1,4 +1,4 @@
-=== Shiptastic integration for DHL ===
+=== Shiptastic Integration for DHL ===
 Contributors: vendidero, vdwoocommercesupport
 Tags: shipping, UPS, shiptastic, woocommerce
 Requires at least: 5.4

@@ -199,61 +199,62 @@ window.shiptastic.admin = window.shiptastic.admin || {};
      * Core
      */
     admin.dhl_internetmarke = {
-
         params: {},
 
         init: function () {
             var self = admin.dhl_internetmarke;
+
+            self.params = wc_shiptastic_dhl_admin_internetmarke_params;
 
             $( document ).on( 'click', '#woocommerce_stc_dhl_im_portokasse_charge', self.onCharge );
         },
 
         onCharge: function() {
             var $button = $( this ),
-                data    = $button.data(),
+                self= admin.dhl_internetmarke,
                 amount  = $( '#woocommerce_stc_dhl_im_portokasse_charge_amount' ).val();
 
-            $form = $( '<form target="_blank" action="' + $button.data( 'url' ) + '" id="wc-stc-dhl-im-portokasse-form" method="POST" style=""></form>' ).appendTo( 'body' );
+            $button.addClass( 'loading button-disabled' );
+            $button.append( '<span class="spinner is-active"></span>' );
+            $button.prop( 'disabled', true );
+            $button.parents( 'td' ).find( '.notice' ).remove();
 
-            $.each( data, function( index, value ) {
-                $form.append( '<input type="hidden" name="' + index.toUpperCase() + '" value="' + value + '" />' );
-            } );
+            $.ajax({
+                type: "POST",
+                url:  self.params.ajax_url,
+                data: {
+                    'security': self.params.charge_deutsche_post_im_nonce,
+                    'action': 'woocommerce_stc_dhl_charge_deutsche_post_im',
+                    'amount': amount,
+                },
+                success: function( data ) {
+                    $button.removeClass( 'loading' );
+                    $button.find( '.spinner' ).remove();
 
-            var balance = parseInt( ( parseFloat( amount.replace( ',', '.') ).toFixed( 2 ) * 100 ).toFixed() );
-            var wallet  = parseInt( data['wallet'] );
+                    if ( data['success'] ) {
+                        $balance_parent = $( '#im_balance' ).parents( 'tr' );
 
-            /**
-             * Set min amount.
-             */
-            if ( balance < 1000 || Number.isNaN( balance ) ) {
-                balance = 1000;
-            }
+                        if ( $balance_parent.length > 0 ) {
+                            $balance_parent.find( '.forminp-html' ).html( data['balance'] );
+                        }
 
-            var date    = new Date();
-            var timestamp =
-                ('0' + date.getDate()).slice(-2) +
-                ('0' + (date.getMonth() + 1)).slice(-2) +
-                date.getFullYear().toString() +
-                '-' +
-                ('0' + date.getHours()).slice(-2) +
-                ('0' + date.getMinutes()).slice(-2) +
-                ('0' + date.getSeconds()).slice(-2);
+                        $button.after( '<p class="notice notice-success">' + data['message'] + '</p>' );
+                    } else {
+                        $button.prop( 'disabled', false );
+                        $button.removeClass( 'button-disabled' );
 
-            var concat = [
-                data['partner_id'],
-                timestamp,
-                data['success_url'],
-                data['cancel_url'],
-                data['user_token'],
-                wallet + balance,
-                data['schluessel_dpwn_partner']
-            ].join( '::' );
+                        $button.after( '<p class="notice notice-error">' + data['message'] + '</p>' );
+                    }
+                },
+                error: function( data ) {
+                    $button.find( '.spinner' ).remove();
+                    $button.prop( 'disabled', false );
+                    $button.removeClass( 'loading button-disabled' );
 
-            $form.append( '<input type="hidden" name="BALANCE" value="' + ( wallet + balance ) + '" />' );
-            $form.append( '<input type="hidden" name="PARTNER_SIGNATURE" value="' + ( window.md5( concat ).substring( 0,8 ) ) + '" />' );
-            $form.append( '<input type="hidden" name="REQUEST_TIMESTAMP" value="' + timestamp + '" />' );
-
-            $form.submit();
+                    $button.after( '<p class="notice notice-error">There was an error.</p>' );
+                },
+                dataType: 'json'
+            });
 
             return false;
         }

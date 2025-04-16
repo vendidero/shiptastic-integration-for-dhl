@@ -823,9 +823,10 @@ class DHL extends Auto {
 	}
 
 	public function test_connection() {
-		$username = wc_string_to_bool( $this->get_setting( 'sandbox_mode', 'no' ) ) ? $this->get_setting( 'api_sandbox_username', '' ) : $this->get_setting( 'api_username', '' );
+		$is_sandbox = wc_string_to_bool( $this->get_setting( 'sandbox_mode', 'no' ) );
+		$username   = $is_sandbox ? $this->get_setting( 'api_sandbox_username', '' ) : $this->get_setting( 'api_username', '' );
 
-		if ( empty( $username ) ) {
+		if ( ( $is_sandbox && Package::use_legacy_soap_api() && empty( $username ) ) || ( ! $is_sandbox && empty( $username ) ) ) {
 			return null;
 		}
 

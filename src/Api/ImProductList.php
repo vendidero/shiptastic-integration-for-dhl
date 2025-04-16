@@ -319,6 +319,8 @@ class ImProductList {
 
 		$result = new \WP_Error();
 
+		wp_cache_delete( 'im_products', 'shiptastic-dhl' );
+
 		try {
 			if ( ! class_exists( 'SoapClient' ) ) {
 				throw new \Exception( 'SoapClient is missing.' );

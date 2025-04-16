@@ -5,6 +5,7 @@ namespace Vendidero\Shiptastic\DHL;
 use DateTime;
 use DateTimeZone;
 use Exception;
+use Vendidero\Shiptastic\DHL\Api\InternetmarkeRest;
 use Vendidero\Shiptastic\DHL\Api\LabelRest;
 use Vendidero\Shiptastic\DHL\Api\LabelSoap;
 use Vendidero\Shiptastic\DHL\Api\LocationFinder;
@@ -108,6 +109,13 @@ class Package {
 			'shiptastic_register_api_instance_dhl_paket_myaccount',
 			function () {
 				return new \Vendidero\Shiptastic\DHL\Api\MyAccount();
+			}
+		);
+
+		add_filter(
+			'shiptastic_register_api_instance_dhl_im_rest',
+			function () {
+				return new InternetmarkeRest();
 			}
 		);
 
@@ -690,6 +698,10 @@ class Package {
 
 	public static function get_dhl_com_api_key() {
 		return 'uwi1SH5bHDdMTdcWXB5JIsDCvBOyIawn';
+	}
+
+	public static function get_dhl_com_api_secret() {
+		return 'Qe8ZTtQiOWaEcjad';
 	}
 
 	public static function get_core_wsdl_file( $file ) {

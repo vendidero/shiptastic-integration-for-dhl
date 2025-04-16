@@ -216,24 +216,19 @@ class Admin {
 	}
 
 	public static function output_dp_charge_field( $option ) {
-		if ( ! Package::get_internetmarke_api()->get_user() ) {
+		if ( ! Package::get_internetmarke_api()->has_auth() ) {
 			return;
 		}
-
-		$balance      = Package::get_internetmarke_api()->get_balance();
-		$user_token   = Package::get_internetmarke_api()->get_user()->getUserToken();
-		$settings_url = Package::get_deutsche_post_shipping_provider()->get_edit_link();
 		?>
-
 		<tr valign="top">
 			<th scope="row" class="titledesc"><?php echo esc_html_x( 'Charge (€)', 'dhl', 'shiptastic-integration-for-dhl' ); ?></th>
 			<td class="forminp forminp-custom" id="woocommerce_stc_dhl_im_portokasse_charge_wrapper">
-				<input type="text" placeholder="10.00" style="max-width: 150px; margin-right: 10px;" class="wc-input-price short" name="woocommerce_stc_dhl_im_portokasse_charge_amount" id="woocommerce_stc_dhl_im_portokasse_charge_amount" />
+				<input type="text" placeholder="<?php echo esc_attr( wc_format_decimal( 10.00 ) ); ?>" style="max-width: 150px; margin-right: 10px;" class="wc_input_price short" name="woocommerce_stc_dhl_im_portokasse_charge_amount" id="woocommerce_stc_dhl_im_portokasse_charge_amount" />
 
-				<a id="woocommerce_stc_dhl_im_portokasse_charge" class="button button-secondary" data-url="https://portokasse.deutschepost.de/portokasse/marketplace/enter-app-payment" data-success_url="<?php echo esc_url( add_query_arg( array( 'wallet-charge-success' => 'yes' ), $settings_url ) ); ?>" data-cancel_url="<?php echo esc_url( add_query_arg( array( 'wallet-charge-success' => 'no' ), $settings_url ) ); ?>" data-partner_id="<?php echo esc_attr( Package::get_internetmarke_partner_id() ); ?>" data-key_phase="<?php echo esc_attr( Package::get_internetmarke_key_phase() ); ?>" data-user_token="<?php echo esc_attr( $user_token ); ?>" data-schluessel_dpwn_partner="<?php echo esc_attr( Package::get_internetmarke_token() ); ?>" data-wallet="<?php echo esc_attr( $balance ); ?>">
+				<a id="woocommerce_stc_dhl_im_portokasse_charge" class="button button-secondary wc-shiptastic-button" href="#">
 					<?php echo esc_html_x( 'Charge Portokasse', 'dhl', 'shiptastic-integration-for-dhl' ); ?>
 				</a>
-				<p class="description"><?php printf( esc_html_x( 'The minimum amount is %s', 'dhl', 'shiptastic-integration-for-dhl' ), wc_price( 10, array( 'currency' => 'EUR' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
+				<p class="description"><?php echo wp_kses_post( sprintf( _x( 'The minimum amount is %1$s. Charging is only available with a valid SEPA mandate. You may use the <a href="%2$s">web interface</a> instead.', 'dhl', 'shiptastic-integration-for-dhl' ), wc_price( 10, array( 'currency' => 'EUR' ) ), 'https://portokasse.deutschepost.de/portokasse/#!/' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 			</td>
 		</tr>
 		<?php
@@ -411,7 +406,7 @@ class Admin {
 		$screen    = get_current_screen();
 		$screen_id = $screen ? $screen->id : '';
 
-		wp_register_script( 'wc-shiptastic-dhl-admin-internetmarke', Package::get_assets_build_url( 'static/admin-internetmarke.js' ), array( 'jquery' ), Package::get_version() ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
+		wp_register_script( 'wc-shiptastic-dhl-admin-internetmarke', Package::get_assets_build_url( 'static/admin-internetmarke.js' ), array( 'jquery', 'woocommerce_admin' ), Package::get_version() ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
 		wp_register_script( 'wc-shiptastic-dhl-admin-deutsche-post-label', Package::get_assets_build_url( 'static/admin-deutsche-post-label.js' ), array( 'wc-shiptastic-admin-shipment-modal' ), Package::get_version() ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
 
 		if ( wp_script_is( 'wc-shiptastic-admin-shipment-modal', 'enqueued' ) ) {
@@ -425,6 +420,15 @@ class Admin {
 				)
 			);
 		}
+
+		wp_localize_script(
+			'wc-shiptastic-dhl-admin-internetmarke',
+			'wc_shiptastic_dhl_admin_internetmarke_params',
+			array(
+				'charge_deutsche_post_im_nonce' => wp_create_nonce( 'wc-stc-dhl-charge-deutsche-post-im' ),
+				'ajax_url'                      => admin_url( 'admin-ajax.php' ),
+			)
+		);
 
 		// Shipping zone methods
 		if ( 'woocommerce_page_wc-settings' === $screen_id && isset( $_GET['provider'] ) && 'deutsche_post' === $_GET['provider'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended

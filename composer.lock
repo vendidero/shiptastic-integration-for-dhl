@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2447360b6a43549b7d33bd970af44269",
+    "content-hash": "7a2a0db9f7145b01537fe023966ee725",
     "packages": [
         {
             "name": "automattic/jetpack-autoloader",
@@ -69,46 +69,6 @@
                 "source": "https://github.com/Automattic/jetpack-autoloader/tree/v5.0.0"
             },
             "time": "2024-11-25T16:33:57+00:00"
-        },
-        {
-            "name": "baltpeter/internetmarke-php",
-            "version": "v0.5.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/baltpeter/internetmarke-php.git",
-                "reference": "7657ee5a55eb80c77a35e35ce71c465364d73ab4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/baltpeter/internetmarke-php/zipball/7657ee5a55eb80c77a35e35ce71c465364d73ab4",
-                "reference": "7657ee5a55eb80c77a35e35ce71c465364d73ab4",
-                "shasum": ""
-            },
-            "require": {
-                "myclabs/deep-copy": "^1.8"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "baltpeter\\Internetmarke\\": "src/baltpeter/Internetmarke"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Benjamin Altpeter",
-                    "email": "hi@bn.al"
-                }
-            ],
-            "description": "A simple PHP wrapper for the Deutsche Post Internetmarke web service",
-            "support": {
-                "issues": "https://github.com/baltpeter/internetmarke-php/issues",
-                "source": "https://github.com/baltpeter/internetmarke-php/tree/master"
-            },
-            "time": "2019-07-31T10:13:23+00:00"
         },
         {
             "name": "composer/installers",
@@ -260,66 +220,6 @@
                 }
             ],
             "time": "2021-09-13T08:19:44+00:00"
-        },
-        {
-            "name": "myclabs/deep-copy",
-            "version": "1.13.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "024473a478be9df5fdaca2c793f2232fe788e414"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/024473a478be9df5fdaca2c793f2232fe788e414",
-                "reference": "024473a478be9df5fdaca2c793f2232fe788e414",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1 || ^8.0"
-            },
-            "conflict": {
-                "doctrine/collections": "<1.6.8",
-                "doctrine/common": "<2.13.3 || >=3 <3.2.2"
-            },
-            "require-dev": {
-                "doctrine/collections": "^1.6.8",
-                "doctrine/common": "^2.13.3 || ^3.2.2",
-                "phpspec/prophecy": "^1.10",
-                "phpunit/phpunit": "^7.5.20 || ^8.5.23 || ^9.5.13"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/DeepCopy/deep_copy.php"
-                ],
-                "psr-4": {
-                    "DeepCopy\\": "src/DeepCopy/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Create deep copies (clones) of your objects",
-            "keywords": [
-                "clone",
-                "copy",
-                "duplicate",
-                "object",
-                "object graph"
-            ],
-            "support": {
-                "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.0"
-            },
-            "funding": [
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/myclabs/deep-copy",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2025-02-12T12:17:51+00:00"
         }
     ],
     "packages-dev": [

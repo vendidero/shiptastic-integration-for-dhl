@@ -156,7 +156,7 @@ class DeutschePost extends Label {
 		$result = new \WP_Error();
 
 		try {
-			Package::get_internetmarke_api()->get_label( $this );
+			$label_result = Package::get_internetmarke_api()->get_label( $this );
 		} catch ( \Exception $e ) {
 			$result->add( 'deutsche-post-api-error', $e->getMessage() );
 		}

@@ -34,7 +34,7 @@ class OAuthPaket extends OAuth {
 	}
 
 	protected function get_client_secret() {
-		return 'Qe8ZTtQiOWaEcjad';
+		return Package::get_dhl_com_api_secret();
 	}
 
 	protected function get_username() {
@@ -71,13 +71,13 @@ class OAuthPaket extends OAuth {
 				set_transient( 'woocommerce_stc_dhl_paket_api_access_token', SecretBox::maybe_encrypt( $access_token ), $expires_in );
 
 				return true;
+			} else {
+				$response->set_error( new ShipmentError( 'auth', _x( 'Error while authenticating with DHL.', 'dhl', 'shiptastic-integration-for-dhl' ) ) );
+
+				return $response;
 			}
-
-			$response->set_error( new ShipmentError( 'auth', _x( 'Error while authenticating with DHL.', 'dhl', 'shiptastic-integration-for-dhl' ) ) );
-
-			return $response;
 		} else {
-			delete_transient( 'woocommerce_stc_dhl_paket_api_access_token' );
+			$this->revoke();
 
 			return $response;
 		}

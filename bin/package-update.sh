@@ -19,8 +19,3 @@ output() {
 output 3 "Updating autoloader classmaps..."
 composer dump-autoload
 output 2 "Done"
-
-output 3 "Patching libraries..."
-
-sed -i '' -e 's/get_class()/__CLASS__/g' ./vendor/baltpeter/internetmarke-php/src/baltpeter/Internetmarke/ApiResult.php
-output 2 "Done!"

@@ -508,28 +508,8 @@ class Package {
 		return 'https://geschaeftskunden.dhl.de';
 	}
 
-	public static function get_internetmarke_main_url() {
-		return 'https://internetmarke.deutschepost.de/OneClickForAppV3?wsdl';
-	}
-
 	public static function get_internetmarke_products_url() {
 		return 'https://prodws.deutschepost.de/ProdWSProvider_1_1/prodws?wsdl';
-	}
-
-	public static function get_internetmarke_refund_url() {
-		return 'https://internetmarke.deutschepost.de/OneClickForRefund?wsdl';
-	}
-
-	public static function get_internetmarke_partner_id() {
-		return 'AVHGE';
-	}
-
-	public static function get_internetmarke_token() {
-		return 'XfQwh0tsdDF81IfpCKEPigk1US46rabN';
-	}
-
-	public static function get_internetmarke_key_phase() {
-		return 1;
 	}
 
 	public static function get_internetmarke_product_username() {

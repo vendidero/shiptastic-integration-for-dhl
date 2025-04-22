@@ -126,7 +126,7 @@ class Admin {
 
 	public static function refresh_data() {
 		if ( current_user_can( 'manage_woocommerce' ) && isset( $_GET['action'], $_GET['_wpnonce'] ) && 'wc-stc-dhl-im-product-refresh' === $_GET['action'] ) {
-			if ( wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ), 'wc-stc-dhl-refresh-im-products' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			if ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'wc-stc-dhl-refresh-im-products' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$result       = Package::get_internetmarke_api()->update_products();
 				$settings_url = add_query_arg( array( 'im-refresh-type' => 'products' ), Package::get_deutsche_post_shipping_provider()->get_edit_link( 'config_set_simple_label' ) );
 
@@ -142,7 +142,7 @@ class Admin {
 				exit();
 			}
 		} elseif ( current_user_can( 'manage_woocommerce' ) && isset( $_GET['action'], $_GET['_wpnonce'] ) && 'wc-stc-dhl-im-page-formats-refresh' === $_GET['action'] ) {
-			if ( wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ), 'wc-stc-dhl-refresh-im-page-formats' ) ) {  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			if ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'wc-stc-dhl-refresh-im-page-formats' ) ) {  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$result       = Package::get_internetmarke_api()->get_page_formats( true );
 				$settings_url = add_query_arg( array( 'im-refresh-type' => 'page_formats' ), Package::get_deutsche_post_shipping_provider()->get_edit_link( 'printing' ) );
 
@@ -158,7 +158,7 @@ class Admin {
 				exit();
 			}
 		} elseif ( current_user_can( 'manage_woocommerce' ) && isset( $_GET['action'], $_GET['_wpnonce'] ) && 'wc-stc-dhl-refresh-retoure-receiver-ids' === $_GET['action'] ) {
-			if ( wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ), 'wc-stc-dhl-refresh-retoure-receiver-ids' ) ) {  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			if ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'wc-stc-dhl-refresh-retoure-receiver-ids' ) ) {  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$receiver_ids = Package::get_api()->get_return_api()->get_receiver_ids();
 				$settings_url = add_query_arg( array( 'refresh-type' => 'retoure-receiver-ids' ), Package::get_dhl_shipping_provider()->get_edit_link( 'config_set_return_label' ) );
 
@@ -193,16 +193,14 @@ class Admin {
 			$raw_value = is_array( $raw_value ) ? $raw_value : array();
 
 	        // phpcs:disable WordPress.Security.NonceVerification.NoNonceVerification -- Nonce verification already handled in WC_Admin_Settings::save()
-			if ( isset( $raw_value['receiver_id'], $raw_value['receiver_country'] ) ) {
-				$receiver_ids = wc_clean( wp_unslash( $raw_value['receiver_id'] ) );
-				$countries    = wc_clean( wp_unslash( $raw_value['receiver_country'] ) );
+			foreach ( $raw_value as $raw_receiver ) {
+				$receiver_id = wc_clean( wp_unslash( isset( $raw_receiver['receiver_id'] ) ? $raw_receiver['receiver_id'] : '' ) );
+				$country     = wc_clean( wp_unslash( isset( $raw_receiver['receiver_country'] ) ? $raw_receiver['receiver_country'] : '' ) );
+				$slug        = sanitize_key( $receiver_id . '_' . $country );
 
-				foreach ( $receiver_ids as $i => $name ) {
-					$country = isset( $countries[ $i ] ) ? substr( strtoupper( $countries[ $i ] ), 0, 2 ) : '';
-					$slug    = sanitize_key( $receiver_ids[ $i ] . '_' . $country );
-
+				if ( ! empty( $receiver_id ) ) {
 					$receiver[ $slug ] = array(
-						'id'      => $receiver_ids[ $i ],
+						'id'      => $receiver_id,
 						'country' => $country,
 						'slug'    => $slug,
 					);
@@ -295,15 +293,14 @@ class Admin {
 						<tbody class="receiver_ids">
 						<?php
 						$i = -1;
-						foreach ( $receiver_ids as $receiver ) {
+						foreach ( $receiver_ids as $receiver ) :
 							++$i;
-
-							echo '<tr class="receiver">
-                                    <td><input type="text" value="' . esc_attr( wp_unslash( $receiver['id'] ) ) . '" name="' . esc_attr( $option_key ) . '[receiver_id][' . esc_attr( $i ) . ']" /></td>
-                                    <td><input type="text" value="' . esc_attr( wp_unslash( $receiver['country'] ) ) . '" name="' . esc_attr( $option_key ) . '[receiver_country][' . esc_attr( $i ) . ']" /></td>
-                                </tr>';
-						}
-						?>
+							?>
+							<tr class="receiver item">
+								<td><input type="text" value="<?php echo esc_attr( wp_unslash( $receiver['id'] ) ); ?>" name="<?php echo esc_attr( $option_key ); ?>[<?php echo esc_attr( $i ); ?>][receiver_id]" /></td>
+								<td><input type="text" value="<?php echo esc_attr( wp_unslash( $receiver['country'] ) ); ?>" name="<?php echo esc_attr( $option_key ); ?>[<?php echo esc_attr( $i ); ?>][receiver_country]" /></td>
+							</tr>
+						<?php endforeach; ?>
 						</tbody>
 						<tfoot>
 						<tr>
@@ -313,24 +310,13 @@ class Admin {
 								<a style="float: right; margin-right: 0; margin-left: 5px;" href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'wc-stc-dhl-refresh-retoure-receiver-ids' ), $settings_url ), 'wc-stc-dhl-refresh-retoure-receiver-ids' ) ); ?>" class="button button-primary"><?php echo esc_html_x( 'Refresh via API', 'dhl', 'shiptastic-integration-for-dhl' ); ?></a>
 							</th>
 						</tr>
+						<tr class="template item receiver" style="display: none;">
+							<td><input type="text" name="<?php echo esc_attr( $option_key ); ?>[size][receiver_id]" /></td>
+							<td><input type="text" name="<?php echo esc_attr( $option_key ); ?>[size][receiver_country]" /></td>
+						</tr>
 						</tfoot>
 					</table>
 				</div>
-				<script type="text/javascript">
-					jQuery(function() {
-						jQuery('#dhl_receiver_ids').on( 'click', 'a.add', function(){
-
-							var size = jQuery('#dhl_receiver_ids').find('tbody .receiver').length;
-
-							jQuery('<tr class="receiver">\
-									<td><input type="text" name="<?php echo esc_attr( $option_key ); ?>[receiver_id][' + size + ']" /></td>\
-									<td><input type="text" name="<?php echo esc_attr( $option_key ); ?>[receiver_country][' + size + ']" /></td>\
-								</tr>').appendTo('#dhl_receiver_ids table tbody');
-
-							return false;
-						});
-					});
-				</script>
 			</td>
 		</tr>
 		<?php
@@ -375,7 +361,7 @@ class Admin {
 
 	public static function download_legacy_label() {
 		if ( isset( $_GET['action'] ) && 'wc-stc-dhl-download-legacy-label' === $_GET['action'] && isset( $_REQUEST['_wpnonce'] ) ) {
-			if ( isset( $_GET['order_id'] ) && wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'wc-stc-dhl-download-legacy-label' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			if ( isset( $_GET['order_id'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'wc-stc-dhl-download-legacy-label' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$order_id = absint( $_GET['order_id'] );
 				$args     = \Vendidero\Shiptastic\Labels\DownloadHandler::parse_args(
 					array(

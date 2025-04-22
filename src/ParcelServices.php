@@ -156,6 +156,16 @@ class ParcelServices {
 				$posted_data['current_pickup_location'] = wc()->customer->get_meta( 'pickup_location_code' );
 			}
 		} else {
+			$posted_keys = array(
+				'dhl_preferred_location_type'             => '',
+				'shipping_country'                        => '',
+				'dhl_preferred_day'                       => '',
+				'dhl_preferred_delivery_type'             => '',
+				'dhl_preferred_location'                  => '',
+				'dhl_preferred_location_neighbor_name'    => '',
+				'dhl_preferred_location_neighbor_address' => '',
+			);
+
 			$original_post_data = isset( $_POST ) ? $_POST : array(); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
 			// POST information is either in a query string-like variable called 'post_data'...
@@ -169,8 +179,9 @@ class ParcelServices {
 
 			$_POST = $post_data;
 
-			$posted_data = \WC_Checkout::instance()->get_posted_data();
-			$posted_data = array_merge( wc_clean( $post_data ), (array) $posted_data );
+			$additional_post_data = wc_clean( array_intersect_key( $post_data, $posted_keys ) );
+			$posted_data          = \WC_Checkout::instance()->get_posted_data();
+			$posted_data          = array_merge( $additional_post_data, (array) $posted_data );
 
 			$_POST = $original_post_data;
 		}

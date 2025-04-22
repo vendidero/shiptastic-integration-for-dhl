@@ -25,6 +25,11 @@ DHL labels to your shipments right from within your admin panel and allow your c
 * Shiptastic for WooCommerce
 * PHP Version 7.0 or newer
 
+== External services ==
+
+This plugin connects to an API to create labels and/or provide your customer with pickup locations to choose from.
+This service is provided by DHL: [terms of use](https://developer.dhl.com/terms-use?language_content_entity=en), [privacy policy](https://developer.dhl.com/privacy-notice?language_content_entity=en).
+
 == Changelog ==
 = 1.0.0 =
 * Initial version release

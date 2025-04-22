@@ -2,18 +2,8 @@
 
 namespace Vendidero\Shiptastic\DHL\Api;
 
-use baltpeter\Internetmarke\Address;
-use baltpeter\Internetmarke\CompanyName;
-use baltpeter\Internetmarke\Name;
-use baltpeter\Internetmarke\PageFormat;
-use baltpeter\Internetmarke\PersonName;
-use baltpeter\Internetmarke\Service;
-use baltpeter\Internetmarke\User;
 use Vendidero\Shiptastic\DHL\Label\DeutschePost;
-use Vendidero\Shiptastic\DHL\Label\DeutschePostReturn;
 use Vendidero\Shiptastic\DHL\Package;
-use Vendidero\Shiptastic\DHL\ParcelLocator;
-use Vendidero\Shiptastic\Shipment;
 use Vendidero\Shiptastic\ShippingProvider\ProductList;
 
 defined( 'ABSPATH' ) || exit;
@@ -21,163 +11,72 @@ defined( 'ABSPATH' ) || exit;
 class Internetmarke {
 
 	/**
-	 * @var ImPartnerInformation|null
-	 */
-	protected $partner = null;
-
-	/**
-	 * @var Service|null
-	 */
-	protected $api = null;
-
-	/**
-	 * @var User|null
-	 */
-	protected $user = null;
-
-	/**
-	 * @var \WP_Error
-	 */
-	protected $errors = null;
-
-	/**
 	 * @var ImProductList|null
 	 */
 	protected $products = null;
 
 	/**
-	 * @var ImRefundSoap|null
-	 */
-	protected $refund_api = null;
-
-	/**
-	 * @var null|PageFormat[]
+	 * @var null|array
 	 */
 	protected $page_formats = null;
 
-	public function __construct() {
-		$this->partner = new ImPartnerInformation( Package::get_internetmarke_partner_id(), Package::get_internetmarke_key_phase(), Package::get_internetmarke_token() );
-		$this->errors  = new \WP_Error();
+	public function __construct() {}
 
-		if ( ! Package::is_deutsche_post_enabled() ) {
-			$this->errors->add( 'startup', _x( 'Internetmarke is disabled. Please enable Internetmarke.', 'dhl', 'shiptastic-integration-for-dhl' ) );
-		}
-	}
-
-	public function get_api( $auth = false ) {
-		if ( is_null( $this->api ) ) {
-			try {
-				if ( ! Package::supports_soap() ) {
-					throw new \Exception( sprintf( _x( 'To enable communication between your shop and DHL, the PHP <a href="%1$s">SOAPClient</a> is required. Please contact your host and make sure that SOAPClient is <a href="%2$s">installed</a>.', 'dhl', 'shiptastic-integration-for-dhl' ), 'https://www.php.net/manual/class.soapclient.php', esc_url( admin_url( 'admin.php?page=wc-status' ) ) ) );
-				}
-
-				$this->api = new Service( $this->partner, array(), Package::get_core_wsdl_file( Package::get_internetmarke_main_url() ) );
-			} catch ( \Exception $e ) {
-				$this->api = null;
-				$this->errors->add( 'startup', sprintf( _x( 'Error while instantiating main Internetmarke API: %s', 'dhl', 'shiptastic-integration-for-dhl' ), $e->getMessage() ) );
-			}
-		}
-
-		if ( $auth ) {
-			if ( is_null( $this->user ) && $this->api && $this->is_configured() ) {
-				try {
-					$this->errors->remove( 'authentication' );
-
-					$this->user = $this->api->authenticateUser( Package::get_internetmarke_username(), Package::get_internetmarke_password() );
-				} catch ( \Exception $e ) {
-					$this->user = null;
-					$this->errors->add( 'authentication', _x( 'Wrong username or password', 'dhl', 'shiptastic-integration-for-dhl' ) );
-				}
-			}
-
-			if ( ! $this->has_authentication_error() && $this->user ) {
-				return $this->api;
-			} else {
-				return false;
-			}
-		} else {
-			return $this->api ? $this->api : false;
-		}
-	}
-
-	public function is_configured() {
-		return Package::get_internetmarke_username() && Package::get_internetmarke_password();
-	}
-
-	public function auth() {
-		return $this->get_api( true );
-	}
-
-	public function has_authentication_error() {
-		$errors = $this->errors->get_error_message( 'authentication' );
-
-		return empty( $errors ) ? false : true;
-	}
-
-	public function get_authentication_error() {
-		$error = $this->errors->get_error_message( 'authentication' );
-
-		return $error;
-	}
-
-	public function has_startup_error() {
-		$errors = $this->errors->get_error_message( 'startup' );
-
-		return empty( $errors ) ? false : true;
-	}
-
-	public function get_startup_error() {
-		$error = $this->errors->get_error_message( 'startup' );
-
-		return $error;
-	}
-
-	public function get_error_message() {
-		if ( $this->has_errors() ) {
-			return $this->get_startup_error() ? $this->get_startup_error() : $this->get_authentication_error();
+	/**
+	 * @return false|InternetmarkeRest
+	 */
+	public function get_api() {
+		if ( $api = \Vendidero\Shiptastic\API\Helper::get_api( 'dhl_im_rest' ) ) {
+			return $api;
 		}
 
 		return false;
 	}
 
-	public function has_errors() {
-		return wc_stc_dhl_wp_error_has_errors( $this->errors ) ? true : false;
-	}
+	public function auth() {
+		if ( $this->has_auth() ) {
+			return true;
+		} elseif ( $this->is_configured() ) {
+			$result = $this->get_api()->get_auth_api()->auth();
 
-	public function get_errors() {
-		return wc_stc_dhl_wp_error_has_errors( $this->errors ) ? $this->errors : false;
-	}
-
-	public function is_available() {
-		return $this->get_api( true );
-	}
-
-	public function get_user() {
-		if ( ! $this->user ) {
-			$this->auth();
-		}
-
-		if ( $this->user && ! is_null( $this->user ) ) {
-			return $this->user;
-		} else {
-			return false;
-		}
-	}
-
-	public function get_balance( $force_refresh = false ) {
-		$balance = get_transient( 'wc_stc_dhl_portokasse_balance' );
-
-		if ( ! $balance || $force_refresh ) {
-			if ( $user = $this->get_user() ) {
-				$balance = $user->getWalletBalance();
-
-				set_transient( 'wc_stc_dhl_portokasse_balance', $user->getWalletBalance(), HOUR_IN_SECONDS );
+			if ( true === $result ) {
+				return true;
 			} else {
-				$balance = 0;
+				return false;
 			}
 		}
 
-		return $balance;
+		return false;
+	}
+
+	public function has_auth() {
+		if ( $api = $this->get_api() ) {
+			return $api->get_auth_api()->has_auth();
+		}
+
+		return false;
+	}
+
+	public function is_configured() {
+		if ( $api = $this->get_api() ) {
+			return $api->get_auth_api()->is_connected();
+		}
+
+		return false;
+	}
+
+	public function get_balance( $force_refresh = false ) {
+		if ( $force_refresh && ( $api = $this->get_api() ) ) {
+			$api->refresh_balance();
+		}
+
+		$value = get_transient( 'wc_stc_dhl_portokasse_balance' );
+
+		if ( false !== $value ) {
+			return (int) $value;
+		}
+
+		return 0;
 	}
 
 	protected function invalidate_balance() {
@@ -338,19 +237,21 @@ class Internetmarke {
 
 	public function get_page_formats( $force_refresh = false ) {
 		if ( is_null( $this->page_formats ) ) {
-			$this->page_formats = get_transient( 'wc_stc_dhl_im_page_formats' );
+			$this->page_formats = get_transient( 'wc_stc_dhl_im_current_page_formats' );
 
 			if ( ! $this->page_formats || $force_refresh ) {
 				$this->page_formats = array();
 
 				try {
-					if ( ! $api = $this->get_api() ) {
-						throw new \Exception( $this->get_error_message() );
+					if ( $api = $this->get_api() ) {
+						$page_formats = $api->get_page_formats();
+
+						if ( ! empty( $page_formats ) ) {
+							$this->page_formats = $page_formats;
+
+							set_transient( 'wc_stc_dhl_im_current_page_formats', $this->page_formats, DAY_IN_SECONDS );
+						}
 					}
-
-					$this->page_formats = $api->retrievePageFormats();
-
-					set_transient( 'wc_stc_dhl_im_page_formats', $this->page_formats, DAY_IN_SECONDS );
 				} catch ( \Exception $e ) {
 					Package::log( 'Error while refreshing Internetmarke page formats: ' . $e->getMessage() );
 				}
@@ -371,11 +272,11 @@ class Internetmarke {
 		$options = array();
 
 		foreach ( $formats as $format ) {
-			if ( apply_filters( 'woocommerce_shiptastic_deutsche_post_exclude_page_format', ! $format->isIsAddressPossible(), $format ) ) {
+			if ( apply_filters( 'woocommerce_shiptastic_deutsche_post_exclude_page_format', ! $format['isAddressPossible'], $format ) ) {
 				continue;
 			}
 
-			$options[ $format->getId() ] = $format->getName();
+			$options[ $format['id'] ] = $format['name'];
 		}
 
 		return $options;
@@ -403,12 +304,12 @@ class Internetmarke {
 		return $maybe_parent_product_code;
 	}
 
-	public function preview_stamp( $product_id, $address_type = 'FrankingZone', $image_id = null ) {
+	public function preview_stamp( $product_id, $address_type = 'FRANKING_ZONE', $image_id = null ) {
 		$preview_url = false;
 
 		try {
-			if ( $api = $this->get_api( true ) ) {
-				$preview_url = $api->retrievePreviewVoucherPng( $product_id, $address_type, $image_id );
+			if ( $api = $this->get_api() ) {
+				$preview_url = $api->get_preview_link( $product_id, $address_type );
 			}
 		} catch ( \Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
 		}
@@ -417,100 +318,53 @@ class Internetmarke {
 	}
 
 	/**
+	 * @param float $amount in EUR
+	 *
+	 * @return false|float
+	 */
+	public function charge_wallet( $amount ) {
+		try {
+			if ( $api = $this->get_api() ) {
+				$result = $api->charge_wallet( $amount );
+
+				return $result;
+			}
+		} catch ( \Exception $e ) {
+			return false;
+		}
+
+		return false;
+	}
+
+	/**
 	 * @param DeutschePost $label
+	 *
+	 * @throws \Exception
 	 *
 	 * @return mixed
 	 */
 	public function get_label( &$label ) {
-		$result = $this->create_or_update_default_label( $label );
+		if ( $api = $this->get_api() ) {
+			$result = $api->get_label( $label );
 
-		$this->invalidate_balance();
-
-		return $result;
-	}
-
-	/**
-	 * @param DeutschePost $label
-	 *
-	 * @return mixed
-	 */
-	protected function create_or_update_default_label( &$label ) {
-		if ( empty( $label->get_shop_order_id() ) ) {
-			return $this->create_default_label( $label );
+			return $result;
 		} else {
-			if ( ! $api = $this->get_api( true ) ) {
-				throw new \Exception( wp_kses_post( $this->get_authentication_error() ) );
-			}
-
-			try {
-				$stamp = $api->retrieveOrder( $this->get_user()->getUserToken(), $label->get_shop_order_id() );
-			} catch ( \Exception $e ) {
-				return $this->create_default_label( $label );
-			}
-
-			return $this->update_default_label( $label, $stamp );
-		}
-	}
-
-	public function get_refund_api() {
-		if ( is_null( $this->refund_api ) ) {
-			$this->refund_api = new ImRefundSoap( $this->partner, array(), Package::get_core_wsdl_file( Package::get_internetmarke_refund_url() ) );
-		}
-
-		return $this->refund_api;
-	}
-
-	/**
-	 * @param DeutschePost $label
-	 *
-	 * @return false|int
-	 */
-	public function refund_label( $label ) {
-		try {
-			return $this->refund_default_label( $label );
-		} catch ( \Exception $e ) {
-			throw new \Exception( esc_html( sprintf( _x( 'Could not refund post label: %s', 'dhl', 'shiptastic-integration-for-dhl' ), $e->getMessage() ) ) );
+			throw new \Exception( esc_html_x( 'There was an unknown error when calling the Deutsche Post API.', 'dhl', 'shiptastic-integration-for-dhl' ) );
 		}
 	}
 
 	/**
 	 * @param DeutschePost $label
 	 *
-	 * @return false|int
 	 * @throws \Exception
-	 */
-	protected function refund_default_label( $label ) {
-		$refund = $this->get_refund_api();
-
-		if ( ! $refund ) {
-			throw new \Exception( esc_html_x( 'Refund API could not be instantiated', 'dhl', 'shiptastic-integration-for-dhl' ) );
-		}
-
-		$refund_id = $refund->createRetoureId();
-
-		if ( $refund_id ) {
-			$user = $refund->authenticateUser( Package::get_internetmarke_username(), Package::get_internetmarke_password() );
-
-			if ( $user ) {
-				$transaction_id = $refund->retoureVouchers( $user->getUserToken(), $refund_id, $label->get_shop_order_id() );
-			}
-
-			Package::log( sprintf( 'Refunded DP label %s: %s', $label->get_number(), $transaction_id ) );
-
-			return $transaction_id;
-		}
-	}
-
-	/**
-	 * @param DeutschePost $label
 	 *
 	 * @return mixed
 	 */
 	public function delete_label( &$label ) {
 		if ( ! empty( $label->get_shop_order_id() ) ) {
-			$transaction_id = $this->refund_label( $label );
+			if ( $api = $this->get_api() ) {
+				$transaction_id = $api->refund_label( $label );
 
-			if ( false !== $transaction_id ) {
 				$this->invalidate_balance();
 			}
 
@@ -543,164 +397,6 @@ class Internetmarke {
 		}
 
 		return false;
-	}
-
-	protected function get_shipment_address_prop( $shipment, $prop, $address_type = '' ) {
-		$getter = "get_{$prop}";
-
-		if ( ! empty( $address_type ) ) {
-			$getter = "get_{$address_type}_{$prop}";
-		}
-
-		if ( is_callable( array( $shipment, $getter ) ) ) {
-			return $shipment->$getter();
-		} else {
-			return '';
-		}
-	}
-
-	/**
-	 * @param Shipment $shipment
-	 * @param $address_type
-	 *
-	 * @return \baltpeter\Internetmarke\NamedAddress
-	 */
-	protected function get_shipment_address_data( $shipment, $address_type = '' ) {
-		$person_name = new PersonName( '', '', $this->get_shipment_address_prop( $shipment, 'first_name', $address_type ), $this->get_shipment_address_prop( $shipment, 'last_name', $address_type ) );
-
-		if ( $this->get_shipment_address_prop( $shipment, 'company', $address_type ) ) {
-			$name = new Name( null, new CompanyName( $this->get_shipment_address_prop( $shipment, 'company', $address_type ), $person_name ) );
-		} else {
-			$name = new Name( $person_name, null );
-		}
-
-		$additional = $this->get_shipment_address_prop( $shipment, 'address_2', $address_type );
-
-		if ( 'simple' === $shipment->get_type() && $shipment->send_to_external_pickup( 'locker' ) ) {
-			$additional = ( empty( $additional ) ? '' : $additional . ' ' ) . $shipment->get_pickup_location_customer_number();
-		}
-
-		$address = new Address(
-			$additional,
-			$this->get_shipment_address_prop( $shipment, 'address_street', $address_type ),
-			$this->get_shipment_address_prop( $shipment, 'address_street_number', $address_type ),
-			$this->get_shipment_address_prop( $shipment, 'postcode', $address_type ),
-			$this->get_shipment_address_prop( $shipment, 'city', $address_type ),
-			wc_stc_country_to_alpha3( $this->get_shipment_address_prop( $shipment, 'country', $address_type ) )
-		);
-
-		$named_address = new \baltpeter\Internetmarke\NamedAddress( $name, $address );
-
-		return $named_address;
-	}
-
-	/**
-	 * @param DeutschePost|DeutschePostReturn $label
-	 */
-	protected function create_default_label( &$label ) {
-		$shipment = $label->get_shipment();
-
-		if ( ! $shipment ) {
-			throw new \Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'shiptastic-integration-for-dhl' ), $label->get_shipment_id() ) ) );
-		}
-
-		$sender          = $this->get_shipment_address_data( $shipment, 'sender' );
-		$receiver        = $this->get_shipment_address_data( $shipment );
-		$address_binding = new \baltpeter\Internetmarke\AddressBinding( $sender, $receiver );
-
-		if ( ! $api = $this->get_api( true ) ) {
-			throw new \Exception( wp_kses_post( $this->get_error_message() ) );
-		}
-
-		try {
-			$shop_order_id = $api->createShopOrderId( $this->get_user()->getUserToken() );
-
-			if ( ! $shop_order_id ) {
-				throw new \Exception( _x( 'Error while generating shop order id.', 'dhl', 'shiptastic-integration-for-dhl' ) );
-			}
-
-			$label->set_shop_order_id( $shop_order_id );
-
-			$position = new \baltpeter\Internetmarke\Position(
-				/**
-				 * Adjust the Deutsche Post (Internetmarke) label print X position.
-				 *
-				 * @param mixed $x The x axis position.
-				 * @param DeutschePost $label The label instance.
-				 * @param Shipment $shipment The shipment instance.
-				 *
-				 * @since 3.4.5
-				 * @package Vendidero/Shiptastic/DHL
-				 */
-				apply_filters( 'woocommerce_shiptastic_deutsche_post_label_api_position_x', $label->get_position_x(), $label, $shipment ),
-				/**
-				 * Adjust the Deutsche Post (Internetmarke) label print Y position.
-				 *
-				 * @param mixed $y The y axis position.
-				 * @param DeutschePost $label The label instance.
-				 * @param Shipment $shipment The shipment instance.
-				 *
-				 * @since 3.4.5
-				 * @package Vendidero/Shiptastic/DHL
-				 */
-				apply_filters( 'woocommerce_shiptastic_deutsche_post_label_api_position_y', $label->get_position_y(), $label, $shipment ),
-				apply_filters( 'woocommerce_shiptastic_deutsche_post_label_api_page_number', 1, $label, $shipment )
-			);
-
-			$order_item = new \baltpeter\Internetmarke\OrderItem( $label->get_product_id(), null, $address_binding, $position, 'AddressZone' );
-			$stamp      = $api->checkoutShoppingCartPdf( $this->get_user()->getUserToken(), $label->get_print_format(), array( $order_item ), $label->get_stamp_total(), $shop_order_id, null, true, 2 );
-
-			return $this->update_default_label( $label, $stamp );
-		} catch ( \Exception $e ) {
-			Package::log( 'Error while purchasing the stamp: ' . $e->getMessage() );
-
-			throw new \Exception( wp_kses_post( sprintf( _x( 'Error while trying to purchase the stamp. Please manually <a href="%s">refresh</a> your product database and try again.', 'dhl', 'shiptastic-integration-for-dhl' ), esc_url( Package::get_deutsche_post_shipping_provider()->get_edit_link( 'label' ) ) ) ) );
-		}
-	}
-
-	/**
-	 * @param DeutschePost $label
-	 * @param \stdClass $stamp
-	 *
-	 * @return mixed
-	 * @throws \Exception
-	 */
-	protected function update_default_label( &$label, $stamp ) {
-		if ( isset( $stamp->link ) ) {
-
-			$label->set_original_url( $stamp->link );
-			$voucher_list = $stamp->shoppingCart->voucherList; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-
-			if ( ! empty( $voucher_list->voucher ) ) {
-				foreach ( $voucher_list->voucher as $i => $voucher ) {
-
-					if ( isset( $voucher->trackId ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-						$label->set_number( $voucher->trackId ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-					} else {
-						$label->set_number( $voucher->voucherId ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-					}
-
-					$label->set_voucher_id( $voucher->voucherId ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-				}
-			}
-
-			if ( isset( $stamp->manifestLink ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-				$label->set_manifest_url( $stamp->manifestLink ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-			}
-
-			$label->save();
-			$result = $label->download_label_file( $stamp->link );
-
-			if ( ! $result ) {
-				throw new \Exception( esc_html_x( 'Error while downloading the PDF stamp.', 'dhl', 'shiptastic-integration-for-dhl' ) );
-			}
-
-			$label->save();
-
-			return $label;
-		} else {
-			throw new \Exception( esc_html_x( 'Invalid stamp response.', 'dhl', 'shiptastic-integration-for-dhl' ) );
-		}
 	}
 
 	public function update_products() {

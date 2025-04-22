@@ -5,6 +5,7 @@ namespace Vendidero\Shiptastic\DHL;
 use DateTime;
 use DateTimeZone;
 use Exception;
+use Vendidero\Shiptastic\DHL\Api\InternetmarkeRest;
 use Vendidero\Shiptastic\DHL\Api\LabelRest;
 use Vendidero\Shiptastic\DHL\Api\LabelSoap;
 use Vendidero\Shiptastic\DHL\Api\LocationFinder;
@@ -108,6 +109,13 @@ class Package {
 			'shiptastic_register_api_instance_dhl_paket_myaccount',
 			function () {
 				return new \Vendidero\Shiptastic\DHL\Api\MyAccount();
+			}
+		);
+
+		add_filter(
+			'shiptastic_register_api_instance_dhl_im_rest',
+			function () {
+				return new InternetmarkeRest();
 			}
 		);
 
@@ -500,28 +508,8 @@ class Package {
 		return 'https://geschaeftskunden.dhl.de';
 	}
 
-	public static function get_internetmarke_main_url() {
-		return 'https://internetmarke.deutschepost.de/OneClickForAppV3?wsdl';
-	}
-
 	public static function get_internetmarke_products_url() {
 		return 'https://prodws.deutschepost.de/ProdWSProvider_1_1/prodws?wsdl';
-	}
-
-	public static function get_internetmarke_refund_url() {
-		return 'https://internetmarke.deutschepost.de/OneClickForRefund?wsdl';
-	}
-
-	public static function get_internetmarke_partner_id() {
-		return 'AVHGE';
-	}
-
-	public static function get_internetmarke_token() {
-		return 'XfQwh0tsdDF81IfpCKEPigk1US46rabN';
-	}
-
-	public static function get_internetmarke_key_phase() {
-		return 1;
 	}
 
 	public static function get_internetmarke_product_username() {
@@ -690,6 +678,10 @@ class Package {
 
 	public static function get_dhl_com_api_key() {
 		return 'uwi1SH5bHDdMTdcWXB5JIsDCvBOyIawn';
+	}
+
+	public static function get_dhl_com_api_secret() {
+		return 'Qe8ZTtQiOWaEcjad';
 	}
 
 	public static function get_core_wsdl_file( $file ) {

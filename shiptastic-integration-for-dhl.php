@@ -6,7 +6,7 @@
  * Author: vendidero
  * Author URI: https://vendidero.de
  * Version: 4.0.0
- * Requires PHP: 5.6
+ * Requires PHP: 7.0
  * License: GPLv3
  * Requires Plugins: shiptastic-for-woocommerce
  */

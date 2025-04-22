@@ -8,6 +8,7 @@ namespace Vendidero\Shiptastic\DHL\ShippingProvider;
 
 use Vendidero\Shiptastic\DHL\Package;
 use Vendidero\Shiptastic\Shipment;
+use Vendidero\Shiptastic\ShipmentError;
 use Vendidero\Shiptastic\ShippingProvider\Auto;
 use Vendidero\Shiptastic\ShippingProvider\Product;
 use Vendidero\Shiptastic\ShippingProvider\ProductList;
@@ -159,12 +160,14 @@ class DeutschePost extends Auto {
 
 	public function test_connection() {
 		if ( $im = Package::get_internetmarke_api() ) {
-			if ( $im->is_configured() && $im->auth() && $im->is_available() ) {
-				return true;
-			} elseif ( $im->has_errors() ) {
-				return $im->get_errors();
+			if ( $im->is_configured() && $im->auth() ) {
+				$preview = $im->preview_stamp( 31 );
+
+				return $preview ? true : false;
 			}
 		}
+
+		return false;
 	}
 
 	protected function get_general_settings() {
@@ -206,7 +209,7 @@ class DeutschePost extends Auto {
 			$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
 
 			if ( is_admin() && $screen && in_array( $screen->id, array( 'woocommerce_page_wc-settings' ), true ) ) {
-				if ( $im->is_configured() && $im->auth() && $im->is_available() ) {
+				if ( $im->is_configured() && $im->auth() ) {
 					if ( isset( $_GET['provider'] ) && 'deutsche_post' === $_GET['provider'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						$balance = $im->get_balance( true );
 
@@ -221,6 +224,7 @@ class DeutschePost extends Auto {
 								array(
 									'title' => _x( 'Balance', 'dhl', 'shiptastic-integration-for-dhl' ),
 									'type'  => 'html',
+									'id'    => 'im_balance',
 									'html'  => wc_price( Package::cents_to_eur( $balance ), array( 'currency' => 'EUR' ) ),
 								),
 
@@ -236,21 +240,6 @@ class DeutschePost extends Auto {
 							)
 						);
 					}
-				} elseif ( $im && $im->has_errors() ) {
-					$settings = array_merge(
-						$settings,
-						array(
-							array(
-								'title' => _x( 'Portokasse', 'dhl', 'shiptastic-integration-for-dhl' ),
-								'type'  => 'title',
-								'id'    => 'deutsche_post_api_error',
-							),
-							array(
-								'type' => 'sectionend',
-								'id'   => 'deutsche_post_api_error',
-							),
-						)
-					);
 				}
 
 				if ( $im->is_configured() ) {
@@ -307,6 +296,7 @@ class DeutschePost extends Auto {
 	protected function register_print_formats() {
 		if ( $im = Package::get_internetmarke_api() ) {
 			$print_list = $im->get_page_format_list();
+
 			asort( $print_list );
 
 			foreach ( $print_list as $page_format_id => $page_format ) {
@@ -324,7 +314,7 @@ class DeutschePost extends Auto {
 		global $wpdb;
 
 		if ( ! get_transient( 'wc_stc_dhl_im_products_expire' ) ) {
-			if ( ( $api = Package::get_internetmarke_api() ) && $api->is_configured() ) {
+			if ( Package::get_internetmarke_api()->is_configured() ) {
 				$result = Package::get_internetmarke_api()->get_product_list()->update();
 
 				if ( is_wp_error( $result ) ) {
@@ -338,9 +328,15 @@ class DeutschePost extends Auto {
 			set_transient( 'wc_stc_dhl_im_products_expire', 'yes', DAY_IN_SECONDS );
 		}
 
-		$products = $wpdb->get_results( "SELECT * FROM {$wpdb->stc_dhl_im_products}" );
+		$products = wp_cache_get( 'im_products', 'shiptastic-dhl' );
 
-		foreach ( $products as $product ) {
+		if ( false === $products ) {
+			$products = $wpdb->get_results( "SELECT * FROM {$wpdb->stc_dhl_im_products}" );
+
+			wp_cache_set( 'im_products', $products, 'shiptastic-dhl' );
+		}
+
+		foreach ( (array) $products as $product ) {
 			$this->register_product(
 				$product->product_code,
 				array(
@@ -384,8 +380,8 @@ class DeutschePost extends Auto {
 	 * @param \Vendidero\Shiptastic\Shipment $shipment
 	 */
 	public function get_label_fields( $shipment ) {
-		if ( ! Package::get_internetmarke_api()->is_available() ) {
-			return Package::get_internetmarke_api()->get_errors();
+		if ( ! Package::get_internetmarke_api()->has_auth() ) {
+			return new ShipmentError( 500, sprintf( _x( 'Your Portokasse doesn\'t seem to be configured. Please check your <a href="%s">settings</a>.', 'dhl', 'shiptastic-integration-for-dhl' ), Package::get_deutsche_post_shipping_provider()->get_edit_link() ) );
 		}
 
 		return parent::get_label_fields( $shipment );

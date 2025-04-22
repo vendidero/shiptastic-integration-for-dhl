@@ -22,6 +22,7 @@ class Ajax {
 	public static function add_ajax_events() {
 		$ajax_events = array(
 			'refresh_deutsche_post_label_preview',
+			'charge_deutsche_post_im',
 		);
 
 		foreach ( $ajax_events as $ajax_event ) {
@@ -38,23 +39,42 @@ class Ajax {
 		$GLOBALS['wpdb']->hide_errors();
 	}
 
-	/**
-	 *
-	 */
+	public static function charge_deutsche_post_im() {
+		check_ajax_referer( 'wc-stc-dhl-charge-deutsche-post-im', 'security' );
+
+		if ( ! current_user_can( 'edit_shop_orders' ) || ! isset( $_POST['amount'] ) ) {
+			wp_die( -1 );
+		}
+
+		$amount = wc_format_decimal( wc_clean( wp_unslash( $_POST['amount'] ) ) );
+		$result = array(
+			'success' => false,
+			'balance' => '0.0',
+			'message' => _x( 'There was an error while recharging the Portokasse.', 'dhl', 'shiptastic-integration-for-dhl' ),
+		);
+
+		if ( ! empty( $amount ) ) {
+			$response = Package::get_internetmarke_api()->charge_wallet( $amount );
+
+			if ( false !== $response ) {
+				$result = array(
+					'success' => true,
+					'balance' => wc_price( $response ),
+					'message' => _x( 'Portokasse recharged successfully.', 'dhl', 'shiptastic-integration-for-dhl' ),
+				);
+			}
+		} else {
+			$result['message'] = _x( 'Please choose an amount to charge the Portokasse.', 'dhl', 'shiptastic-integration-for-dhl' );
+		}
+
+		wp_send_json( $result );
+	}
+
 	public static function refresh_deutsche_post_label_preview() {
 		check_ajax_referer( 'wc-stc-dhl-refresh-deutsche-post-label-preview', 'security' );
 
 		if ( ! current_user_can( 'edit_shop_orders' ) || ! isset( $_POST['product_id'], $_POST['reference_id'] ) ) {
 			wp_die( -1 );
-		}
-
-		if ( ! Package::get_internetmarke_api()->is_available() ) {
-			wp_send_json(
-				array(
-					'success'  => false,
-					'messages' => Package::get_internetmarke_api()->get_errors()->get_error_messages(),
-				)
-			);
 		}
 
 		$selected_services = isset( $_POST['selected_services'] ) ? wc_clean( wp_unslash( $_POST['selected_services'] ) ) : array();

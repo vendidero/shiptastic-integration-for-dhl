@@ -934,6 +934,7 @@ class DHL extends Auto {
 					'value'             => $this->get_setting( 'api_sandbox_username', '' ),
 					'custom_attributes' => array(
 						'data-show_if_sandbox_mode' => '',
+						'data-show_if_api_type'     => 'soap',
 						'autocomplete'              => 'new-password',
 					),
 				),
@@ -946,6 +947,7 @@ class DHL extends Auto {
 					'value'             => $this->get_setting( 'api_sandbox_password', '' ),
 					'custom_attributes' => array(
 						'data-show_if_sandbox_mode' => '',
+						'data-show_if_api_type'     => 'soap',
 						'autocomplete'              => 'new-password',
 					),
 				),
@@ -1484,5 +1486,39 @@ class DHL extends Auto {
 
 	public function get_supported_label_config_set_shipment_types() {
 		return array( 'simple' );
+	}
+
+	public function update_settings( $section = '', $data = null, $save = true ) {
+		$settings_to_save    = Settings::get_sanitized_settings( $this->get_settings( $section ), $data );
+		$has_changed_account = false;
+
+		if ( ! empty( $settings_to_save['api_username'] ) && $settings_to_save['api_username'] !== $this->get_api_username( 'edit' ) ) {
+			$has_changed_account = true;
+		}
+
+		parent::update_settings( $section, $data, $save );
+
+		if ( $has_changed_account ) {
+			if ( $api = Package::get_api()->get_myaccount_api() ) {
+				$participation_numbers = $api->get_user_participation_numbers();
+
+				if ( ! empty( $participation_numbers ) ) {
+					foreach ( $participation_numbers as $product_id => $billing_numbers ) {
+						if ( empty( $billing_numbers['default'] ) ) {
+							$billing_numbers['default'] = $billing_numbers['gogreen'];
+						}
+
+						if ( ! empty( $billing_numbers['default'] ) ) {
+							$this->update_setting( "participation_{$product_id}", substr( $billing_numbers['default'], -2 ) );
+							$this->update_setting( "participation_gogreen_{$product_id}", substr( $billing_numbers['gogreen'], -2 ) );
+						}
+					}
+
+					if ( $save ) {
+						$this->save();
+					}
+				}
+			}
+		}
 	}
 }

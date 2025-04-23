@@ -105,10 +105,6 @@ class DeutschePost extends Auto {
 		return Package::get_available_countries();
 	}
 
-	protected function get_connection_status_html( $maybe_error ) {
-		return '<span class="wc-stc-shipment-api-connection-status ' . ( is_wp_error( $maybe_error ) ? 'connection-status-error' : 'connection-status-success' ) . '">' . ( sprintf( _x( 'Status: %1$s', 'dhl', 'shiptastic-integration-for-dhl' ), ( is_wp_error( $maybe_error ) ? $maybe_error->get_error_message() : _x( 'Connected', 'dhl', 'shiptastic-integration-for-dhl' ) ) ) ) . '</span>';
-	}
-
 	protected function get_printing_settings() {
 		$settings     = parent::get_printing_settings();
 		$settings_url = $this->get_edit_link( '' );

@@ -8,7 +8,7 @@
   "prefer-stable": true,
   "minimum-stability": "dev",
   "require": {
-    "automattic/jetpack-autoloader": "^5",
+    "automattic/jetpack-autoloader": "2.11.18",
     "php": ">=5.6|>=7.0",
     "composer/installers": "^2.0.0"
   },

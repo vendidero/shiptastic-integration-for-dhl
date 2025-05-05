@@ -83,7 +83,11 @@ class OAuthPaket extends OAuth {
 		}
 	}
 
-	public function revoke() {
+	public function invalidate() {
 		delete_transient( 'woocommerce_stc_dhl_paket_api_access_token' );
+	}
+
+	public function revoke() {
+		$this->invalidate();
 	}
 }

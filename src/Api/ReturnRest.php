@@ -153,7 +153,6 @@ class ReturnRest extends PaketRest {
 	public function create_return_label( $label ) {
 		try {
 			$request_args = $this->get_request_args( $label );
-			Package::log( 'Call returns API: ' . wc_print_r( $request_args, true ) );
 
 			$args = array(
 				'labelType' => 'SHIPMENT_LABEL',
@@ -194,7 +193,6 @@ class ReturnRest extends PaketRest {
 				return $label;
 			}
 		} catch ( Exception $e ) {
-			Package::log( 'Response Error: ' . $e->getMessage() );
 			throw $e;
 		}
 	}

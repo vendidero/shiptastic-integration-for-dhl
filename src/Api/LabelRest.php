@@ -584,8 +584,6 @@ class LabelRest extends PaketRest {
 			$response = $this->delete( $endpoint );
 
 			if ( $response->is_error() ) {
-				Package::log( 'Error while cancelling label: ' . wc_print_r( $response->get_error()->get_error_messages(), true ) );
-
 				throw new \Exception( wp_kses_post( implode( "\n", $response->get_error()->get_error_messages() ) ), absint( $response->get_code() ) );
 			}
 

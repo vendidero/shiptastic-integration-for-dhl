@@ -55,8 +55,7 @@ abstract class PaketRest extends \Vendidero\Shiptastic\API\REST {
 						}
 					} elseif ( ! in_array( $message['validationMessage'], $soft_error_messages, true ) ) {
 						// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-							$soft_error_messages[] = $message['validationMessage']; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-
+						$soft_error_messages[] = $message['validationMessage']; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					}
 				}
 			} elseif ( ! empty( $response_body['items'][0]['sstatus'] ) ) {
@@ -88,8 +87,6 @@ abstract class PaketRest extends \Vendidero\Shiptastic\API\REST {
 				$error_messages[] = $error_message;
 			}
 		}
-
-		Package::log( 'POST Error: ' . $response_code . ' - ' . wc_print_r( $error_messages, true ) );
 
 		foreach ( $error_messages as $error_message ) {
 			$error->add( 'dhl-api-error', $error_message );

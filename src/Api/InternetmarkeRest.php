@@ -42,7 +42,10 @@ class InternetmarkeRest extends \Vendidero\Shiptastic\API\REST {
 		if ( 401 === $code ) {
 			$error->add( 401, sprintf( _x( 'Your Internetmarke <a href="%s">API credentials</a> seem to be invalid or the API access has not yet been approved.', 'dhl', 'shiptastic-integration-for-dhl' ), esc_url( Package::get_deutsche_post_shipping_provider()->get_edit_link() ) ) );
 		} elseif ( isset( $body['description'] ) ) {
-			$error->add( $code, wp_kses_post( wp_unslash( $body['description'] ) ) );
+			$title         = isset( $body['title'] ) ? wp_kses_post( wp_unslash( $body['title'] ) ) . ': ' : '';
+			$error_message = $title . wp_kses_post( wp_unslash( $body['description'] ) );
+
+			$error->add( $code, $error_message );
 		}
 
 		if ( $error->has_errors() ) {

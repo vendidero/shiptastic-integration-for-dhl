@@ -140,9 +140,11 @@ class InternetmarkeRest extends \Vendidero\Shiptastic\API\REST {
 			throw new \Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'shiptastic-integration-for-dhl' ), $label->get_shipment_id() ) ) );
 		}
 
+		$has_contact_name = $shipment->get_sender_first_name() || $shipment->get_sender_last_name();
+
 		$sender = array(
-			'name'           => wc_shiptastic_substring( $shipment->get_sender_first_name() . ' ' . $shipment->get_sender_last_name(), 0, 50 ),
-			'additionalName' => wc_shiptastic_substring( $shipment->get_sender_company(), 0, 40 ),
+			'name'           => wc_shiptastic_substring( ( $has_contact_name ? ( $shipment->get_sender_first_name() . ' ' . $shipment->get_sender_last_name() ) : $shipment->get_sender_company() ), 0, 50 ),
+			'additionalName' => wc_shiptastic_substring( ( $has_contact_name ? $shipment->get_sender_company() : '' ), 0, 40 ),
 			'addressLine1'   => wc_shiptastic_substring( $shipment->get_sender_address_1(), 0, 50 ),
 			'addressLine2'   => wc_shiptastic_substring( $shipment->get_sender_address_2(), 0, 60 ),
 			'postalCode'     => $shipment->get_sender_postcode(),

@@ -376,7 +376,7 @@ class DeutschePost extends Auto {
 	 * @param \Vendidero\Shiptastic\Shipment $shipment
 	 */
 	public function get_label_fields( $shipment ) {
-		if ( ! Package::get_internetmarke_api()->has_auth() ) {
+		if ( ! Package::get_internetmarke_api()->auth() ) {
 			return new ShipmentError( 500, sprintf( _x( 'Your Portokasse doesn\'t seem to be configured. Please check your <a href="%s">settings</a>.', 'dhl', 'shiptastic-integration-for-dhl' ), Package::get_deutsche_post_shipping_provider()->get_edit_link() ) );
 		}
 

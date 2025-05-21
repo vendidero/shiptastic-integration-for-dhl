@@ -318,7 +318,7 @@ class LabelRest extends PaketRest {
 				 */
 				'name3'                         => wc_shiptastic_substring( apply_filters( 'woocommerce_shiptastic_dhl_label_api_receiver_name3', $address_components['address_2'], $label ), 0, 50 ),
 				'addressStreet'                 => $address_components['address_1'],
-				'additionalAddressInformation1' => wc_shiptastic_substring( $address_components['street_addition'], 0, 60 ),
+				'additionalAddressInformation1' => wc_shiptastic_substring( apply_filters( 'woocommerce_shiptastic_dhl_label_api_receiver_address_information', '', $label ), 0, 60 ),
 				'postalCode'                    => $shipment->get_postcode(),
 				'city'                          => $shipment->get_city(),
 				'state'                         => wc_shiptastic_substring( wc_stc_dhl_format_label_state( $shipment->get_state(), $shipment->get_country() ), 0, 20 ),

@@ -30,7 +30,7 @@ class Package {
 	 *
 	 * @var string
 	 */
-	const VERSION = '3.8.0';
+	const VERSION = '3.8.1';
 
 	// These are all considered domestic by DHL
 	protected static $us_territories = array( 'US', 'GU', 'AS', 'PR', 'UM', 'VI' );

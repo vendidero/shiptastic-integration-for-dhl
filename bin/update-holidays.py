@@ -1,16 +1,20 @@
-import urllib.request, json, datetime
+import urllib.request, json, datetime, ssl
 
 url       = "https://feiertage-api.de/api/?nur_daten=1&jahr="
 now      = datetime.date.today()
 years    = [ now.year, now.year + 1 ]
 holidays = []
 
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
 for year in years:
-    with urllib.request.urlopen( url + str (year) ) as response:
-        data = json.loads( response.read() )
+    with urllib.request.urlopen(url + str (year), context=ctx) as response:
+        data = json.loads(response.read())
 
         for key, value in data.items():
-            holidays.append( value )
+            holidays.append(value)
 
 with open( "i18n/holidays.php", "w" ) as holiday_file:
     holiday_array = "\nreturn array(\n\t'DE' => array(\n"

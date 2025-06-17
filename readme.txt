@@ -16,6 +16,8 @@ This plugin registers DHL as a shipping service provider for [Shiptastic](http:/
 WooCommerce > Settings > Shiptastic > Shipping Service Providers > DHL and connect your store to the DHL API. After that, you may conveniently create
 DHL labels to your shipments right from within your admin panel and allow your customers to choose pickup locations from within your checkout.
 
+Please note: This plugin does currently only work for shop owners in Germany (DHL Paket). We are working on a version which supports DHL Express too.
+
 == Installation ==
 
 = Minimal Requirements =
@@ -31,5 +33,5 @@ This plugin connects to an API to create labels and/or provide your customer wit
 This service is provided by DHL: [terms of use](https://developer.dhl.com/terms-use?language_content_entity=en), [privacy policy](https://developer.dhl.com/privacy-notice?language_content_entity=en).
 
 == Changelog ==
-= 1.0.0 =
+= 4.0.0 =
 * Initial version release

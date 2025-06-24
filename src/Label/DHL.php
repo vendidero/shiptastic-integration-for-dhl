@@ -41,6 +41,10 @@ class DHL extends Label {
 		return (array) $return_address;
 	}
 
+	public function return_has_go_green_plus( $context = 'view' ) {
+		return wc_string_to_bool( $this->get_service_prop( 'dhlRetoure', 'gogreenplus', null, $context ) );
+	}
+
 	/**
 	 * Gets a prop for a getter method.
 	 *

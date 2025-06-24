@@ -173,6 +173,10 @@ class LabelRest extends PaketRest {
 					'country'       => wc_stc_country_to_alpha3( $label->get_return_country() ),
 				),
 			);
+
+			if ( $label->return_has_go_green_plus() ) {
+				$services['dhlRetoure']['goGreenPlus'] = true;
+			}
 		}
 
 		$shipment_request = array(

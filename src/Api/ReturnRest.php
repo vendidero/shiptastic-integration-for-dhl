@@ -46,6 +46,15 @@ class ReturnRest extends PaketRest {
 			throw new Exception( esc_html( sprintf( _x( 'Could not fetch shipment %d.', 'dhl', 'shiptastic-integration-for-dhl' ), $label->get_shipment_id() ) ) );
 		}
 
+		foreach ( $label->get_services() as $service ) {
+			$service_name = lcfirst( $service );
+
+			switch ( $service ) {
+				default:
+					$services[ $service_name ] = true;
+			}
+		}
+
 		$address_components = wc_stc_dhl_get_shipment_address_components_with_number( $shipment );
 
 		$request_args = array(
@@ -82,6 +91,10 @@ class ReturnRest extends PaketRest {
 				'value'    => $shipment->get_total(),
 			),
 		);
+
+		if ( ! empty( $services ) ) {
+			$request_args['services'] = $services;
+		}
 
 		if ( Package::is_crossborder_shipment( $label->get_sender_country(), $label->get_sender_postcode() ) ) {
 			$items        = array();

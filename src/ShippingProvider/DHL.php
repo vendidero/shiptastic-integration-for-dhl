@@ -193,6 +193,17 @@ class DHL extends Auto {
 			)
 		);
 
+		$this->register_service(
+			'GoGreenPlus',
+			array(
+				'label'          => _x( 'GoGreen Plus', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'description'    => _x( 'Ship your parcels climate friendly.', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'shipment_types' => array( 'simple', 'return' ),
+				'countries'      => array( 'DE' ),
+				'zones'          => array( 'dom' ),
+			)
+		);
+
 		$this->register_service( new PreferredLocation( $this ) );
 		$this->register_service( new PreferredNeighbour( $this ) );
 		$this->register_service( new PreferredDay( $this ) );
@@ -240,7 +251,7 @@ class DHL extends Auto {
 			array(
 				'label'       => _x( 'Bulky Goods', 'dhl', 'shiptastic-integration-for-dhl' ),
 				'description' => _x( 'Deliver as bulky goods.', 'dhl', 'shiptastic-integration-for-dhl' ),
-				'products'    => array( 'V01PAK', 'V53WPAK' ),
+				'products'    => array( 'V01PAK', 'V53WPAK', 'V54EPAK' ),
 			)
 		);
 

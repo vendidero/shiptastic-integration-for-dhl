@@ -45,9 +45,28 @@ class DHLRetoure extends Service {
 		return $label_fields;
 	}
 
+	protected function get_additional_setting_fields( $configuration_set ) {
+		$base_setting_id = $this->get_setting_id( $configuration_set );
+		$setting_id      = $this->get_setting_id( $configuration_set, 'GoGreenPlus' );
+		$value           = $configuration_set->get_service_meta( $this->get_id(), 'GoGreenPlus', 'no' );
+
+		return array(
+			array(
+				'title'             => _x( 'GoGreen Plus', 'dhl', 'shiptastic-integration-for-dhl' ),
+				'id'                => $setting_id,
+				'type'              => 'shiptastic_toggle',
+				'default'           => 'no',
+				'value'             => $value,
+				'custom_attributes' => array( "data-show_if_{$base_setting_id}" => '' ),
+				'desc'              => _x( 'Enable the GoGreen Plus service for inlay returns.', 'dhl', 'shiptastic-integration-for-dhl' ),
+			),
+		);
+	}
+
 	protected function get_additional_label_fields( $shipment ) {
 		$label_fields   = parent::get_additional_label_fields( $shipment );
 		$field_prefix   = $this->get_label_field_id( 'return_address' );
+		$go_green_plus  = $this->get_value( $shipment, 'GoGreenPlus' );
 		$return_address = array(
 			'name'          => Package::get_dhl_shipping_provider()->get_return_name(),
 			'company'       => Package::get_dhl_shipping_provider()->get_return_company(),
@@ -153,6 +172,23 @@ class DHLRetoure extends Service {
 					'type'          => 'text',
 					'wrapper_class' => 'show-if-has-return column col-6',
 					'value'         => $return_address['email'],
+				),
+				array(
+					'id'   => '',
+					'type' => 'columns_end',
+				),
+				array(
+					'id'   => '',
+					'type' => 'columns',
+				),
+				array(
+					'id'            => $this->get_label_field_id( 'gogreenplus' ),
+					'label'         => _x( 'GoGreen Plus', 'dhl', 'shiptastic-integration-for-dhl' ),
+					'placeholder'   => '',
+					'description'   => '',
+					'type'          => 'checkbox',
+					'wrapper_class' => 'show-if-has-return column col-12 form-field-checkbox',
+					'value'         => $go_green_plus,
 				),
 				array(
 					'id'   => '',

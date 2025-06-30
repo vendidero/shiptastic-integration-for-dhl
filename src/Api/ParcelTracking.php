@@ -60,6 +60,7 @@ class ParcelTracking extends \Vendidero\Shiptastic\API\REST {
 
 		$headers['Content-Type'] = 'text/xml';
 		$headers['Accept']       = '*/*';
+		$headers['DHL-API-Key']  = Package::get_dhl_com_api_key();
 
 		return $headers;
 	}

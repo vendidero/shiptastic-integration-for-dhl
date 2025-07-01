@@ -20,7 +20,7 @@ class ParcelTracking extends \Vendidero\Shiptastic\API\REST {
 	}
 
 	public function get_url() {
-		return $this->is_sandbox() ? 'https://api-sandbox.dhl.com/parcel/de/tracking/v0/' : 'https://api-eu.dhl.com/parcel/de/tracking/v0/shipments';
+		return $this->is_sandbox() ? 'https://api-sandbox.dhl.com/parcel/de/tracking/v0/' : 'https://api-eu.dhl.com/parcel/de/tracking/v0/';
 	}
 
 	protected function get_auth_instance() {
@@ -138,6 +138,7 @@ class ParcelTracking extends \Vendidero\Shiptastic\API\REST {
 								$status           = wc_clean( $piece_shipment->getAttribute( 'status' ) );
 								$status_short     = wc_clean( $piece_shipment->getAttribute( 'short-status' ) );
 								$delivery_flag    = wc_clean( $piece_shipment->getAttribute( 'delivery-event-flag' ) );
+								$ice_flag         = wc_clean( $piece_shipment->getAttribute( 'ice' ) ); // see https://developer.dhl.com/api-reference/dhl-paket-de-sendungsverfolgung-post-paket-deutschland#downloads-section
 
 								try {
 									$status_datetime = new \WC_DateTime( $status_timestamp, new \DateTimeZone( 'Europe/Berlin' ) );
@@ -147,13 +148,25 @@ class ParcelTracking extends \Vendidero\Shiptastic\API\REST {
 								}
 
 								if ( array_key_exists( $piece_code, $shipment_list ) ) {
+									$is_delivered  = (bool) $delivery_flag;
+									$is_in_transit = ! $is_delivered;
+
+									/**
+									 * PARCV = PAN Received by Carrier (elektronische Übermittlung)
+									 */
+									if ( in_array( $ice_flag, array( 'PARCV' ), true ) ) {
+										$is_in_transit = false;
+									}
+
 									$status_list[ $piece_code ] = new ShipmentStatus(
-										$shipment,
+										$shipment_list[ $piece_code ],
 										array(
 											'status'       => $status_short,
 											'status_description' => $status,
-											'is_delivered' => (bool) $delivery_flag,
+											'is_delivered' => $is_delivered,
+											'is_in_transit' => $is_in_transit,
 											'last_updated' => $status_datetime,
+											'ice'          => $ice_flag,
 											'delivered_at' => true === (bool) $delivery_flag ? $status_datetime : null,
 										)
 									);

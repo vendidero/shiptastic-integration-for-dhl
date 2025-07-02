@@ -260,17 +260,6 @@ class DeutschePost extends Auto {
 			}
 		}
 
-		$settings = array_merge(
-			$settings,
-			array(
-				array(
-					'title' => _x( 'Tracking', 'dhl', 'shiptastic-integration-for-dhl' ),
-					'type'  => 'title',
-					'id'    => 'tracking_options',
-				),
-			)
-		);
-
 		$general_settings = parent::get_general_settings();
 
 		return array_merge( $settings, $general_settings );

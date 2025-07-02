@@ -24,6 +24,7 @@ use Vendidero\Shiptastic\Admin\Tutorial;
 use Vendidero\Shiptastic\Labels\ConfigurationSet;
 use Vendidero\Shiptastic\Shipment;
 use Vendidero\Shiptastic\ShippingProvider\Auto;
+use Vendidero\Shiptastic\Tracking\ShipmentStatus;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -486,6 +487,29 @@ class DHL extends Auto {
 
 	public function supports_customer_return_requests() {
 		return $this->enable_retoure();
+	}
+
+	public function supports_remote_shipment_status() {
+		return true;
+	}
+
+	/**
+	 * @param Shipment[] $shipments
+	 *
+	 * @return ShipmentStatus[]
+	 */
+	public function get_remote_status_for_shipments( $shipments ) {
+		$status = array();
+
+		if ( $api = Package::get_api()->get_parcel_tracking_api() ) {
+			$response = $api->get_bulk_statuses( $shipments );
+
+			if ( ! is_wp_error( $response ) ) {
+				$status = $response;
+			}
+		}
+
+		return $status;
 	}
 
 	/**
@@ -1075,25 +1099,10 @@ class DHL extends Auto {
 					'type' => 'sectionend',
 					'id'   => 'dhl_bank_account_options',
 				),
-				array(
-					'title' => _x( 'Tracking', 'dhl', 'shiptastic-integration-for-dhl' ),
-					'type'  => 'title',
-					'id'    => 'tracking_options',
-				),
 			)
 		);
 
 		$general_settings = parent::get_general_settings();
-
-		$general_settings = array_merge(
-			$general_settings,
-			array(
-				array(
-					'type' => 'sectionend',
-					'id'   => 'tracking_options',
-				),
-			)
-		);
 
 		return array_merge( $settings, $general_settings );
 	}

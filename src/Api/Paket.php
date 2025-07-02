@@ -56,6 +56,13 @@ class Paket {
 	}
 
 	/**
+	 * @return ParcelTracking|false
+	 */
+	public function get_parcel_tracking_api() {
+		return Helper::get_api( 'dhl_de_parcel_tracking', $this->is_debug_mode() );
+	}
+
+	/**
 	 * @return ReturnRest|\Vendidero\Shiptastic\Interfaces\Api
 	 */
 	public function get_return_api() {

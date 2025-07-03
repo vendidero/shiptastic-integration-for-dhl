@@ -7,7 +7,6 @@
 namespace Vendidero\Shiptastic\DHL\ShippingProvider;
 
 use Vendidero\Shiptastic\DHL\Package;
-use Vendidero\Shiptastic\DHL\ParcelLocator;
 use Vendidero\Shiptastic\DHL\ParcelServices;
 use Vendidero\Shiptastic\DHL\ShippingProvider\Services\AdditionalInsurance;
 use Vendidero\Shiptastic\DHL\ShippingProvider\Services\CashOnDelivery;
@@ -18,7 +17,6 @@ use Vendidero\Shiptastic\DHL\ShippingProvider\Services\PreferredDay;
 use Vendidero\Shiptastic\DHL\ShippingProvider\Services\PreferredLocation;
 use Vendidero\Shiptastic\DHL\ShippingProvider\Services\PreferredNeighbour;
 use Vendidero\Shiptastic\DHL\ShippingProvider\Services\VisualCheckOfAge;
-use Vendidero\Shiptastic\Admin\ProviderSettings;
 use Vendidero\Shiptastic\Admin\Settings;
 use Vendidero\Shiptastic\Admin\Tutorial;
 use Vendidero\Shiptastic\Labels\ConfigurationSet;
@@ -489,8 +487,12 @@ class DHL extends Auto {
 		return $this->enable_retoure();
 	}
 
-	public function supports_remote_shipment_status() {
-		return true;
+	public function supports_remote_shipment_status( $type ) {
+		if ( 'pull' === $type ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

@@ -354,7 +354,7 @@ final class PreferredServices {
 	 * @return array
 	 */
 	private function get_checkout_data_from_request( $request ) {
-		$data = array_filter( (array) wc_clean( $request['extensions']['woocommerce-stc-dhl'] ) );
+		$data = array_filter( isset( $request['extensions']['woocommerce-stc-dhl'] ) ? (array) wc_clean( $request['extensions']['woocommerce-stc-dhl'] ) : array() );
 
 		$data = wp_parse_args(
 			$data,

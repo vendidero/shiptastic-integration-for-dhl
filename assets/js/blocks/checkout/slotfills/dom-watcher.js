@@ -18,7 +18,7 @@ const DomWatcher = ({
         const extensionsData = select( CHECKOUT_STORE_KEY ).getExtensionData();
 
         if ( ! extensionsData.hasOwnProperty( 'woocommerce-stc-dhl' ) ) {
-            dispatch( CHECKOUT_STORE_KEY ).__internalSetExtensionData( 'woocommerce-stc-dhl', {} );
+            dispatch( CHECKOUT_STORE_KEY ).setExtensionData( 'woocommerce-stc-dhl', {} );
         }
     }, [] );
 

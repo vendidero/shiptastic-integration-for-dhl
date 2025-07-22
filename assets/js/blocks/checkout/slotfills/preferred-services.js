@@ -36,7 +36,7 @@ const getDhlCheckoutData = ( checkoutData ) => {
 };
 
 const setDhlCheckoutData = ( checkoutData ) => {
-    dispatch( CHECKOUT_STORE_KEY ).__internalSetExtensionData( 'woocommerce-stc-dhl', checkoutData );
+    dispatch( CHECKOUT_STORE_KEY ).setExtensionData( 'woocommerce-stc-dhl', checkoutData );
 };
 
 const DhlPreferredDaySelect = ({
@@ -328,7 +328,7 @@ const DhlPreferredDeliveryOptions = ({
     const [ needsFeeUpdate, setNeedsFeeUpdate ] = useState( false );
     const shippingProviders = getSelectedShippingProviders( shippingRates );
     const hasDhlProvider = hasShippingProvider( 'dhl', shippingProviders );
-    const { __internalSetExtensionData } = useDispatch( CHECKOUT_STORE_KEY );
+    const { setExtensionData } = useDispatch( CHECKOUT_STORE_KEY );
 
     const { isCustomerDataUpdating } = useSelect(
         ( select ) => {
@@ -348,14 +348,13 @@ const DhlPreferredDeliveryOptions = ({
         };
     }, [] );
 
-    const { preferredOptions } = useSelect( ( select ) => {
+    const extensionsData = useSelect( ( select ) => {
         const store = select( CHECKOUT_STORE_KEY );
 
-        return {
-            preferredOptions: getDhlCheckoutData( store.getExtensionData() )
-        };
+        return store.getExtensionData();
     } );
 
+    const preferredOptions      = getDhlCheckoutData( extensionsData );
     const dhlOptions            = getDhlCheckoutData( extensions );
     const preferredDayCost = parseInt( dhlOptions.hasOwnProperty( 'preferred_day_cost' ) ? dhlOptions['preferred_day_cost'] : 0, 10 );
     const homeDeliveryCost = parseInt( dhlOptions.hasOwnProperty( 'preferred_home_delivery_cost' ) ? dhlOptions['preferred_home_delivery_cost'] : 0, 10 );
@@ -433,7 +432,7 @@ const DhlPreferredDeliveryOptions = ({
     }, [
         preferredOptionsAvailable,
         isCdpAvailable,
-        __internalSetExtensionData
+        setExtensionData
     ] );
 
     // Debounce re-disable since disabling process itself will incur additional mutations which should be ignored.

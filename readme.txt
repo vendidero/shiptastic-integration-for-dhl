@@ -3,7 +3,7 @@ Contributors: vendidero, vdwoocommercesupport
 Tags: shipping, UPS, shiptastic, woocommerce
 Requires at least: 5.4
 Tested up to: 6.8
-Stable tag: 4.1.0
+Stable tag: 4.1.1
 Requires PHP: 7.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -33,6 +33,9 @@ This plugin connects to an API to create labels and/or provide your customer wit
 This service is provided by DHL: [terms of use](https://developer.dhl.com/terms-use?language_content_entity=en), [privacy policy](https://developer.dhl.com/privacy-notice?language_content_entity=en).
 
 == Changelog ==
+= 4.1.1 =
+* Fix: TipTip script dependencies for Woo >= 10.0.3
+
 = 4.1.0 =
 * New: Support remote shipment tracking
 

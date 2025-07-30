@@ -326,6 +326,7 @@ const DhlPreferredDeliveryOptions = ({
     } );
 
     const [ needsFeeUpdate, setNeedsFeeUpdate ] = useState( false );
+    const [ checkoutHasPickupLocation, setCheckoutHasPickupLocation ] = useState( false );
     const shippingProviders = getSelectedShippingProviders( shippingRates );
     const hasDhlProvider = hasShippingProvider( 'dhl', shippingProviders );
     const { setExtensionData } = useDispatch( CHECKOUT_STORE_KEY );
@@ -390,11 +391,18 @@ const DhlPreferredDeliveryOptions = ({
     const totalsCurrency = getCurrencyFromPriceResponse( cart.cartTotals );
     const excludedPaymentGateways = getSetting( 'dhlExcludedPaymentGateways', [] );
     const isGatewayExcluded = _.includes( excludedPaymentGateways, activePaymentMethod );
+    const hasPickupLocationShip = hasPickupLocation();
+
+    useEffect(() => {
+        setCheckoutHasPickupLocation( () => hasPickupLocationShip );
+    }, [
+        hasPickupLocationShip
+    ] );
 
     const preferredDayEnabled = dhlOptions.preferred_day_enabled && dhlOptions.preferred_days.length > 0;
-    const preferredLocationEnabled = dhlOptions.preferred_location_enabled && ! hasPickupLocation();
-    const preferredNeighborEnabled = dhlOptions.preferred_neighbor_enabled && ! hasPickupLocation();
-    const preferredDeliveryTypeEnabled = dhlOptions.preferred_delivery_type_enabled;
+    const preferredLocationEnabled = dhlOptions.preferred_location_enabled && ! checkoutHasPickupLocation;
+    const preferredNeighborEnabled = dhlOptions.preferred_neighbor_enabled && ! checkoutHasPickupLocation;
+    const preferredDeliveryTypeEnabled = dhlOptions.preferred_delivery_type_enabled && ! checkoutHasPickupLocation;
     const cdpCountries = getSetting( 'dhlCdpCountries', [] );
 
     const preferredOptionsAvailable = 'DE' === cart.shippingAddress.country && ( preferredDayEnabled || preferredNeighborEnabled || preferredLocationEnabled );
@@ -430,6 +438,7 @@ const DhlPreferredDeliveryOptions = ({
             }
         }
     }, [
+        isAvailable,
         preferredOptionsAvailable,
         isCdpAvailable,
         setExtensionData

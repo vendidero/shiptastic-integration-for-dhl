@@ -32,7 +32,7 @@ class Package {
 	 *
 	 * @var string
 	 */
-	const VERSION = '4.1.1';
+	const VERSION = '4.1.2';
 
 	// These are all considered domestic by DHL
 	protected static $us_territories = array( 'US', 'GU', 'AS', 'PR', 'UM', 'VI' );
@@ -439,7 +439,7 @@ class Package {
 	 * @return string
 	 */
 	public static function get_i18n_path() {
-		return apply_filters( 'woocommerce_shiptastic_dhl_get_i18n_path', self::get_path( 'i18n/languages' ) );
+		return self::is_standalone() ? self::get_path( 'i18n/languages' ) : apply_filters( 'woocommerce_shiptastic_dhl_get_i18n_path', self::get_path( 'i18n/languages' ) );
 	}
 
 	/**
@@ -448,7 +448,7 @@ class Package {
 	 * @return string
 	 */
 	public static function get_i18n_textdomain() {
-		return apply_filters( 'woocommerce_shiptastic_dhl_get_i18n_textdomain', 'shiptastic-integration-for-dhl' );
+		return self::is_standalone() ? 'shiptastic-integration-for-dhl' : apply_filters( 'woocommerce_shiptastic_dhl_get_i18n_textdomain', 'shiptastic-integration-for-dhl' );
 	}
 
 	public static function get_template_path() {

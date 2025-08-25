@@ -652,6 +652,18 @@ class LabelRest extends PaketRest {
 		return apply_filters( 'woocommerce_shiptastic_dhl_label_api_export_type', strtoupper( $export_type ), $label );
 	}
 
+	protected function get_headers( $headers = array() ) {
+		$headers = parent::get_headers( $headers );
+
+		$headers['Accept-Language'] = 'en-US';
+
+		if ( 'DE' === Package::get_base_country() ) {
+			$headers['Accept-Language'] = 'de-DE';
+		}
+
+		return $headers;
+	}
+
 	public function test_connection() {
 		$error    = new \WP_Error();
 		$response = $this->post(

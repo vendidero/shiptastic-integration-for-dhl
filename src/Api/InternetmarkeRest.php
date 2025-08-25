@@ -143,10 +143,10 @@ class InternetmarkeRest extends \Vendidero\Shiptastic\API\REST {
 		$has_contact_name = $shipment->get_sender_first_name() || $shipment->get_sender_last_name();
 
 		$sender = array(
-			'name'           => wc_shiptastic_substring( ( $has_contact_name ? ( $shipment->get_sender_first_name() . ' ' . $shipment->get_sender_last_name() ) : $shipment->get_sender_company() ), 0, 50 ),
-			'additionalName' => wc_shiptastic_substring( ( $has_contact_name ? $shipment->get_sender_company() : '' ), 0, 40 ),
-			'addressLine1'   => wc_shiptastic_substring( $shipment->get_sender_address_1(), 0, 50 ),
-			'addressLine2'   => wc_shiptastic_substring( $shipment->get_sender_address_2(), 0, 60 ),
+			'name'           => wc_shiptastic_substring( $this->encode( ( $has_contact_name ? ( $shipment->get_sender_first_name() . ' ' . $shipment->get_sender_last_name() ) : $shipment->get_sender_company() ) ), 0, 50 ),
+			'additionalName' => wc_shiptastic_substring( $this->encode( ( $has_contact_name ? $shipment->get_sender_company() : '' ) ), 0, 40 ),
+			'addressLine1'   => wc_shiptastic_substring( $this->encode( $shipment->get_sender_address_1() ), 0, 50 ),
+			'addressLine2'   => wc_shiptastic_substring( $this->encode( $shipment->get_sender_address_2() ), 0, 60 ),
 			'postalCode'     => $shipment->get_sender_postcode(),
 			'city'           => wc_shiptastic_substring( $shipment->get_sender_city(), 0, 40 ),
 			'country'        => wc_stc_country_to_alpha3( $shipment->get_sender_country() ),
@@ -159,10 +159,10 @@ class InternetmarkeRest extends \Vendidero\Shiptastic\API\REST {
 		}
 
 		$receiver = array(
-			'name'           => wc_shiptastic_substring( $shipment->get_first_name() . ' ' . $shipment->get_last_name(), 0, 50 ),
-			'additionalName' => wc_shiptastic_substring( $shipment->get_company(), 0, 40 ),
-			'addressLine1'   => wc_shiptastic_substring( $shipment->get_address_1(), 0, 50 ),
-			'addressLine2'   => wc_shiptastic_substring( $receiver_address_2, 0, 60 ),
+			'name'           => wc_shiptastic_substring( $this->encode( $shipment->get_first_name() . ' ' . $shipment->get_last_name() ), 0, 50 ),
+			'additionalName' => wc_shiptastic_substring( $this->encode( $shipment->get_company() ), 0, 40 ),
+			'addressLine1'   => wc_shiptastic_substring( $this->encode( $shipment->get_address_1() ), 0, 50 ),
+			'addressLine2'   => wc_shiptastic_substring( $this->encode( $receiver_address_2 ), 0, 60 ),
 			'postalCode'     => $shipment->get_postcode(),
 			'city'           => wc_shiptastic_substring( $shipment->get_city(), 0, 40 ),
 			'country'        => wc_stc_country_to_alpha3( $shipment->get_country() ),
@@ -290,5 +290,9 @@ class InternetmarkeRest extends \Vendidero\Shiptastic\API\REST {
 		$result = $response->get_body();
 
 		return ! empty( $result['retoureTransactionId'] ) ? wc_clean( $result['retoureTransactionId'] ) : '';
+	}
+
+	protected function encode( $str ) {
+		return function_exists( 'wc_shiptastic_decode_html' ) ? wc_shiptastic_decode_html( $str ) : html_entity_decode( $str, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
 	}
 }

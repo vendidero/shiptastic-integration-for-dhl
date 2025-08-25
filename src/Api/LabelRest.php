@@ -165,7 +165,7 @@ class LabelRest extends PaketRest {
 					'name2'         => wc_shiptastic_substring( $label->get_return_company() ? $label->get_return_formatted_full_name() : '', 0, 50 ),
 					'addressStreet' => wc_shiptastic_substring( $label->get_return_street() . ' ' . $label->get_return_street_number(), 0, 50 ),
 					'postalCode'    => $label->get_return_postcode(),
-					'city'          => $label->get_return_city(),
+					'city'          => wc_shiptastic_substring( $label->get_return_city(), 0, 40 ),
 					'state'         => wc_shiptastic_substring( wc_stc_dhl_format_label_state( $label->get_return_state(), $label->get_return_country() ), 0, 20 ),
 					'contactName'   => wc_shiptastic_substring( $label->get_return_formatted_full_name(), 0, 80 ),
 					'phone'         => $label->get_return_phone(),
@@ -267,33 +267,33 @@ class LabelRest extends PaketRest {
 			}
 
 			$shipment_request['shipper'] = array(
-				'name1'         => wc_shiptastic_substring( $name1, 0, 50 ),
-				'name2'         => wc_shiptastic_substring( $name2, 0, 50 ),
-				'name3'         => wc_shiptastic_substring( $name3, 0, 50 ),
+				'name1'         => wc_shiptastic_substring( $this->encode( $name1 ), 0, 50 ),
+				'name2'         => wc_shiptastic_substring( $this->encode( $name2 ), 0, 50 ),
+				'name3'         => wc_shiptastic_substring( $this->encode( $name3 ), 0, 50 ),
 				'addressStreet' => wc_shiptastic_substring( $street, 0, 50 ),
 				'postalCode'    => $zip,
 				'city'          => wc_shiptastic_substring( $city, 0, 40 ),
 				'country'       => wc_stc_country_to_alpha3( $country ),
 				'email'         => $email,
-				'contactName'   => wc_shiptastic_substring( trim( $shipment->get_formatted_sender_full_name() ), 0, 80 ),
+				'contactName'   => wc_shiptastic_substring( trim( $this->encode( $shipment->get_formatted_sender_full_name() ) ), 0, 80 ),
 			);
 		}
 
 		if ( 'DE' === $shipment->get_country() && $shipment->send_to_external_pickup() ) {
 			if ( $shipment->send_to_external_pickup( 'locker' ) ) {
 				$shipment_request['consignee'] = array(
-					'name'       => $shipment->get_formatted_full_name(),
+					'name'       => wc_shiptastic_substring( $this->encode( $shipment->get_formatted_full_name() ), 0, 50 ),
 					'lockerID'   => (int) wc_stc_parse_pickup_location_code( $shipment->get_pickup_location_code() ),
 					'postNumber' => $shipment->get_pickup_location_customer_number(),
-					'city'       => $shipment->get_city(),
+					'city'       => wc_shiptastic_substring( $shipment->get_city(), 0, 40 ),
 					'postalCode' => $shipment->get_postcode(),
 					'country'    => wc_stc_country_to_alpha3( $shipment->get_country() ),
 				);
 			} else {
 				$shipment_request['consignee'] = array(
-					'name'       => $shipment->get_formatted_full_name(),
+					'name'       => wc_shiptastic_substring( $this->encode( $shipment->get_formatted_full_name() ), 0, 50 ),
 					'retailID'   => (int) $shipment->get_pickup_location_code(),
-					'city'       => $shipment->get_city(),
+					'city'       => wc_shiptastic_substring( $shipment->get_city(), 0, 40 ),
 					'postalCode' => $shipment->get_postcode(),
 					'country'    => wc_stc_country_to_alpha3( $shipment->get_country() ),
 				);
@@ -308,8 +308,8 @@ class LabelRest extends PaketRest {
 			$address_components = wc_stc_dhl_get_shipment_address_components_with_number( $shipment );
 
 			$shipment_request['consignee'] = array(
-				'name1'                         => wc_shiptastic_substring( $shipment->get_company() ? $shipment->get_company() : $shipment->get_formatted_full_name(), 0, 50 ),
-				'name2'                         => wc_shiptastic_substring( $shipment->get_company() ? $shipment->get_formatted_full_name() : '', 0, 50 ),
+				'name1'                         => wc_shiptastic_substring( $this->encode( $shipment->get_company() ? $shipment->get_company() : $shipment->get_formatted_full_name() ), 0, 50 ),
+				'name2'                         => wc_shiptastic_substring( $this->encode( $shipment->get_company() ? $shipment->get_formatted_full_name() : '' ), 0, 50 ),
 				/**
 				 * By default the name3 parameter is used to transmit the additional
 				 * address field to the DHL API. You may adjust the field value by using this filter.
@@ -320,11 +320,11 @@ class LabelRest extends PaketRest {
 				 * @since 3.0.3
 				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'name3'                         => wc_shiptastic_substring( apply_filters( 'woocommerce_shiptastic_dhl_label_api_receiver_name3', $address_components['address_2'], $label ), 0, 50 ),
+				'name3'                         => wc_shiptastic_substring( $this->encode( apply_filters( 'woocommerce_shiptastic_dhl_label_api_receiver_name3', $address_components['address_2'], $label ) ), 0, 50 ),
 				'addressStreet'                 => $address_components['address_1'],
 				'additionalAddressInformation1' => wc_shiptastic_substring( apply_filters( 'woocommerce_shiptastic_dhl_label_api_receiver_address_information', '', $label ), 0, 60 ),
 				'postalCode'                    => $shipment->get_postcode(),
-				'city'                          => $shipment->get_city(),
+				'city'                          => wc_shiptastic_substring( $this->encode( $shipment->get_city() ), 0, 40 ),
 				'state'                         => wc_shiptastic_substring( wc_stc_dhl_format_label_state( $shipment->get_state(), $shipment->get_country() ), 0, 20 ),
 				'country'                       => wc_stc_country_to_alpha3( $shipment->get_country() ),
 				/**
@@ -337,7 +337,7 @@ class LabelRest extends PaketRest {
 				 * @since 3.0.5
 				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'contactName'                   => wc_shiptastic_substring( apply_filters( 'woocommerce_shiptastic_dhl_label_api_communication_contact_person', $shipment->get_formatted_full_name(), $label ), 0, 80 ),
+				'contactName'                   => wc_shiptastic_substring( $this->encode( apply_filters( 'woocommerce_shiptastic_dhl_label_api_communication_contact_person', $shipment->get_formatted_full_name(), $label ) ), 0, 80 ),
 				/**
 				 * Choose whether to transfer the phone number to DHL on creating a label.
 				 * By default the phone number is not transmitted.

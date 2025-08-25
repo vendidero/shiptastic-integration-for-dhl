@@ -100,4 +100,8 @@ abstract class PaketRest extends \Vendidero\Shiptastic\API\REST {
 
 		return $response;
 	}
+
+	protected function encode( $str ) {
+		return function_exists( 'wc_shiptastic_decode_html' ) ? wc_shiptastic_decode_html( $str ) : html_entity_decode( $str, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+	}
 }

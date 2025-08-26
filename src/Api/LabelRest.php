@@ -655,13 +655,30 @@ class LabelRest extends PaketRest {
 	protected function get_headers( $headers = array() ) {
 		$headers = parent::get_headers( $headers );
 
-		$headers['Accept-Language'] = 'en-US';
-
-		if ( 'DE' === Package::get_base_country() ) {
-			$headers['Accept-Language'] = 'de-DE';
-		}
+		$headers['Accept-Language'] = $this->get_language();
 
 		return $headers;
+	}
+
+	protected function get_language() {
+		$languages = array(
+			'DE' => 'de-DE',
+			'EN' => 'en-US',
+		);
+
+		if ( function_exists( 'determine_locale' ) ) {
+			$locale = determine_locale();
+		} else {
+			$locale = is_admin() ? get_user_locale() : get_locale();
+		}
+
+		$lang = strtoupper( substr( $locale, 0, 2 ) );
+
+		if ( array_key_exists( $lang, $languages ) ) {
+			return $languages[ $lang ];
+		} else {
+			return 'en-US';
+		}
 	}
 
 	public function test_connection() {

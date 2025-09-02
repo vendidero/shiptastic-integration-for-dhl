@@ -20,6 +20,7 @@ class DHL extends Label {
 	protected $extra_data = array(
 		'default_path'          => '',
 		'export_path'           => '',
+		'duties'                => '',
 		'codeable_address_only' => 'no',
 	);
 
@@ -285,6 +286,10 @@ class DHL extends Label {
 
 	public function set_codeable_address_only( $codeable_address_only ) {
 		$this->set_prop( 'codeable_address_only', wc_string_to_bool( $codeable_address_only ) );
+	}
+
+	public function set_duties( $duties ) {
+		$this->set_prop( 'duties', $duties );
 	}
 
 	public function codeable_address_only() {

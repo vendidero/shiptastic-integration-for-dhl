@@ -283,11 +283,7 @@ function wc_stc_dhl_get_inlay_return_label_reference( $label, $shipment ) {
  * @return \Vendidero\Shiptastic\ShippingMethod\ProviderMethod|false
  */
 function wc_stc_dhl_get_current_shipping_method() {
-	if ( $current = wc_stc_get_current_shipping_method_id() ) {
-		return wc_stc_get_shipping_provider_method( $current );
-	}
-
-	return false;
+	return wc_stc_get_current_shipping_provider_method();
 }
 
 /**

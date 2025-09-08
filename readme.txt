@@ -3,7 +3,7 @@ Contributors: vendidero, vdwoocommercesupport
 Tags: shipping, UPS, shiptastic, woocommerce
 Requires at least: 5.4
 Tested up to: 6.8
-Stable tag: 4.1.2
+Stable tag: 4.1.3
 Requires PHP: 7.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -33,6 +33,10 @@ This plugin connects to an API to create labels and/or provide your customer wit
 This service is provided by DHL: [terms of use](https://developer.dhl.com/terms-use?language_content_entity=en), [privacy policy](https://developer.dhl.com/privacy-notice?language_content_entity=en).
 
 == Changelog ==
+= 4.1.3 =
+* Fix: Pass missing duties/incoterms to label
+* Fix: Set language header for Paket API
+
 = 4.1.2 =
 * Fix: Block-based state management
 * Fix: Standalone translation loading

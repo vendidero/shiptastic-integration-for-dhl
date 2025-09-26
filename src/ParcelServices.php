@@ -335,7 +335,7 @@ class ParcelServices {
 	}
 
 	public static function get_pddp_countries() {
-		return array( 'NO', 'GB', 'CH' );
+		return array( 'NO', 'GB', 'CH', 'US' );
 	}
 
 	public static function is_pddp_available( $country, $postcode = '' ) {

@@ -138,6 +138,7 @@ class ParcelTracking extends \Vendidero\Shiptastic\API\REST {
 								$status           = wc_clean( $piece_shipment->getAttribute( 'status' ) );
 								$status_short     = wc_clean( $piece_shipment->getAttribute( 'short-status' ) );
 								$delivery_flag    = wc_clean( $piece_shipment->getAttribute( 'delivery-event-flag' ) );
+								$ric              = wc_clean( $piece_shipment->getAttribute( 'ric' ) );
 								$ice_flag         = wc_clean( $piece_shipment->getAttribute( 'ice' ) ); // see https://developer.dhl.com/api-reference/dhl-paket-de-sendungsverfolgung-post-paket-deutschland#downloads-section
 
 								try {
@@ -153,9 +154,17 @@ class ParcelTracking extends \Vendidero\Shiptastic\API\REST {
 
 									/**
 									 * PARCV = PAN Received by Carrier (elektronische Übermittlung)
+									 * ADVIS = Sendungsavise/-auftrag (this event is usually fired right after the PARCV event, e.g. Für diese Sendung wurde ein Ablageort hinterlegt)
 									 */
-									if ( in_array( $ice_flag, array( 'PARCV' ), true ) ) {
+									if ( in_array( $ice_flag, array( 'PARCV', 'ADVIS' ), true ) ) {
 										$is_in_transit = false;
+
+										/**
+										 * SECDA = Second Delivery Attempt
+										 */
+										if ( 'ADVIS' === $ice_flag && in_array( $ric, array( 'SECDA' ), true ) ) {
+											$is_in_transit = true;
+										}
 									}
 
 									$status_list[ $piece_code ] = new ShipmentStatus(

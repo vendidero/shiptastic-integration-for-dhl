@@ -231,16 +231,16 @@ class ParcelServices {
 			return;
 		}
 
-		$deps        = array( 'jquery', 'wc-checkout', 'jquery-tiptip' );
+		$deps        = array( 'jquery', 'wc-checkout', 'wc-jquery-tiptip' );
 		$suffix      = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$tip_tip_dep = array( 'jquery' );
 
 		if ( file_exists( WC_ABSPATH . 'assets/js/dompurify/purify' . $suffix . '.js' ) || version_compare( WC_VERSION, '10.0.3', '>=' ) ) {
-			wp_register_script( 'dompurify', WC()->plugin_url() . '/assets/js/dompurify/purify' . $suffix . '.js', array(), WC_VERSION, false );
-			$tip_tip_dep[] = 'dompurify';
+			wp_register_script( 'wc-dompurify', WC()->plugin_url() . '/assets/js/dompurify/purify' . $suffix . '.js', array(), WC_VERSION, false );
+			$tip_tip_dep[] = 'wc-dompurify';
 		}
 
-		wp_register_script( 'jquery-tiptip', WC()->plugin_url() . '/assets/js/jquery-tiptip/jquery.tipTip' . $suffix . '.js', $tip_tip_dep, WC_VERSION, true );
+		wp_register_script( 'wc-jquery-tiptip', WC()->plugin_url() . '/assets/js/jquery-tiptip/jquery.tipTip' . $suffix . '.js', $tip_tip_dep, WC_VERSION, true );
 		Package::register_script( 'wc-stc-preferred-services-dhl', 'static/preferred-services.js', $deps );
 		wp_register_style( 'wc-stc-preferred-services-dhl', Package::get_assets_build_url( 'static/preferred-services-styles.css' ), array(), Package::get_version() );
 

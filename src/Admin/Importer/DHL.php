@@ -6,14 +6,10 @@ use Vendidero\Shiptastic\DHL\Package;
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * WC_Admin class.
- */
 class DHL {
-
 	public static function is_available() {
 		$options  = get_option( 'woocommerce_pr_dhl_paket_settings' );
-		$imported = get_option( 'woocommerc_stc_dhl_import_finished' );
+		$imported = get_option( 'woocommerce_stc_dhl_import_finished' );
 		$user     = '';
 
 		if ( $dhl = Package::get_dhl_shipping_provider() ) {
@@ -140,11 +136,12 @@ class DHL {
 
 		$dhl->save();
 
+		update_option( 'woocommerce_stc_dhl_import_finished', 'yes', false );
+
 		return true;
 	}
 
 	public static function import_order_data( $limit = 10, $offset = 0 ) {
-
 		$orders = wc_get_orders(
 			array(
 				'limit'   => $limit,
@@ -157,12 +154,9 @@ class DHL {
 
 		if ( ! empty( $orders ) ) {
 			foreach ( $orders as $order ) {
-
 				if ( ! $order->get_meta( '_shipping_address_type' ) ) {
-
 					// Update order pickup type from official DHL plugin
 					if ( self::order_has_pickup( $order ) ) {
-
 						$order->update_meta_data( '_shipping_address_type', 'dhl' );
 						$order->update_meta_data( '_shipping_dhl_postnumber', $order->get_meta( '_shipping_dhl_postnum' ) );
 

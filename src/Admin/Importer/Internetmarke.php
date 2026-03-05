@@ -49,6 +49,9 @@ class Internetmarke {
 		}
 
 		$deutsche_post->save();
+
+		update_option( 'woocommerce_stc_internetmarke_import_finished', 'yes', false );
+
 		return true;
 	}
 }

@@ -348,7 +348,7 @@ class LabelRest extends PaketRest {
 				 * @since 3.0.3
 				 * @package Vendidero/Shiptastic/DHL
 				 */
-				'phone'                         => apply_filters( 'woocommerce_shiptastic_dhl_label_api_communication_phone', '', $label ),
+				'phone'                         => apply_filters( 'woocommerce_shiptastic_dhl_label_api_communication_phone', $shipment->is_shipping_international() ? $shipment->get_phone() : '', $label ),
 				/**
 				 * Choose whether to transfer the email to DHL on creating a label.
 				 * By default the email is only transmitted if the customer opted in.

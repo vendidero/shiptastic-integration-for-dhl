@@ -19,8 +19,22 @@ class Install {
 
 		if ( ! is_null( $current_version ) ) {
 			self::update( $current_version );
-		} elseif ( Package::is_standalone() && ( $dhl = Package::get_dhl_shipping_provider() ) ) {
-			$dhl->activate(); // Activate on new install
+		} else {
+			if ( Package::is_standalone() && ( $dhl = Package::get_dhl_shipping_provider() ) ) {
+				$dhl->activate(); // Activate on new install
+			}
+
+			if ( \Vendidero\Shiptastic\DHL\Admin\Importer\DHL::is_available() ) {
+				\Vendidero\Shiptastic\DHL\Admin\Importer\DHL::import_settings();
+			}
+
+			if ( \Vendidero\Shiptastic\DHL\Admin\Importer\Internetmarke::is_available() ) {
+				if ( Package::is_standalone() && ( $dp = Package::get_deutsche_post_shipping_provider() ) ) {
+					$dp->activate(); // Activate on new install
+				}
+
+				\Vendidero\Shiptastic\DHL\Admin\Importer\Internetmarke::import_settings();
+			}
 		}
 
 		update_option( 'woocommerce_shiptastic_dhl_version', Package::get_version() );

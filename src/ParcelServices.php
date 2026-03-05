@@ -139,9 +139,9 @@ class ParcelServices {
 	}
 
 	protected static function get_posted_data() {
-		if ( Package::is_rest_api_request() ) {
-			$posted_data = array();
+		$posted_data = array();
 
+		if ( Package::is_rest_api_request() ) {
 			if ( WC()->session ) {
 				$posted_data['shipping_country'] = wc()->customer->get_shipping_country();
 
@@ -155,7 +155,7 @@ class ParcelServices {
 
 				$posted_data['current_pickup_location'] = wc()->customer->get_meta( 'pickup_location_code' );
 			}
-		} else {
+		} elseif ( isset( $_POST['post_data'] ) || isset( $_REQUEST['woocommerce-process-checkout-nonce'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
 			$posted_keys = array(
 				'dhl_preferred_location_type'             => '',
 				'shipping_country'                        => '',

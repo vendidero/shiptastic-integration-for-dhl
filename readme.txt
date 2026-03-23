@@ -2,8 +2,8 @@
 Contributors: vendidero, vdwoocommercesupport
 Tags: shipping, UPS, shiptastic, woocommerce
 Requires at least: 5.4
-Tested up to: 6.9
-Stable tag: 4.1.7
+Tested up to: 7.0
+Stable tag: 4.1.8
 Requires PHP: 7.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -33,6 +33,11 @@ This plugin connects to an API to create labels and/or provide your customer wit
 This service is provided by DHL: [terms of use](https://developer.dhl.com/terms-use?language_content_entity=en), [privacy policy](https://developer.dhl.com/privacy-notice?language_content_entity=en).
 
 == Changelog ==
+= 4.1.8 =
+* Improvement: Prevent side-effects in parcel services logic
+* Improvement: Import DHL settings during first install
+* Improvement: Transmit phone number by default for international labels
+
 = 4.1.7 =
 * Improvement: Register additional CDP countries
 

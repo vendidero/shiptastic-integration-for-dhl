@@ -338,6 +338,7 @@ class DHL extends Label {
 		return array(
 			'default',
 			'export',
+			'inlay_return',
 		);
 	}
 
@@ -346,6 +347,8 @@ class DHL extends Label {
 			return $this->get_default_filename();
 		} elseif ( 'export' === $file_type ) {
 			return $this->get_export_filename();
+		} elseif ( 'inlay_return' === $file_type ) {
+			return $this->get_inlay_return_filename();
 		} else {
 			return parent::get_filename( $file_type );
 		}
@@ -356,6 +359,8 @@ class DHL extends Label {
 			return $this->get_default_file();
 		} elseif ( 'export' === $file_type ) {
 			return $this->get_export_file();
+		} elseif ( 'inlay_return' === $file_type ) {
+			return $this->get_inlay_return_file();
 		} else {
 			return parent::get_file( $file_type );
 		}
@@ -366,6 +371,12 @@ class DHL extends Label {
 			return $this->get_default_path( $context );
 		} elseif ( 'export' === $file_type ) {
 			return $this->get_export_path( $context );
+		} elseif ( 'inlay_return' === $file_type ) {
+			if ( $label = $this->get_inlay_return_label() ) {
+				return $label->get_path( $context );
+			}
+
+			return '';
 		} else {
 			return parent::get_path( $context, $file_type );
 		}
@@ -419,6 +430,26 @@ class DHL extends Label {
 		}
 
 		return basename( $path );
+	}
+
+	public function get_inlay_return_filename() {
+		$label = $this->get_inlay_return_label();
+
+		if ( ! $label ) {
+			return $this->get_new_filename( 'inlay_return' );
+		}
+
+		$path = $label->get_filename();
+
+		return basename( $path );
+	}
+
+	public function get_inlay_return_file() {
+		if ( ! $label = $this->get_inlay_return_label() ) {
+			return false;
+		}
+
+		return $this->get_file_by_path( $label->get_path() );
 	}
 
 	public function set_default_path( $path ) {

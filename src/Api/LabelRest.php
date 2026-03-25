@@ -682,21 +682,39 @@ class LabelRest extends PaketRest {
 	}
 
 	public function test_connection() {
-		$error    = new \WP_Error();
+		$error = new \WP_Error();
+
+		/**
+		 * Use Kleinpaket as fallback in case DHL Paket number is missing.
+		 */
+		try {
+			$product        = 'V01PAK';
+			$billing_number = wc_stc_dhl_get_billing_number(
+				$product,
+				array(
+					'api_type'   => 'dhl.com',
+					'is_sandbox' => $this->is_sandbox(),
+				)
+			);
+		} catch ( \Exception $e ) {
+			$product        = 'V62KP';
+			$billing_number = wc_stc_dhl_get_billing_number(
+				$product,
+				array(
+					'api_type'   => 'dhl.com',
+					'is_sandbox' => $this->is_sandbox(),
+				)
+			);
+		}
+
 		$response = $this->post(
 			'orders?validate=true',
 			array(
 				'profile'   => $this->get_profile(),
 				'shipments' => array(
 					array(
-						'product'       => 'V01PAK',
-						'billingNumber' => wc_stc_dhl_get_billing_number(
-							'V01PAK',
-							array(
-								'api_type'   => 'dhl.com',
-								'is_sandbox' => $this->is_sandbox(),
-							)
-						),
+						'product'       => $product,
+						'billingNumber' => $billing_number,
 						'refNo'         => 'Order No. 1234',
 						'shipDate'      => Package::get_date_de_timezone( 'Y-m-d' ),
 						'shipper'       => array(

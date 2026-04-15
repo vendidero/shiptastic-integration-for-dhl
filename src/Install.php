@@ -66,6 +66,13 @@ class Install {
 		}
 
 		/**
+		 * Keep using legacy SOAP API (for now) for older installations to prevent update issues.
+		 */
+		if ( version_compare( $current_version, '2.0.0', '<' ) ) {
+			update_option( 'woocommerce_stc_dhl_enable_legacy_soap', 'yes' );
+		}
+
+		/**
 		 * Maybe update DP to use the new tracking URL
 		 */
 		if ( version_compare( $current_version, '3.0.5', '<' ) ) {
@@ -116,11 +123,55 @@ class Install {
 			}
 		}
 
-		/**
-		 * Keep using legacy SOAP API (for now) for older installations to prevent update issues.
-		 */
-		if ( version_compare( $current_version, '2.0.0', '<' ) ) {
-			update_option( 'woocommerce_stc_dhl_enable_legacy_soap', 'yes' );
+		if ( version_compare( $current_version, '4.2.0', '<' ) ) {
+			global $wpdb;
+
+			delete_option( 'woocommerce_stc_dhl_enable_legacy_soap' );
+
+			Helper::instance()->load_shipping_providers();
+
+			if ( $dhl = wc_stc_get_shipping_provider( 'dhl' ) ) {
+				if ( $dhl->is_activated() ) {
+					if ( $national = $dhl->get_configuration_set(
+						array(
+							'shipment_type' => 'simple',
+							'zone'          => 'dom',
+						)
+					) ) {
+						if ( 'V62WP' === $national->get_product() ) {
+							$national->update_product( 'V62KP' );
+
+							$dhl->update_configuration_set( $national );
+							$dhl->save();
+						}
+					}
+
+					$wpdb->hide_errors();
+					$packaging_ids = $wpdb->get_results( "SELECT stc_packaging_id FROM {$wpdb->stc_packagingmeta} WHERE meta_value LIKE '%V62WP%'" );
+
+					if ( ! empty( $packaging_ids ) ) {
+						foreach ( $packaging_ids as $packaging_row ) {
+							$packaging_id = (int) $packaging_row->stc_packaging_id;
+
+							if ( $packaging = wc_stc_get_packaging( $packaging_id ) ) {
+								if ( $national = $packaging->get_configuration_set(
+									array(
+										'shipment_type' => 'simple',
+										'zone'          => 'dom',
+										'shipping_provider_name' => 'dhl',
+									)
+								) ) {
+									if ( 'V62WP' === $national->get_product() ) {
+										$national->update_product( 'V62KP' );
+										$packaging->update_configuration_set( $national );
+										$packaging->save();
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 

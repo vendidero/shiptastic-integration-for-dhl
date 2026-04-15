@@ -7,7 +7,6 @@ use DateTimeZone;
 use Exception;
 use Vendidero\Shiptastic\DHL\Api\InternetmarkeRest;
 use Vendidero\Shiptastic\DHL\Api\LabelRest;
-use Vendidero\Shiptastic\DHL\Api\LabelSoap;
 use Vendidero\Shiptastic\DHL\Api\LocationFinder;
 use Vendidero\Shiptastic\DHL\Api\Paket;
 use Vendidero\Shiptastic\DHL\Api\ParcelTracking;
@@ -18,7 +17,6 @@ use Vendidero\Shiptastic\DHL\Api\Internetmarke;
 use Vendidero\Shiptastic\Registry\Container;
 use Vendidero\Shiptastic\Shipment;
 use Vendidero\Shiptastic\ShippingProvider\Helper;
-use Vendidero\Shiptastic\SimpleShipment;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -32,7 +30,7 @@ class Package {
 	 *
 	 * @var string
 	 */
-	const VERSION = '4.1.9';
+	const VERSION = '4.2.0';
 
 	// These are all considered domestic by DHL
 	protected static $us_territories = array( 'US', 'GU', 'AS', 'PR', 'UM', 'VI' );
@@ -90,13 +88,6 @@ class Package {
 			'shiptastic_register_api_instance_dhl_location_finder',
 			function () {
 				return new LocationFinder();
-			}
-		);
-
-		add_filter(
-			'shiptastic_register_api_instance_dhl_paket_label_soap',
-			function () {
-				return new LabelSoap();
 			}
 		);
 
@@ -607,29 +598,7 @@ class Package {
 	}
 
 	public static function use_legacy_soap_api() {
-		$use_legacy_soap    = false;
-		$has_custom_setting = false;
-
-		if ( $dhl = wc_stc_get_shipping_provider( 'dhl' ) ) {
-			if ( $dhl->get_setting( 'api_type' ) ) {
-				$use_legacy_soap    = 'soap' === $dhl->get_setting( 'api_type' );
-				$has_custom_setting = true;
-
-				if ( defined( 'WC_STC_DHL_LEGACY_SOAP' ) ) {
-					$use_legacy_soap = WC_STC_DHL_LEGACY_SOAP;
-				}
-			}
-		}
-
-		if ( ! $has_custom_setting ) {
-			$use_legacy_soap = ( defined( 'WC_STC_DHL_LEGACY_SOAP' ) ? WC_STC_DHL_LEGACY_SOAP : ( 'yes' === get_option( 'woocommerce_shiptastic_dhl_enable_legacy_soap' ) ) );
-		}
-
-		if ( ! self::supports_soap() ) {
-			$use_legacy_soap = false;
-		}
-
-		return apply_filters( 'woocommerce_shiptastic_dhl_use_legacy_soap_api', $use_legacy_soap );
+		return false;
 	}
 
 	public static function get_return_receivers() {

@@ -29,19 +29,11 @@ class Paket {
 	}
 
 	/**
-	 * @return LabelSoap|LabelRest|\Vendidero\Shiptastic\Interfaces\Api
+	 * @return LabelRest|\Vendidero\Shiptastic\Interfaces\Api
 	 * @throws Exception
 	 */
 	public function get_label_api() {
-		if ( Package::use_legacy_soap_api() ) {
-			try {
-				return Helper::get_api( 'dhl_paket_label_soap', $this->is_debug_mode() );
-			} catch ( Exception $e ) {
-				throw new Exception( esc_html( sprintf( _x( 'Label API not available: %s', 'dhl', 'shiptastic-integration-for-dhl' ), $e->getMessage() ) ) );
-			}
-		} else {
-			return $this->get_label_rest_api();
-		}
+		return $this->get_label_rest_api();
 	}
 
 	public function get_label_rest_api() {

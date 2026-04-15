@@ -132,15 +132,6 @@ class DHL extends Auto {
 		);
 
 		$this->register_product(
-			'V62WP',
-			array(
-				'label'     => _x( 'DHL Warenpost', 'dhl', 'shiptastic-integration-for-dhl' ),
-				'countries' => array( 'DE' ),
-				'zones'     => array( 'dom' ),
-			)
-		);
-
-		$this->register_product(
 			'V62KP',
 			array(
 				'label'     => _x( 'DHL Kleinpaket', 'dhl', 'shiptastic-integration-for-dhl' ),
@@ -863,7 +854,7 @@ class DHL extends Auto {
 		$is_sandbox = wc_string_to_bool( $this->get_setting( 'sandbox_mode', 'no' ) );
 		$username   = $is_sandbox ? $this->get_setting( 'api_sandbox_username', '' ) : $this->get_setting( 'api_username', '' );
 
-		if ( ( $is_sandbox && Package::use_legacy_soap_api() && empty( $username ) ) || ( ! $is_sandbox && empty( $username ) ) ) {
+		if ( ! $is_sandbox && empty( $username ) ) {
 			return null;
 		}
 
@@ -873,7 +864,6 @@ class DHL extends Auto {
 	protected function get_general_settings() {
 		$ref_placeholders     = wc_stc_dhl_get_label_payment_ref_placeholder();
 		$ref_placeholders_str = implode( ', ', array_keys( $ref_placeholders ) );
-		$has_soap             = Package::supports_soap() ? true : false;
 
 		$settings = array(
 			array(
@@ -904,28 +894,6 @@ class DHL extends Auto {
 				'desc'  => '',
 			),
 		);
-
-		if ( $has_soap ) {
-			$use_soap = ( defined( 'WC_STC_DHL_LEGACY_SOAP' ) ? WC_STC_DHL_LEGACY_SOAP : ( 'yes' === get_option( 'woocommerce_stc_dhl_enable_legacy_soap' ) ) );
-
-			$settings = array_merge(
-				$settings,
-				array(
-					array(
-						'title'   => _x( 'API Type', 'dhl', 'shiptastic-integration-for-dhl' ),
-						'desc'    => _x( 'Choose the DHL API to use. Please note: The SOAP API is currently in a legacy mode and will be replaced by the newer REST API in the future.', 'dhl', 'shiptastic-integration-for-dhl' ),
-						'id'      => 'api_type',
-						'options' => array(
-							'rest' => _x( 'New API (REST)', 'dhl', 'shiptastic-integration-for-dhl' ),
-							'soap' => _x( 'Old API (SOAP)', 'dhl', 'shiptastic-integration-for-dhl' ),
-						),
-						'default' => $use_soap ? 'soap' : 'rest',
-						'type'    => 'select',
-						'value'   => $this->get_setting( 'api_type', '' ),
-					),
-				)
-			);
-		}
 
 		$settings = array_merge(
 			$settings,

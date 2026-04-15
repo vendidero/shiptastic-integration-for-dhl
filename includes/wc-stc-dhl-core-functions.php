@@ -616,6 +616,13 @@ function wc_stc_dhl_get_billing_number( $product, $args = array() ) {
 
 	$provider = Package::get_dhl_shipping_provider();
 
+	/**
+	 * Map unsupported V62WP to newer V62KP Kleinpaket
+	 */
+	if ( 'V62WP' === $product ) {
+		$product = 'V62KP';
+	}
+
 	if ( 'return' === $product ) {
 		$product_number = '07';
 	} else {

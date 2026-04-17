@@ -155,7 +155,7 @@ class ParcelServices {
 
 				$posted_data['current_pickup_location'] = wc()->customer->get_meta( 'pickup_location_code' );
 			}
-		} elseif ( isset( $_POST['post_data'] ) || isset( $_REQUEST['woocommerce-process-checkout-nonce'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
+		} elseif ( isset( $_POST['post_data'] ) || isset( $_REQUEST['woocommerce-process-checkout-nonce'] ) || ( isset( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'woocommerce-process_checkout' ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$posted_keys = array(
 				'dhl_preferred_location_type'             => '',
 				'shipping_country'                        => '',

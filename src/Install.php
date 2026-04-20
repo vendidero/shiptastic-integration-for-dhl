@@ -66,13 +66,6 @@ class Install {
 		}
 
 		/**
-		 * Keep using legacy SOAP API (for now) for older installations to prevent update issues.
-		 */
-		if ( version_compare( $current_version, '2.0.0', '<' ) ) {
-			update_option( 'woocommerce_stc_dhl_enable_legacy_soap', 'yes' );
-		}
-
-		/**
 		 * Maybe update DP to use the new tracking URL
 		 */
 		if ( version_compare( $current_version, '3.0.5', '<' ) ) {
@@ -146,6 +139,9 @@ class Install {
 						}
 					}
 
+					/**
+					 * Replace V62WP in packaging options
+					 */
 					$wpdb->hide_errors();
 					$packaging_ids = $wpdb->get_results( "SELECT stc_packaging_id FROM {$wpdb->stc_packagingmeta} WHERE meta_value LIKE '%V62WP%'" );
 
@@ -168,6 +164,36 @@ class Install {
 									}
 								}
 							}
+						}
+					}
+
+					/**
+					 * Replace V62WP in shipping method options
+					 */
+					$methods = $wpdb->get_results( "SELECT * FROM {$wpdb->options} WHERE option_name LIKE 'woocommerce_%_%_settings' and option_value LIKE '%dhl-s-simple-z-dom%V62WP%'" );
+
+					foreach ( $methods as $method ) {
+						$value       = (array) get_option( $method->option_name, array() );
+						$has_updated = false;
+
+						if ( isset( $value['configuration_sets'] ) && is_array( $value['configuration_sets'] ) ) {
+							if ( array_key_exists( '-p-dhl-s-simple-z-dom', $value['configuration_sets'] ) ) {
+								$value['configuration_sets']['-p-dhl-s-simple-z-dom'] = wp_parse_args(
+									(array) $value['configuration_sets']['-p-dhl-s-simple-z-dom'],
+									array(
+										'product' => '',
+									)
+								);
+
+								if ( 'V62WP' === $value['configuration_sets']['-p-dhl-s-simple-z-dom']['product'] ) {
+									$value['configuration_sets']['-p-dhl-s-simple-z-dom']['product'] = 'V62KP';
+									$has_updated = true;
+								}
+							}
+						}
+
+						if ( $has_updated ) {
+							update_option( $method->option_name, $value );
 						}
 					}
 				}

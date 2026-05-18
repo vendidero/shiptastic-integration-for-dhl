@@ -46,15 +46,19 @@ abstract class PaketRest extends \Vendidero\Shiptastic\API\REST {
 						array(
 							'validationMessage' => '',
 							'validationState'   => 'Error',
+							'property'          => '',
 						)
 					);
+
+					if ( ! empty( $message['property'] ) ) {
+						$message['validationMessage'] = "{$message['property']}: {$message['validationMessage']}";
+					}
 
 					if ( 'Error' === $message['validationState'] ) {
 						if ( ! in_array( $message['validationMessage'], $error_messages, true ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 							$error_messages[] = $message['validationMessage']; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 						}
-					} elseif ( ! in_array( $message['validationMessage'], $soft_error_messages, true ) ) {
-						// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					} elseif ( ! in_array( $message['validationMessage'], $soft_error_messages, true ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 						$soft_error_messages[] = $message['validationMessage']; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					}
 				}

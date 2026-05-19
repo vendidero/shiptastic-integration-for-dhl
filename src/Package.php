@@ -66,6 +66,7 @@ class Package {
 
 		add_filter( 'woocommerce_shiptastic_shipment_is_shipping_domestic', array( __CLASS__, 'shipping_domestic' ), 10, 2 );
 		add_filter( 'woocommerce_shiptastic_shipment_is_shipping_inner_eu', array( __CLASS__, 'shipping_inner_eu' ), 10, 2 );
+		add_filter( 'woocommerce_shiptastic_shipment_get_formatted_address', array( __CLASS__, 'replace_cdp_address' ), 10, 2 );
 
 		self::includes();
 		self::define_tables();
@@ -122,6 +123,24 @@ class Package {
 		if ( self::is_enabled() ) {
 			self::init_hooks();
 		}
+	}
+
+	/**
+	 * @param string $formatted_address
+	 * @param Shipment $shipment
+	 *
+	 * @return string
+	 */
+	public static function replace_cdp_address( $formatted_address, $shipment ) {
+		if ( $label = $shipment->get_label() ) {
+			if ( is_a( $label, '\Vendidero\Shiptastic\DHL\Label\DHL' ) ) {
+				if ( $label->has_service( 'ClosestDropPoint' ) ) {
+					$formatted_address = _x( 'Not yet known; pickup location nearby.', 'dhl', 'shiptastic-integration-for-dhl' );
+				}
+			}
+		}
+
+		return $formatted_address;
 	}
 
 	public static function check_version() {

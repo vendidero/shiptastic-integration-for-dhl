@@ -156,10 +156,16 @@ class DeutschePost extends Auto {
 
 	public function test_connection() {
 		if ( $im = Package::get_internetmarke_api() ) {
-			if ( $im->is_configured() && $im->auth() ) {
-				$preview = $im->preview_stamp( 31 );
+			if ( $im->is_configured() ) {
+				$auth_result = $im->auth();
 
-				return $preview ? true : false;
+				if ( true === $auth_result ) {
+					$preview = $im->preview_stamp( 31 );
+
+					return $preview ? true : false;
+				} else {
+					return $auth_result;
+				}
 			}
 		}
 
@@ -205,7 +211,7 @@ class DeutschePost extends Auto {
 			$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
 
 			if ( is_admin() && $screen && in_array( $screen->id, array( 'woocommerce_page_wc-settings' ), true ) ) {
-				if ( $im->is_configured() && $im->auth() ) {
+				if ( $im->is_configured() && true === $im->auth() ) {
 					if ( isset( $_GET['provider'] ) && 'deutsche_post' === $_GET['provider'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						$balance = $im->get_balance( true );
 
@@ -365,8 +371,10 @@ class DeutschePost extends Auto {
 	 * @param \Vendidero\Shiptastic\Shipment $shipment
 	 */
 	public function get_label_fields( $shipment ) {
-		if ( ! Package::get_internetmarke_api()->auth() ) {
-			return new ShipmentError( 500, sprintf( _x( 'Your Portokasse doesn\'t seem to be configured. Please check your <a href="%s">settings</a>.', 'dhl', 'shiptastic-integration-for-dhl' ), Package::get_deutsche_post_shipping_provider()->get_edit_link() ) );
+		$auth_result = Package::get_internetmarke_api()->auth();
+
+		if ( is_wp_error( $auth_result ) ) {
+			return new ShipmentError( $auth_result->get_error_code(), sprintf( _x( '%1$s. Please check your <a href="%2$s">settings</a>.', 'dhl', 'shiptastic-integration-for-dhl' ), $auth_result->get_error_message(), esc_url( Package::get_deutsche_post_shipping_provider()->get_edit_link() ) ) );
 		}
 
 		return parent::get_label_fields( $shipment );

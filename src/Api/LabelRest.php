@@ -374,7 +374,7 @@ class LabelRest extends PaketRest {
 		}
 
 		if ( Package::is_crossborder_shipment( $shipment->get_country(), $shipment->get_postcode() ) ) {
-			if ( count( $shipment->get_items() ) > 30 ) {
+			if ( count( $shipment->get_items() ) > 99 ) {
 				throw new \Exception( esc_html( sprintf( _x( 'Only %1$s shipment items can be processed, your shipment has %2$s items.', 'dhl', 'shiptastic-integration-for-dhl' ), 30, count( $shipment->get_items() ) ) ) );
 			}
 

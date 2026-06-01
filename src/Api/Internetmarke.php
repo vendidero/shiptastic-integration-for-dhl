@@ -2,8 +2,10 @@
 
 namespace Vendidero\Shiptastic\DHL\Api;
 
+use Vendidero\Shiptastic\API\Response;
 use Vendidero\Shiptastic\DHL\Label\DeutschePost;
 use Vendidero\Shiptastic\DHL\Package;
+use Vendidero\Shiptastic\ShipmentError;
 use Vendidero\Shiptastic\ShippingProvider\ProductList;
 
 defined( 'ABSPATH' ) || exit;
@@ -33,6 +35,9 @@ class Internetmarke {
 		return false;
 	}
 
+	/**
+	 * @return bool|ShipmentError
+	 */
 	public function auth() {
 		if ( $this->has_auth() ) {
 			return true;
@@ -42,11 +47,11 @@ class Internetmarke {
 			if ( true === $result ) {
 				return true;
 			} else {
-				return false;
+				return $result->get_error();
 			}
 		}
 
-		return false;
+		return new ShipmentError( 500, _x( 'Error while authenticating with Internetmarke', 'dhl', 'shiptastic-integration-for-dhl' ) );
 	}
 
 	public function has_auth() {

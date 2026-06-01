@@ -674,11 +674,11 @@ class Package {
 	}
 
 	public static function get_dhl_com_api_key() {
-		return 'uwi1SH5bHDdMTdcWXB5JIsDCvBOyIawn';
+		return apply_filters( 'woocommerce_shiptastic_dhl_com_api_key', 'uwi1SH5bHDdMTdcWXB5JIsDCvBOyIawn' );
 	}
 
 	public static function get_dhl_com_api_secret() {
-		return 'Qe8ZTtQiOWaEcjad';
+		return apply_filters( 'woocommerce_shiptastic_dhl_com_api_secret', 'Qe8ZTtQiOWaEcjad' );
 	}
 
 	public static function get_core_wsdl_file( $file ) {

@@ -1,9 +1,9 @@
 === Shiptastic Integration for DHL ===
 Contributors: vendidero, vdwoocommercesupport
-Tags: shipping, UPS, shiptastic, woocommerce
+Tags: shipping, DHL, shiptastic, woocommerce
 Requires at least: 5.4
 Tested up to: 7.0
-Stable tag: 4.2.0
+Stable tag: 4.2.1
 Requires PHP: 7.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -33,6 +33,12 @@ This plugin connects to an API to create labels and/or provide your customer wit
 This service is provided by DHL: [terms of use](https://developer.dhl.com/terms-use?language_content_entity=en), [privacy policy](https://developer.dhl.com/privacy-notice?language_content_entity=en).
 
 == Changelog ==
+= 4.2.1 =
+* Improvement: Increase CN23 item count as per API docs
+* Improvement: Internetmarke error reporting
+* Improvement: Prevent certain notices (e.g. regarding shipper street length) to show
+* Improvement: Replace/Hide shipping address in case CDP was booked
+
 = 4.2.0 =
 * Improvement: Disable legacy SOAP API in favour of REST as it will be shut down by DHL on 2026-05-01
 * Improvement: Remove legacy Warenpost national in favour of Kleinpaket

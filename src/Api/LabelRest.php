@@ -383,7 +383,7 @@ class LabelRest extends PaketRest {
 
 			foreach ( $customs_label_data['items'] as $item_id => $item_data ) {
 				$customs_items[] = array(
-					'itemDescription'  => $item_data['description'],
+					'itemDescription'  => wc_shiptastic_substring( $item_data['description'], 0, 50 ),
 					'countryOfOrigin'  => wc_stc_country_to_alpha3( $item_data['origin_code'] ),
 					'hsCode'           => $item_data['tariff_number'],
 					'packagedQuantity' => $item_data['quantity'],

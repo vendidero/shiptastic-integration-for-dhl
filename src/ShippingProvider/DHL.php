@@ -1372,7 +1372,7 @@ class DHL extends Auto {
 	}
 
 	public function get_signup_link() {
-		return 'https://www.dhl.de/dhl-kundewerden?source=woocommercegermanized&cid=c_dhloka_de_woocommercegermanized';
+		return 'https://www.dhl.de/de/geschaeftskunden/paket/kunde-werden/angebot-dhl-geschaeftskunden-online/onlinevertrag.html?source=woo-germanized';
 	}
 
 	public function get_settings_help_pointers( $section = '' ) {

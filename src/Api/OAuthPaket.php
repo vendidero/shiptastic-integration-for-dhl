@@ -20,13 +20,16 @@ class OAuthPaket extends OAuth {
 	}
 
 	protected function get_access_token() {
+		/**
+		 * Legacy transient token
+		 */
 		$transient = get_transient( 'woocommerce_stc_dhl_paket_api_access_token' );
 
-		if ( $transient ) {
-			$transient = SecretBox::maybe_decrypt( $transient );
+		if ( false !== $transient ) {
+			return SecretBox::maybe_decrypt( $transient );
+		} else {
+			return parent::get_access_token();
 		}
-
-		return $transient;
 	}
 
 	protected function get_client_id() {
@@ -63,12 +66,11 @@ class OAuthPaket extends OAuth {
 		);
 
 		if ( ! $response->is_error() ) {
-			$body         = $response->get_body();
-			$access_token = $body['access_token'];
-			$expires_in   = absint( isset( $body['expires_in'] ) ? $body['expires_in'] : 1799 );
+			$body = $response->get_body();
 
-			if ( ! empty( $access_token ) ) {
-				set_transient( 'woocommerce_stc_dhl_paket_api_access_token', SecretBox::maybe_encrypt( $access_token ), $expires_in );
+			if ( ! empty( $body['access_token'] ) ) {
+				$body['expires_in'] = absint( isset( $body['expires_in'] ) ? $body['expires_in'] : 1799 );
+				$this->update_access_and_refresh_token( $body );
 
 				return true;
 			} else {
@@ -84,10 +86,8 @@ class OAuthPaket extends OAuth {
 	}
 
 	public function invalidate() {
-		delete_transient( 'woocommerce_stc_dhl_paket_api_access_token' );
-	}
+		parent::invalidate();
 
-	public function revoke() {
-		$this->invalidate();
+		delete_transient( 'woocommerce_stc_dhl_paket_api_access_token' );
 	}
 }

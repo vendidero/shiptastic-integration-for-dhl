@@ -18,6 +18,11 @@ DHL labels to your shipments right from within your admin panel and allow your c
 
 Please note: This plugin does currently only work for shop owners in Germany (DHL Paket). We are working on a version which supports DHL Express too.
 
+== Frequently Asked Questions ==
+
+= Where do I report security bugs found in this plugin? =
+Please report security bugs found in the source code of the Shiptastic Integration for DHL plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/aedfb753-e047-4c76-a510-f93456dedb2c). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 == Installation ==
 
 = Minimal Requirements =

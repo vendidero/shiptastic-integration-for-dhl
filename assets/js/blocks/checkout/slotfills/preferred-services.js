@@ -13,11 +13,6 @@ import { getCurrencyFromPriceResponse } from '@woocommerce/price-format';
 import { useDebouncedCallback, useDebounce } from 'use-debounce';
 
 import {
-    __experimentalRadio as Radio,
-    __experimentalRadioGroup as RadioGroup,
-} from 'wordpress-components';
-
-import {
     ValidatedTextInput,
     ValidatedTextInputHandle,
 } from '@woocommerce/blocks-checkout';
@@ -65,31 +60,40 @@ const DhlPreferredDaySelect = ({
             <div className="wc-stc-dhl-preferred-day-select">
                 { preferredDays.map( ( preferred ) => {
                     const checked = preferredDay === preferred.date;
+                    const id = "dhl-preferred-day-" + preferred.date;
+
+                    console.log(checked);
 
                     return (
-                        <Radio
-                            value={ preferred.date }
-                            key={ preferred.date }
-                            onClick={ ( event ) => {
-                                setPreferredOption( 'preferred_day', preferred.date );
-                            } }
-                            checked={ checked }
+                        <div
+                            key={ id }
                             className={ classnames(
                                 `wc-stc-dhl-preferred-day`,
                                 {
                                     active: checked
                                 }
                             ) }
+                            onClick={ ( value ) => {
+                                setPreferredOption( 'preferred_day', preferred.date );
+                            } }
                         >
-                        <span className="inner">
-                            <span className="day">
-                            { preferred.day }
+                            <input
+                                id={ id }
+                                type="radio"
+                                name={ id }
+                                value={ preferred.date }
+                                checked={ checked }
+                            />
+
+                            <span className="inner">
+                                <span className="day">
+                                { preferred.day }
+                                </span>
+                                <span className="week-day">
+                                    { preferred.week_day }
+                                </span>
                             </span>
-                            <span className="week-day">
-                                { preferred.week_day }
-                            </span>
-                        </span>
-                        </Radio>
+                        </div>
                     );
                 } ) }
             </div>

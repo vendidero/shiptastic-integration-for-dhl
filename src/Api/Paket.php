@@ -110,7 +110,7 @@ class Paket {
 	}
 
 	protected function is_holiday( $datetime ) {
-		return ( in_array( $datetime->format( 'Y-m-d' ), Package::get_holidays( 'DE' ), true ) ) ? true : false;
+		return ( in_array( $datetime->format( 'Y-m-d' ), Package::get_holidays(), true ) ) ? true : false;
 	}
 
 	protected function is_working_day( $datetime ) {

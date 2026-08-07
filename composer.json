@@ -26,12 +26,10 @@
   },
   "scripts": {
     "post-install-cmd": [
-      "sh ./bin/package-update.sh",
-      "python3 ./bin/update-holidays.py"
+      "sh ./bin/package-update.sh"
     ],
     "post-update-cmd": [
-      "sh ./bin/package-update.sh",
-      "python3 ./bin/update-holidays.py"
+      "sh ./bin/package-update.sh"
     ],
     "phpcs": [
       "phpcs -s -p"

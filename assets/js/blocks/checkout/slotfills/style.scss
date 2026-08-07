@@ -34,6 +34,13 @@
       background-color: #e3e3e3;
       border: none;
 
+      input[type=radio] {
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+        position: absolute;
+      }
+
       &:last-child {
         margin-right: 0;
       }
@@ -51,7 +58,11 @@
         line-height: 1.8em;
 
         .day {
-          font-size: 1.4em;
+          font-size: 1.2em;
+        }
+
+        .week-day {
+          font-size: 0.9em;
         }
       }
 

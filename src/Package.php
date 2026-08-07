@@ -35,8 +35,6 @@ class Package {
 	// These are all considered domestic by DHL
 	protected static $us_territories = array( 'US', 'GU', 'AS', 'PR', 'UM', 'VI' );
 
-	protected static $holidays = array();
-
 	protected static $api = null;
 
 	protected static $im_api = null;
@@ -232,15 +230,7 @@ class Package {
 	}
 
 	public static function get_holidays( $country = 'DE' ) {
-		if ( empty( self::$holidays ) ) {
-			self::$holidays = include self::get_path() . '/i18n/holidays.php';
-		}
-
-		$holidays = self::$holidays;
-
-		if ( ! empty( $country ) ) {
-			$holidays = array_key_exists( $country, self::$holidays ) ? self::$holidays[ $country ] : array();
-		}
+		$holidays = \Vendidero\Shiptastic\Package::get_holidays( $country );
 
 		/**
 		 * Filter to adjust dates regarded as holidays for a certain country.

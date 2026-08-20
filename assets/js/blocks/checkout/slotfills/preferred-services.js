@@ -62,8 +62,6 @@ const DhlPreferredDaySelect = ({
                     const checked = preferredDay === preferred.date;
                     const id = "dhl-preferred-day-" + preferred.date;
 
-                    console.log(checked);
-
                     return (
                         <div
                             key={ id }
@@ -82,7 +80,6 @@ const DhlPreferredDaySelect = ({
                                 type="radio"
                                 name={ id }
                                 value={ preferred.date }
-                                checked={ checked }
                             />
 
                             <span className="inner">

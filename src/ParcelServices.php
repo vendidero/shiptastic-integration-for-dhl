@@ -331,7 +331,7 @@ class ParcelServices {
 	}
 
 	public static function get_cdp_countries() {
-		return array( 'DK', 'SE', 'FI', 'AT', 'BE', 'EE', 'LV', 'LT', 'CY', 'PL', 'BG', 'CZ', 'NL' );
+		return array( 'DK', 'SE', 'FI', 'AT', 'BE', 'EE', 'LV', 'LT', 'CY', 'PL', 'BG', 'CZ', 'NL', 'IT', 'FR' );
 	}
 
 	public static function get_pddp_countries() {

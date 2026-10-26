@@ -499,6 +499,8 @@ class DHL extends Auto {
 
 			if ( ! is_wp_error( $response ) ) {
 				$status = $response;
+			} else {
+				Package::log( sprintf( 'Error while updating remote shipment status(es): %s', $response->get_error_message() ), 'info' );
 			}
 		}
 

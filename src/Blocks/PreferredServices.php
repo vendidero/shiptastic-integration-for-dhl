@@ -286,13 +286,14 @@ final class PreferredServices {
 			}
 		}
 
-		$money_formatter = \Automattic\WooCommerce\Blocks\Package::container()->get( \Automattic\WooCommerce\StoreApi\StoreApi::class )->container()->get( ExtendSchema::class )->get_formatter( 'money' );
+		$money_formatter              = \Automattic\WooCommerce\Blocks\Package::container()->get( \Automattic\WooCommerce\StoreApi\StoreApi::class )->container()->get( ExtendSchema::class )->get_formatter( 'money' );
+		$preferred_services_available = ParcelServices::preferred_services_available( $customer->get_shipping_country() );
 
 		return array(
-			'preferred_day_enabled'           => ParcelServices::is_preferred_day_enabled(),
+			'preferred_day_enabled'           => ParcelServices::is_preferred_day_enabled() && $preferred_services_available,
 			'preferred_day'                   => $preferred_day,
-			'preferred_location_enabled'      => ParcelServices::is_preferred_location_enabled(),
-			'preferred_neighbor_enabled'      => ParcelServices::is_preferred_neighbor_enabled(),
+			'preferred_location_enabled'      => ParcelServices::is_preferred_location_enabled() && $preferred_services_available,
+			'preferred_neighbor_enabled'      => ParcelServices::is_preferred_neighbor_enabled() && $preferred_services_available,
 			'preferred_delivery_type_enabled' => ParcelServices::is_preferred_delivery_type_enabled(),
 			'preferred_delivery_type'         => $preferred_delivery_type,
 			'preferred_days'                  => $preferred_days,

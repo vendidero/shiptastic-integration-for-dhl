@@ -4,12 +4,12 @@ namespace Vendidero\Shiptastic\DHL\Api;
 
 use Vendidero\Shiptastic\DHL\Package;
 use Vendidero\Shiptastic\DHL\Label;
-use Vendidero\Shiptastic\DHL\ParcelLocator;
 use Vendidero\Shiptastic\Admin\Settings;
-use Vendidero\Shiptastic\API\Response;
+use Vendidero\Shiptastic\Interfaces\Attachment;
 use Vendidero\Shiptastic\Labels\Factory;
 use Vendidero\Shiptastic\PDFMerger;
 use Vendidero\Shiptastic\PDFSplitter;
+use Vendidero\Shiptastic\Shipment;
 use Vendidero\Shiptastic\ShipmentError;
 
 defined( 'ABSPATH' ) || exit;
@@ -42,6 +42,81 @@ class LabelRest extends PaketRest {
 	}
 
 	/**
+	 * @param Attachment $attachment
+	 *
+	 * @return string
+	 * @throws \Exception
+	 */
+	public function upload_customs_document( $attachment ) {
+		$stream = $attachment->get_stream();
+
+		if ( empty( $stream ) ) {
+			throw new \Exception( esc_html_x( 'The customs document could not be read.', 'dhl', 'shiptastic-integration-for-dhl' ) );
+		}
+
+		$eol      = "\r\n";
+		$boundary = '----ShiptasticBoundary' . md5( uniqid( '', true ) );
+		$filename = wc_shiptastic_substring( basename( $attachment->get_path() ), -60 );
+		$fields   = array(
+			'documents[0].documentType'         => 'Invoice',
+			'documents[0].userDefinedReference' => wc_shiptastic_substring( $attachment->get_title(), 0, 60 ),
+		);
+
+		/**
+		 * The API binds form fields to a list of documents (Spring-style dot notation),
+		 * the document itself needs to be transmitted as binary file part.
+		 */
+		$payload = '';
+
+		foreach ( $fields as $name => $value ) {
+			$payload .= '--' . $boundary . $eol;
+			$payload .= 'Content-Disposition: form-data; name="' . $name . '"' . $eol . $eol;
+			$payload .= $value . $eol;
+		}
+
+		$payload .= '--' . $boundary . $eol;
+		$payload .= 'Content-Disposition: form-data; name="documents[0].data"; filename="' . $filename . '"' . $eol;
+		$payload .= 'Content-Type: application/pdf' . $eol . $eol;
+		$payload .= $stream . $eol;
+		$payload .= '--' . $boundary . '--' . $eol;
+
+		/**
+		 * Pass the pre-built payload as string to prevent the REST base class from encoding the body.
+		 */
+		$response = $this->post( 'customs-documents', $payload, array( 'Content-Type' => 'multipart/form-data; boundary=' . $boundary ) );
+
+		if ( $response->is_error() ) {
+			throw new \Exception( wp_kses_post( implode( "\n", $response->get_error()->get_error_messages() ) ), esc_html( $response->get_code() ) );
+		} else {
+			$body = $response->get_body();
+
+			if ( empty( $body['batchId'] ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				throw new \Exception( esc_html_x( 'There was an error while uploading the document. Please try again or consider switching to sandbox mode.', 'dhl', 'shiptastic-integration-for-dhl' ) );
+			}
+
+			return wc_clean( $body['batchId'] );
+		}
+	}
+
+	/**
+	 * @param Shipment $shipment
+	 * @param array $services
+	 *
+	 * @return bool
+	 */
+	protected function supports_paperless_customs( $shipment, $services ) {
+		$supports = false;
+
+		if ( 'CH' === $shipment->get_country() ) {
+			$supports = true;
+		} elseif ( 'US' === $shipment->get_country() && in_array( 'PDDP', $services, true ) ) {
+			$supports = true;
+		}
+
+		return apply_filters( 'woocommerce_shiptastic_dhl_label_api_supports_paperless_customs', $supports, $shipment, $services );
+	}
+
+	/**
 	 * @param \Vendidero\Shiptastic\DHL\Label\DHL $label
 	 *
 	 * @return boolean|ShipmentError
@@ -63,11 +138,24 @@ class LabelRest extends PaketRest {
 			'is_sandbox' => $this->is_sandbox(),
 		);
 
-		$account_number = wc_stc_dhl_get_billing_number( $label->get_product_id(), $billing_number_args );
-		$services       = array();
-		$bank_data      = array();
+		$account_number             = wc_stc_dhl_get_billing_number( $label->get_product_id(), $billing_number_args );
+		$services                   = array();
+		$bank_data                  = array();
+		$label_services             = $label->get_services();
+		$customs_batch_id           = null;
+		$supports_paperless_customs = $this->supports_paperless_customs( $shipment, $label_services );
 
-		foreach ( $label->get_services() as $service ) {
+		if ( $supports_paperless_customs ) {
+			if ( $commercial_invoice = $shipment->get_attachment( 'commercial_invoice' ) ) {
+				try {
+					$customs_batch_id = $this->upload_customs_document( $commercial_invoice );
+				} catch ( \Exception $e ) {
+					Package::log( 'Error while uploading customs document: ' . $e->getMessage(), 'error' );
+				}
+			}
+		}
+
+		foreach ( $label_services as $service ) {
 			$service_name = lcfirst( $service );
 
 			if ( in_array( $service, array( 'GoGreen', 'dhlRetoure' ), true ) ) {
@@ -154,6 +242,10 @@ class LabelRest extends PaketRest {
 				default:
 					$services[ $service_name ] = true;
 			}
+		}
+
+		if ( $supports_paperless_customs && ! empty( $customs_batch_id ) && 'US' !== $shipment->get_country() ) {
+			$services['paperlessCustoms'] = $customs_batch_id;
 		}
 
 		if ( $label->has_inlay_return() ) {
@@ -432,6 +524,10 @@ class LabelRest extends PaketRest {
 			if ( ! empty( $customs_label_data['export_reference_number'] ) ) {
 				$customs_data['hasElectronicExportNotification'] = true;
 				$customs_data['MRN']                             = wc_shiptastic_substring( preg_replace( '/[^A-Za-z0-9]/', '', $customs_label_data['export_reference_number'] ), 0, 18 );
+			}
+
+			if ( $supports_paperless_customs && ! empty( $customs_batch_id ) && 'US' === $shipment->get_country() ) {
+				$customs_data['invoiceUsCustoms'] = $customs_batch_id;
 			}
 
 			$shipment_request['customs'] = apply_filters( 'woocommerce_shiptastic_dhl_label_rest_api_customs_data', $customs_data, $label );

@@ -324,10 +324,34 @@ class ParcelServices {
 		return self::is_preferred_day_enabled() || self::is_preferred_location_enabled() || self::is_preferred_neighbor_enabled();
 	}
 
-	protected static function preferred_services_available( $customer_country = '' ) {
+	public static function preferred_services_available( $customer_country = '' ) {
 		$customer_country = empty( $customer_country ) ? WC()->customer->get_shipping_country() : $customer_country;
 
-		return 'DE' === $customer_country;
+		$is_available = 'DE' === $customer_country;
+
+		if ( $method = wc_stc_dhl_get_current_shipping_method() ) {
+			$config_set = $method->get_configuration_set(
+				array(
+					'shipment_type'          => 'simple',
+					'zone'                   => 'dom',
+					'shipping_provider_name' => 'dhl',
+				)
+			);
+
+			if ( ! $config_set ) {
+				$config_set = Package::get_dhl_shipping_provider()->get_configuration_set(
+					array(
+						'zone' => 'dom',
+					)
+				);
+			}
+
+			if ( $config_set && 'V62KP' === $config_set->get_product() ) {
+				$is_available = false;
+			}
+		}
+
+		return $is_available;
 	}
 
 	public static function get_cdp_countries() {

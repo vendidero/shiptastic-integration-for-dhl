@@ -133,19 +133,59 @@ class ParcelTracking extends \Vendidero\Shiptastic\API\REST {
 					if ( $list ) {
 						foreach ( $list->childNodes as $piece_shipment ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 							if ( 'piece-shipment' === $piece_shipment->getAttribute( 'name' ) ) {
-								$piece_code       = wc_clean( $piece_shipment->getAttribute( 'piece-code' ) );
-								$status_timestamp = wc_clean( $piece_shipment->getAttribute( 'status-timestamp' ) );
-								$status           = wc_clean( $piece_shipment->getAttribute( 'status' ) );
-								$status_short     = wc_clean( $piece_shipment->getAttribute( 'short-status' ) );
-								$delivery_flag    = wc_clean( $piece_shipment->getAttribute( 'delivery-event-flag' ) );
-								$ric              = wc_clean( $piece_shipment->getAttribute( 'ric' ) );
-								$ice_flag         = wc_clean( $piece_shipment->getAttribute( 'ice' ) ); // see https://developer.dhl.com/api-reference/dhl-paket-de-sendungsverfolgung-post-paket-deutschland#downloads-section
+								$piece_code                  = wc_clean( $piece_shipment->getAttribute( 'piece-code' ) );
+								$status_timestamp            = wc_clean( $piece_shipment->getAttribute( 'status-timestamp' ) );
+								$status                      = wc_clean( $piece_shipment->getAttribute( 'status' ) );
+								$status_short                = wc_clean( $piece_shipment->getAttribute( 'short-status' ) );
+								$delivery_flag               = wc_clean( $piece_shipment->getAttribute( 'delivery-event-flag' ) );
+								$ric                         = wc_clean( $piece_shipment->getAttribute( 'ric' ) );
+								$recipient_name              = wc_clean( $piece_shipment->getAttribute( 'recipient-name' ) ); // Auflösung Empfängerkennzeichen (Original Empfänger, Nachbar, Ehegatte, andere anwesende Person)
+								$ice_flag                    = wc_clean( $piece_shipment->getAttribute( 'ice' ) ); // see https://developer.dhl.com/api-reference/dhl-paket-de-sendungsverfolgung-post-paket-deutschland#downloads-section
+								$delivery_date_str           = wc_clean( $piece_shipment->getAttribute( 'delivery-date' ) ); // d.m.Y, estimated delivery date
+								$delivery_timeframe_from_str = wc_clean( $piece_shipment->getAttribute( 'delivery-timeframe-from' ) );
+								$delivery_timeframe_to_str   = wc_clean( $piece_shipment->getAttribute( 'delivery-timeframe-to' ) );
+								$delivery_date               = null;
+								$current_location            = array();
+
+								/**
+								 * Retrieve the latest event
+								 */
+								if ( count( $piece_shipment->childNodes ) > 0 ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+									$event_list = $piece_shipment->childNodes[0]; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+
+									if ( count( $event_list->childNodes ) > 0 ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+										$last_event = $event_list->childNodes[ count( $event_list->childNodes ) - 1 ]; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+
+										if ( $last_event ) {
+											$event_location = wc_clean( $last_event->getAttribute( 'event-location' ) );
+											$event_country  = wc_clean( $last_event->getAttribute( 'event-country' ) );
+
+											$current_location = array(
+												'city'    => $event_location,
+												'country' => $event_country,
+											);
+										}
+									}
+								}
 
 								try {
 									$status_datetime = new \WC_DateTime( $status_timestamp, new \DateTimeZone( 'Europe/Berlin' ) );
 									$status_datetime->setTimezone( new \DateTimeZone( 'UTC' ) );
 								} catch ( \Exception $e ) {
 									$status_datetime = null;
+								}
+
+								if ( ! empty( $delivery_date_str ) ) {
+									if ( ! empty( $delivery_timeframe_to_str ) ) {
+										$delivery_date_str .= " {$delivery_timeframe_to_str}";
+									}
+
+									try {
+										$delivery_date = new \WC_DateTime( $delivery_date_str, new \DateTimeZone( 'Europe/Berlin' ) );
+										$delivery_date->setTimezone( new \DateTimeZone( 'UTC' ) );
+									} catch ( \Exception $e ) {
+										$delivery_date = null;
+									}
 								}
 
 								if ( array_key_exists( $piece_code, $shipment_list ) ) {
@@ -177,6 +217,9 @@ class ParcelTracking extends \Vendidero\Shiptastic\API\REST {
 											'last_updated' => $status_datetime,
 											'ice'          => $ice_flag,
 											'delivered_at' => true === (bool) $delivery_flag ? $status_datetime : null,
+											'estimated_delivery_at' => $delivery_date,
+											'current_location' => $current_location,
+											'delivery_received_by' => $recipient_name,
 										)
 									);
 								}

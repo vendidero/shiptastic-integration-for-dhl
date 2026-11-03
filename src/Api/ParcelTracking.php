@@ -178,9 +178,11 @@ class ParcelTracking extends \Vendidero\Shiptastic\API\REST {
 								}
 
 								if ( ! empty( $delivery_date_str ) ) {
-									if ( ! empty( $delivery_timeframe_to_str ) ) {
-										$delivery_date_str .= " {$delivery_timeframe_to_str}";
-									}
+									/**
+									 * Use midday in case no timeframe is available. Midnight (or end of day) in Berlin
+									 * would shift the date to the previous (next) day in timezones behind (ahead of) Berlin, e.g. UTC.
+									 */
+									$delivery_date_str .= ! empty( $delivery_timeframe_to_str ) ? " {$delivery_timeframe_to_str}" : ' 12:00:00';
 
 									try {
 										$delivery_date = new \WC_DateTime( $delivery_date_str, new \DateTimeZone( 'Europe/Berlin' ) );

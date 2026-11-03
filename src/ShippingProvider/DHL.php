@@ -456,6 +456,14 @@ class DHL extends Auto {
 					$settings,
 					array(
 						array(
+							'title'   => _x( 'Paperless customs', 'dhl', 'shiptastic-integration-for-dhl' ),
+							'desc'    => _x( 'Upload the commercial invoice automatically, provided that paperless customs is available for the destination.', 'dhl', 'shiptastic-integration-for-dhl' ),
+							'id'      => 'label_paperless_customs',
+							'value'   => wc_bool_to_string( $this->get_setting( 'label_paperless_customs', 'yes' ) ),
+							'default' => 'yes',
+							'type'    => 'shiptastic_toggle',
+						),
+						array(
 							'title'    => _x( 'Default Incoterms', 'dhl', 'shiptastic-integration-for-dhl' ),
 							'type'     => 'select',
 							'default'  => 'DDP',

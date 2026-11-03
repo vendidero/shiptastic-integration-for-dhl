@@ -144,6 +144,7 @@ class ParcelTracking extends \Vendidero\Shiptastic\API\REST {
 								$delivery_date_str           = wc_clean( $piece_shipment->getAttribute( 'delivery-date' ) ); // d.m.Y, estimated delivery date
 								$delivery_timeframe_from_str = wc_clean( $piece_shipment->getAttribute( 'delivery-timeframe-from' ) );
 								$delivery_timeframe_to_str   = wc_clean( $piece_shipment->getAttribute( 'delivery-timeframe-to' ) );
+								$event_standard_code         = wc_clean( $piece_shipment->getAttribute( 'standard-event-code' ) );
 								$delivery_date               = null;
 								$current_location            = array();
 
@@ -157,8 +158,9 @@ class ParcelTracking extends \Vendidero\Shiptastic\API\REST {
 										$last_event = $event_list->childNodes[ count( $event_list->childNodes ) - 1 ]; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
 										if ( $last_event ) {
-											$event_location = wc_clean( $last_event->getAttribute( 'event-location' ) );
-											$event_country  = wc_clean( $last_event->getAttribute( 'event-country' ) );
+											$event_location      = wc_clean( $last_event->getAttribute( 'event-location' ) );
+											$event_country       = wc_clean( $last_event->getAttribute( 'event-country' ) );
+											$event_standard_code = wc_clean( $last_event->getAttribute( 'standard-event-code' ) );
 
 											$current_location = array(
 												'city'    => $event_location,
@@ -193,6 +195,15 @@ class ParcelTracking extends \Vendidero\Shiptastic\API\REST {
 									$is_in_transit = ! $is_delivered;
 
 									/**
+									 * LDTMV = Loaded to means of transport (Abgang)
+									 * MVMTV = Loaded onto tour vehicle, SECDA = Second delivery attempt, PCKST = Loaded for Packstation delivery
+									 *
+									 * LDTMV/MVMTV is used for departures from a facility too (standard event code AA).
+									 * Only the standard event code PO (Im Zustellprozess) indicates an actual delivery tour.
+									 */
+									$is_out_for_delivery = ! $is_delivered && 'LDTMV' === $ice_flag && in_array( $ric, array( 'MVMTV', 'SECDA', 'PCKST' ), true ) && 'PO' === $event_standard_code;
+
+									/**
 									 * PARCV = PAN Received by Carrier (elektronische Übermittlung)
 									 * ADVIS = Sendungsavise/-auftrag (this event is usually fired right after the PARCV event, e.g. Für diese Sendung wurde ein Ablageort hinterlegt)
 									 */
@@ -214,6 +225,7 @@ class ParcelTracking extends \Vendidero\Shiptastic\API\REST {
 											'status_description' => $status,
 											'is_delivered' => $is_delivered,
 											'is_in_transit' => $is_in_transit,
+											'is_out_for_delivery' => $is_out_for_delivery,
 											'last_updated' => $status_datetime,
 											'ice'          => $ice_flag,
 											'delivered_at' => true === (bool) $delivery_flag ? $status_datetime : null,

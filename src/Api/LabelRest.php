@@ -107,10 +107,12 @@ class LabelRest extends PaketRest {
 	protected function supports_paperless_customs( $shipment, $services ) {
 		$supports = false;
 
-		if ( 'CH' === $shipment->get_country() ) {
-			$supports = true;
-		} elseif ( 'US' === $shipment->get_country() && in_array( 'PDDP', $services, true ) ) {
-			$supports = true;
+		if ( 'yes' === $shipment->get_shipping_provider_instance()->get_setting( 'label_paperless_customs', 'yes' ) ) {
+			if ( 'CH' === $shipment->get_country() ) {
+				$supports = true;
+			} elseif ( 'US' === $shipment->get_country() && in_array( 'PDDP', $services, true ) ) {
+				$supports = true;
+			}
 		}
 
 		return apply_filters( 'woocommerce_shiptastic_dhl_label_api_supports_paperless_customs', $supports, $shipment, $services );

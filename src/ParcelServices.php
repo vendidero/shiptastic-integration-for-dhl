@@ -327,7 +327,32 @@ class ParcelServices {
 	public static function preferred_services_available( $customer_country = '' ) {
 		$customer_country = empty( $customer_country ) ? WC()->customer->get_shipping_country() : $customer_country;
 
-		$is_available = 'DE' === $customer_country;
+		return 'DE' === $customer_country;
+	}
+
+	public static function get_cdp_countries() {
+		return array( 'DK', 'SE', 'FI', 'AT', 'BE', 'EE', 'LV', 'LT', 'CY', 'PL', 'BG', 'CZ', 'NL', 'IT', 'FR' );
+	}
+
+	public static function get_pddp_countries() {
+		return array( 'NO', 'GB', 'CH', 'US' );
+	}
+
+	public static function is_pddp_available( $country, $postcode = '' ) {
+		$is_available = false;
+		$country      = wc_strtoupper( $country );
+		$postcode     = wc_normalize_postcode( $postcode );
+
+		if ( in_array( $country, array( 'NO' ), true ) || ( 'GB' === $country && 'BT' !== strtoupper( substr( trim( $postcode ), 0, 2 ) ) ) ) {
+			$is_available = true;
+		}
+
+		return $is_available;
+	}
+
+	public static function is_preferred_day_available( $customer_country ) {
+		$customer_country = empty( $customer_country ) ? WC()->customer->get_shipping_country() : $customer_country;
+		$is_available     = 'DE' === $customer_country;
 
 		if ( $method = wc_stc_dhl_get_current_shipping_method() ) {
 			$config_set = $method->get_configuration_set(
@@ -349,26 +374,6 @@ class ParcelServices {
 			if ( $config_set && 'V62KP' === $config_set->get_product() ) {
 				$is_available = false;
 			}
-		}
-
-		return $is_available;
-	}
-
-	public static function get_cdp_countries() {
-		return array( 'DK', 'SE', 'FI', 'AT', 'BE', 'EE', 'LV', 'LT', 'CY', 'PL', 'BG', 'CZ', 'NL', 'IT', 'FR' );
-	}
-
-	public static function get_pddp_countries() {
-		return array( 'NO', 'GB', 'CH', 'US' );
-	}
-
-	public static function is_pddp_available( $country, $postcode = '' ) {
-		$is_available = false;
-		$country      = wc_strtoupper( $country );
-		$postcode     = wc_normalize_postcode( $postcode );
-
-		if ( in_array( $country, array( 'NO' ), true ) || ( 'GB' === $country && 'BT' !== strtoupper( substr( trim( $postcode ), 0, 2 ) ) ) ) {
-			$is_available = true;
 		}
 
 		return $is_available;
@@ -455,7 +460,7 @@ class ParcelServices {
 
 		try {
 			if ( self::preferred_services_available( $customer_country ) ) {
-				if ( self::is_preferred_day_enabled() ) {
+				if ( self::is_preferred_day_enabled() && self::is_preferred_day_available( $customer_country ) ) {
 					$data['preferred_day_enabled'] = true;
 
 					if ( isset( $post_data['dhl_preferred_day'] ) && ! empty( $post_data['dhl_preferred_day'] ) ) {

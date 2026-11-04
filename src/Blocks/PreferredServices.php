@@ -245,7 +245,7 @@ final class PreferredServices {
 		$preferred_day           = '';
 		$preferred_delivery_type = ParcelServices::get_default_preferred_delivery_type();
 
-		if ( ParcelServices::is_preferred_day_enabled() && 'DE' === $customer->get_shipping_country() ) {
+		if ( ParcelServices::is_preferred_day_enabled() && ParcelServices::is_preferred_day_available( $customer->get_shipping_country() ) ) {
 			$api_preferred_days = array();
 			$shipping_postcode  = WC()->customer->get_shipping_postcode();
 
@@ -290,7 +290,7 @@ final class PreferredServices {
 		$preferred_services_available = ParcelServices::preferred_services_available( $customer->get_shipping_country() );
 
 		return array(
-			'preferred_day_enabled'           => ParcelServices::is_preferred_day_enabled() && $preferred_services_available,
+			'preferred_day_enabled'           => ParcelServices::is_preferred_day_enabled() && ParcelServices::is_preferred_day_available( $customer->get_shipping_country() ),
 			'preferred_day'                   => $preferred_day,
 			'preferred_location_enabled'      => ParcelServices::is_preferred_location_enabled() && $preferred_services_available,
 			'preferred_neighbor_enabled'      => ParcelServices::is_preferred_neighbor_enabled() && $preferred_services_available,

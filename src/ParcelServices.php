@@ -325,7 +325,7 @@ class ParcelServices {
 	}
 
 	public static function preferred_services_available( $customer_country = '' ) {
-		$customer_country = empty( $customer_country ) ? WC()->customer->get_shipping_country() : $customer_country;
+		$customer_country = empty( $customer_country ) && WC()->customer ? WC()->customer->get_shipping_country() : $customer_country;
 
 		return 'DE' === $customer_country;
 	}
@@ -350,8 +350,8 @@ class ParcelServices {
 		return $is_available;
 	}
 
-	public static function is_preferred_day_available( $customer_country ) {
-		$customer_country = empty( $customer_country ) ? WC()->customer->get_shipping_country() : $customer_country;
+	public static function is_preferred_day_available( $customer_country = '' ) {
+		$customer_country = empty( $customer_country ) && WC()->customer ? WC()->customer->get_shipping_country() : $customer_country;
 		$is_available     = 'DE' === $customer_country;
 
 		if ( $method = wc_stc_dhl_get_current_shipping_method() ) {
